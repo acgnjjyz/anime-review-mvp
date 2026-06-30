@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ModerationTargetType {
+  REVIEW
+  COMMENT
+}
+
+enum ReportTargetType {
+  REVIEW
+  COMMENT
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  REJECTED
+}
+
+model User {
+  id              String          @id @db.Uuid
+  email           String          @unique
+  name            String?
+  imageUrl        String?
+  role            UserRole        @default(USER)
+  reviews         Review[]
+  ratings         Rating[]
+  comments        Comment[]
+  favorites       Favorite[]
+  reviewLikes     ReviewLike[]
+  reports         Report[]        @relation("ReportReporter")
+  resolvedReports Report[]        @relation("ReportResolver")
+  moderationLogs  ModerationLog[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Anime {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  titleEn     String?
+  synopsis    String
+  coverImage  String
+  studio      String
+  season      String
+  episodes    Int
+  releaseYear Int
+  genres      String[]
+  isPublished Boolean    @default(true)
+  reviews     Review[]
+  ratings     Rating[]
+  comments    Comment[]
+  favorites   Favorite[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  animeId   String
+  userId    String       @db.Uuid
+  score     Int
+  title     String
+  body      String
+  anime     Anime        @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  likes     ReviewLike[]
+  reports   Report[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([animeId, userId])
+  @@index([animeId])
+  @@index([userId])
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  animeId   String
+  userId    String   @db.Uuid
+  score     Int
+  anime     Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([animeId, userId])
+  @@index([animeId])
+  @@index([userId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  animeId   String
+  userId    String   @db.Uuid
+  reviewId  String?
+  body      String
+  anime     Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  review    Review?  @relation(fields: [reviewId], references: [id], onDelete: SetNull)
+  reports   Report[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([animeId])
+  @@index([userId])
+  @@index([reviewId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  animeId   String
+  userId    String   @db.Uuid
+  anime     Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([animeId, userId])
+  @@index([animeId])
+  @@index([userId])
+}
+
+model ReviewLike {
+  id        String   @id @default(cuid())
+  reviewId  String
+  userId    String   @db.Uuid
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
+  @@index([reviewId])
+  @@index([userId])
+}
+
+model Report {
+  id           String           @id @default(cuid())
+  targetType   ReportTargetType
+  reviewId     String?
+  commentId    String?
+  reporterId   String           @db.Uuid
+  reason       String
+  status       ReportStatus     @default(PENDING)
+  resolvedById String?          @db.Uuid
+  review       Review?          @relation(fields: [reviewId], references: [id], onDelete: SetNull)
+  comment      Comment?         @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  reporter     User             @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy   User?            @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([reviewId, reporterId])
+  @@unique([commentId, reporterId])
+  @@index([targetType])
+  @@index([status])
+  @@index([reporterId])
+  @@index([resolvedById])
+}
+
+model ModerationLog {
+  id          String               @id @default(cuid())
+  targetType  ModerationTargetType
+  targetId    String
+  animeId     String?
+  animeTitle  String?
+  authorId    String?              @db.Uuid
+  authorEmail String?
+  authorName  String?
+  targetTitle String?
+  targetBody  String?
+  reason      String
+  deletedById String               @db.Uuid
+  deletedBy   User                 @relation(fields: [deletedById], references: [id], onDelete: Cascade)
+  createdAt   DateTime             @default(now())
+
+  @@index([targetType])
+  @@index([targetId])
+  @@index([deletedById])
+  @@index([createdAt])
+}
+
+model UserRoleChangeLog {
+  id              String   @id @default(cuid())
+  targetUserId    String   @db.Uuid
+  targetUserEmail String
+  oldRole         UserRole
+  newRole         UserRole
+  adminId         String   @db.Uuid
+  adminEmail      String
+  createdAt       DateTime @default(now())
+
+  @@index([targetUserId])
+  @@index([targetUserEmail])
+  @@index([adminId])
+  @@index([adminEmail])
+  @@index([createdAt])
+}

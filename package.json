@@ -1,0 +1,43 @@
+{
+  "name": "anime-review-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "env": "npm run env:check",
+    "env:check": "node scripts/check-env.mjs",
+    "db:generate": "prisma generate",
+    "db:migrate": "npm run env:check && prisma migrate dev",
+    "db:push": "npm run env:check && prisma db push",
+    "db:seed": "npm run env:check && tsx prisma/seed.ts",
+    "postinstall": "prisma generate"
+  },
+  "overrides": {
+    "postcss": "^8.5.15"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.45.4",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "dotenv": "^16.6.1",
+    "postcss": "^8.5.15",
+    "prisma": "^6.0.0",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
