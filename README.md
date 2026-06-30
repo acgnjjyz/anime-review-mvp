@@ -231,7 +231,7 @@ DATABASE_URL="postgresql://postgres.your-project-ref:password@aws-0-region.poole
 DIRECT_URL="postgresql://postgres.your-project-ref:password@aws-0-region.pooler.supabase.com:5432/postgres"
 NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
-NEXT_PUBLIC_SITE_URL="https://your-vercel-project.vercel.app"
+NEXT_PUBLIC_SITE_URL="https://anime-review-mvp.vercel.app"
 ADMIN_EMAILS="admin@example.com"
 ```
 
@@ -239,10 +239,10 @@ ADMIN_EMAILS="admin@example.com"
 - `DIRECT_URL`: Prismaのschema反映用。Supabase Poolerの `:5432` を使う
 - `NEXT_PUBLIC_SUPABASE_URL`: Supabase Project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabaseのanon public / publishable key。`service_role` keyは入れない
-- `NEXT_PUBLIC_SITE_URL`: 本番URL。例: `https://your-vercel-project.vercel.app`
+- `NEXT_PUBLIC_SITE_URL`: 本番URL。このDeployでは `https://anime-review-mvp.vercel.app`
 - `ADMIN_EMAILS`: 初回ログイン時にADMINへ昇格したいメールアドレス。複数ある場合はカンマ区切り
 
-`NEXT_PUBLIC_SITE_URL` はローカルでは `http://localhost:3000`、本番ではVercelの公開URLに変更します。ログイン/登録のリダイレクトURLを作るための値なので、Vercelに設定した後は再デプロイしてください。Vercelの環境変数変更は過去のデプロイには反映されないため、変更後は必ず新しいデプロイを作成します。
+`NEXT_PUBLIC_SITE_URL` はローカルでは `http://localhost:3000`、本番ではVercelの公開URLに変更します。今回の本番URLは `https://anime-review-mvp.vercel.app` です。ログイン/登録のリダイレクトURLを作るための値なので、Vercelに設定した後は再デプロイしてください。Vercelの環境変数変更は過去のデプロイには反映されないため、変更後は必ず新しいデプロイを作成します。
 
 ## Supabase Auth Redirect URL設定
 
@@ -263,8 +263,8 @@ Vercel本番公開後は、本番URLも追加します。
 
 ```text
 Redirect URLs:
-https://your-vercel-project.vercel.app/auth/callback
-https://your-vercel-project.vercel.app/**
+https://anime-review-mvp.vercel.app/auth/callback
+https://anime-review-mvp.vercel.app/**
 ```
 
 本番運用を始める場合、Site URL は本番URLに変更してください。ローカル開発も継続する場合は、Redirect URLsに `localhost` とVercel本番URLの両方を登録しておきます。本番では最低限、正確な `/auth/callback` URLを登録してください。独自ドメインを使う場合は、Vercelの初期ドメインとは別に独自ドメインの `/auth/callback` も追加します。
