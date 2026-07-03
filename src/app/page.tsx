@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { ArrowRight, Heart, Sparkles, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 import { AnimeCard } from "@/components/AnimeCard";
 import { EmptyState } from "@/components/EmptyState";
+import { HeroCarousel } from "@/components/HeroCarousel";
+import { RightPortalSidebar } from "@/components/RightPortalSidebar";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { SetupNotice } from "@/components/SetupNotice";
+import { WeekdaySchedule } from "@/components/WeekdaySchedule";
 import { getCurrentUserProfile } from "@/lib/auth";
 import { hasDatabaseEnv } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
@@ -13,6 +16,115 @@ import type { AnimeCardData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+type LatestReview = {
+  id: string;
+  title: string;
+  body: string;
+  score: number;
+  updatedAt: Date;
+  user: { name: string | null };
+  anime: { slug: string; title: string; coverImage: string };
+};
+
+function withAverage(anime: AnimeCardData) {
+  return {
+    ...anime,
+    average: averageScore(anime.ratings),
+  };
+}
+
+function SectionHeader({
+  eyebrow,
+  title,
+  href,
+}: {
+  eyebrow: string;
+  title: string;
+  href?: string;
+}) {
+  return (
+    <div className="mb-4 flex items-end justify-between gap-4">
+      <div>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{eyebrow}</p>
+        <h2 className="mt-1 text-xl font-black text-white sm:text-2xl">{title}</h2>
+      </div>
+      {href ? (
+        <Link className="text-sm font-black text-sky-200 hover:text-white" href={href}>
+          View all
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function AnimeRail({
+  animeList,
+  favoriteAnimeIds,
+}: {
+  animeList: AnimeCardData[];
+  favoriteAnimeIds: Set<string>;
+}) {
+  if (animeList.length === 0) {
+    return (
+      <EmptyState
+        actionHref="/anime"
+        actionLabel="Open Anime"
+        description="Run the seed command or add published anime from the admin screen."
+        title="No anime yet"
+      />
+    );
+  }
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
+      {animeList.map((anime) => (
+        <AnimeCard anime={anime} isFavorite={favoriteAnimeIds.has(anime.id)} key={anime.id} />
+      ))}
+    </div>
+  );
+}
+
+function LatestReviews({ reviews }: { reviews: LatestReview[] }) {
+  if (reviews.length === 0) {
+    return (
+      <div className="portal-panel-soft rounded-2xl p-5 text-sm leading-6 text-slate-400">
+        Reviews will appear here after users post them.
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      {reviews.map((review) => (
+        <Link
+          className="portal-panel-soft portal-card-hover grid gap-3 rounded-2xl p-3 sm:grid-cols-[82px_1fr]"
+          href={`/anime/${review.anime.slug}`}
+          key={review.id}
+        >
+          <img
+            alt={`${review.anime.title} poster`}
+            className="aspect-[3/4] w-full rounded-xl object-cover sm:h-28"
+            src={review.anime.coverImage}
+          />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <ScoreBadge score={review.score} />
+              <span className="text-xs font-bold text-slate-500">
+                {review.updatedAt.toLocaleDateString("ja-JP")}
+              </span>
+            </div>
+            <h3 className="mt-2 line-clamp-1 text-base font-black text-white">{review.title}</h3>
+            <p className="mt-1 text-sm font-bold text-slate-400">
+              {review.user.name ?? "Anonymous"} on {review.anime.title}
+            </p>
+            <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-400">{review.body}</p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 export default async function HomePage() {
   if (!hasDatabaseEnv()) {
     return <SetupNotice />;
@@ -20,152 +132,143 @@ export default async function HomePage() {
 
   const user = await getCurrentUserProfile();
   let animeList: AnimeCardData[] = [];
+  let recentlyAdded: AnimeCardData[] = [];
+  let latestReviews: LatestReview[] = [];
   let favorites: { animeId: string }[] = [];
 
   try {
-    [animeList, favorites] = await Promise.all([
-      prisma.anime.findMany({
-        where: { isPublished: true },
-        include: {
-          reviews: { select: { score: true } },
-          ratings: { select: { score: true } },
-          _count: { select: { favorites: true } },
-        },
-        orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
-        take: 6,
-      }),
-      user
-        ? prisma.favorite.findMany({
-            where: { userId: user.id },
-            select: { animeId: true },
-          })
-        : Promise.resolve([]),
-    ]);
+    animeList = await prisma.anime.findMany({
+      where: { isPublished: true },
+      include: {
+        reviews: { select: { score: true } },
+        ratings: { select: { score: true } },
+        _count: { select: { favorites: true } },
+      },
+      orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
+      take: 24,
+    });
+    recentlyAdded = [...animeList]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime() || a.title.localeCompare(b.title, "ja"))
+      .slice(0, 8);
+    latestReviews = await prisma.review.findMany({
+      where: { anime: { isPublished: true } },
+      include: {
+        anime: { select: { slug: true, title: true, coverImage: true } },
+        user: { select: { name: true } },
+      },
+      orderBy: { updatedAt: "desc" },
+      take: 4,
+    });
+    favorites = user
+      ? await prisma.favorite.findMany({
+          where: { userId: user.id },
+          select: { animeId: true },
+        })
+      : [];
   } catch {
     return (
       <SetupNotice
-        title="データベースに接続できません"
-        description="DATABASE_URLが正しいか、SupabaseのPostgreSQLが利用できる状態か確認してください。"
-        detail="接続後に npm.cmd run db:push と npm.cmd run db:seed を実行してください。"
+        title="Database connection failed"
+        description="Check DATABASE_URL, DIRECT_URL, and Supabase database status."
+        detail="After the connection works, run npm.cmd run db:push and npm.cmd run db:seed."
       />
     );
   }
 
   const favoriteAnimeIds = new Set(favorites.map((favorite) => favorite.animeId));
-  const rankedAnime = [...animeList]
-    .map((anime) => ({
-      ...anime,
-      average: averageScore(anime.ratings),
-    }))
+  const topRated = animeList
+    .map(withAverage)
     .filter((anime) => anime.average !== null)
     .sort((a, b) => (b.average ?? 0) - (a.average ?? 0))
-    .slice(0, 3);
+    .slice(0, 8);
+  const featuredSource = topRated[0] ?? animeList[0] ?? null;
+  const featured = featuredSource ? withAverage(featuredSource) : null;
+  const heroItems = (topRated.length ? topRated : animeList.map(withAverage)).slice(0, 5).map((anime) => ({
+    slug: anime.slug,
+    title: anime.title,
+    titleEn: anime.titleEn,
+    synopsis: anime.synopsis,
+    coverImage: anime.coverImage,
+    releaseYear: anime.releaseYear,
+    genres: anime.genres,
+    average: anime.average ?? null,
+    ratingCount: anime.ratings.length,
+    trailerUrl: anime.trailerUrl,
+  }));
+  const trending = [...animeList]
+    .sort((a, b) => {
+      const favoriteDiff = (b._count?.favorites ?? 0) - (a._count?.favorites ?? 0);
+      return favoriteDiff || b.reviews.length - a.reviews.length;
+    })
+    .slice(0, 8);
 
   return (
-    <div className="bg-paper">
-      <section
-        className="relative overflow-hidden bg-ink"
-        style={{
-          backgroundImage:
-            "linear-gradient(90deg, rgba(24,33,47,0.95), rgba(24,33,47,0.72), rgba(24,33,47,0.34)), url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1800&q=80')",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      >
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:py-20">
-          <div className="max-w-2xl text-white">
-            <p className="inline-flex items-center gap-2 rounded bg-white/12 px-3 py-1 text-sm font-bold">
-              <Sparkles className="h-4 w-4" aria-hidden="true" />
-              アニメレビューMVP
-            </p>
-            <h1 className="mt-5 text-4xl font-black leading-tight sm:text-6xl">AniMemo</h1>
-            <p className="mt-4 max-w-xl text-base leading-8 text-slate-100 sm:text-lg">
-              作品を探して、点数と感想を残して、お気に入りをマイページで管理できます。
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                className="inline-flex h-11 items-center gap-2 rounded bg-coral px-5 text-sm font-black text-white transition hover:bg-rose-600"
-                href="/anime"
-              >
-                作品を見る
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link
-                className="inline-flex h-11 items-center gap-2 rounded border border-white/40 px-5 text-sm font-black text-white transition hover:bg-white/10"
-                href="/ranking"
-              >
-                ランキング
-                <Trophy className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
+    <div className="portal-shell">
+      <section className="mx-auto max-w-[1780px] px-3 py-4 sm:px-4 lg:px-6">
+        {featured ? (
+          <HeroCarousel items={heroItems} />
+        ) : (
+          <EmptyState
+            actionHref="/admin/anime/new"
+            actionLabel="Add Anime"
+            description="Published anime will power the portal-style home page."
+            title="No featured anime yet"
+          />
+        )}
+
+        <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="min-w-0 space-y-6">
+          <div className="pt-1">
+            <SectionHeader eyebrow="Latest Episode Style" href="/anime?sort=newest" title="Recently Added" />
+            <AnimeRail animeList={recentlyAdded.slice(0, 12)} favoriteAnimeIds={favoriteAnimeIds} />
           </div>
+
+          <div>
+            <SectionHeader eyebrow="Trending" href="/anime?sort=reviews" title="Community Buzz" />
+            <AnimeRail animeList={trending.slice(0, 6)} favoriteAnimeIds={favoriteAnimeIds} />
+          </div>
+
+          <div>
+            <SectionHeader eyebrow="Latest Reviews" href="/anime" title="Fresh Impressions" />
+            <LatestReviews reviews={latestReviews} />
+          </div>
+
+          <div>
+            <SectionHeader eyebrow="Top Rated" href="/ranking" title="Highest Scores" />
+            <AnimeRail animeList={topRated.slice(0, 6)} favoriteAnimeIds={favoriteAnimeIds} />
+          </div>
+          </div>
+
+          <RightPortalSidebar
+            latestReviews={latestReviews}
+            mostReviewed={trending.slice(0, 10)}
+            recentlyAdded={recentlyAdded.slice(0, 6)}
+            topRated={topRated.slice(0, 10)}
+          />
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[1fr_360px]">
-        <div>
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <div>
-              <p className="text-sm font-black text-coral">Anime</p>
-              <h2 className="text-2xl font-black text-ink">新着作品</h2>
-            </div>
-            <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/anime">
-              すべて見る
-            </Link>
-          </div>
-          {animeList.length === 0 ? (
-            <EmptyState
-              actionHref="/anime"
-              actionLabel="一覧を見る"
-              description="まだ作品データがありません。初期データを入れるには npm.cmd run db:seed を実行してください。"
-              title="作品がありません"
-            />
-          ) : (
-            <div className="grid gap-5 sm:grid-cols-2">
-              {animeList.slice(0, 4).map((anime) => (
-                <AnimeCard
-                  anime={anime}
-                  isFavorite={favoriteAnimeIds.has(anime.id)}
-                  key={anime.id}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+      <WeekdaySchedule animeList={animeList.slice(0, 14)} />
 
-        <aside className="space-y-4">
+      <section className="mx-auto max-w-[1640px] px-3 pb-16 sm:px-4 lg:px-6">
+        <div className="portal-panel grid gap-4 rounded-3xl p-6 md:grid-cols-[1fr_auto] md:items-center">
           <div>
-            <p className="text-sm font-black text-coral">Ranking</p>
-            <h2 className="text-2xl font-black text-ink">平均点ランキング</h2>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-300">
+              Ranking
+            </p>
+            <h2 className="mt-2 text-2xl font-black text-white">See the full score board</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Average scores are calculated from review ratings and update after edits or deletes.
+            </p>
           </div>
-          {rankedAnime.length === 0 ? (
-            <div className="rounded border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
-              まだレビューがありません。最初のレビューを投稿してランキングを作りましょう。
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {rankedAnime.map((anime, index) => (
-                <Link
-                  className="flex items-center gap-3 rounded border border-slate-200 bg-white p-3 shadow-soft transition hover:border-mint"
-                  href={`/anime/${anime.slug}`}
-                  key={anime.id}
-                >
-                  <span className="grid h-9 w-9 place-items-center rounded bg-ink text-sm font-black text-white">
-                    {index + 1}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-black text-ink">{anime.title}</p>
-                    <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-slate-500">
-                      <Heart className="h-3.5 w-3.5" aria-hidden="true" />
-                      {anime._count.favorites} favorites
-                    </p>
-                  </div>
-                  <ScoreBadge count={anime.ratings.length} score={anime.average} />
-                </Link>
-              ))}
-            </div>
-          )}
-        </aside>
+          <Link
+            className="portal-button-secondary inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-black"
+            href="/ranking"
+          >
+            Ranking
+            <Trophy className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
       </section>
     </div>
   );

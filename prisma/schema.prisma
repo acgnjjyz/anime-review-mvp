@@ -29,6 +29,24 @@ enum ReportStatus {
   REJECTED
 }
 
+enum WatchStatus {
+  WANT_TO_WATCH
+  WATCHING
+  COMPLETED
+  DROPPED
+  FAVORITE
+}
+
+enum AiringDay {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
 model User {
   id              String          @id @db.Uuid
   email           String          @unique
@@ -39,6 +57,8 @@ model User {
   ratings         Rating[]
   comments        Comment[]
   favorites       Favorite[]
+  animeShelves    AnimeShelf[]
+  tagVotes        AnimeTagVote[]
   reviewLikes     ReviewLike[]
   reports         Report[]        @relation("ReportReporter")
   resolvedReports Report[]        @relation("ReportResolver")
@@ -59,13 +79,57 @@ model Anime {
   episodes    Int
   releaseYear Int
   genres      String[]
+  trailerUrl  String?
+  airingDay   AiringDay?
   isPublished Boolean    @default(true)
   reviews     Review[]
   ratings     Rating[]
   comments    Comment[]
   favorites   Favorite[]
+  shelves     AnimeShelf[]
+  tagVotes    AnimeTagVote[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+}
+
+model AnimeShelf {
+  id        String      @id @default(cuid())
+  animeId   String
+  userId    String      @db.Uuid
+  status    WatchStatus
+  anime     Anime       @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([animeId, userId])
+  @@index([animeId])
+  @@index([userId])
+  @@index([status])
+}
+
+model AnimeTag {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  votes     AnimeTagVote[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model AnimeTagVote {
+  id        String   @id @default(cuid())
+  animeId   String
+  tagId     String
+  userId    String   @db.Uuid
+  anime     Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  tag       AnimeTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([animeId, tagId, userId])
+  @@index([animeId])
+  @@index([tagId])
+  @@index([userId])
 }
 
 model Review {

@@ -15,12 +15,16 @@ export function ReviewLikeButton({ reviewId, count, isLiked, isLoggedIn }: Revie
     <form action={toggleReviewLike}>
       <input name="reviewId" type="hidden" value={reviewId} />
       <SubmitButton
-        className="inline-flex h-9 items-center gap-2 rounded border border-slate-200 bg-white px-3 text-xs font-black text-slate-700 transition hover:border-coral hover:text-coral disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+        className={
+          isLiked
+            ? "inline-flex h-9 items-center gap-2 rounded-full border border-rose-300/35 bg-rose-500/20 px-3 text-xs font-black text-rose-100 transition hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+            : "inline-flex h-9 items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 text-xs font-black text-slate-300 transition hover:border-rose-300/50 hover:text-rose-100 disabled:cursor-not-allowed disabled:opacity-50"
+        }
         disabled={!isLoggedIn}
-        pendingLabel="更新中..."
-        title={isLoggedIn ? "レビューのいいねを切り替える" : "ログインするといいねできます"}
+        pendingLabel="Updating..."
+        title={isLoggedIn ? "Toggle like" : "Login to like"}
       >
-        <Heart className={isLiked ? "h-4 w-4 fill-current text-coral" : "h-4 w-4"} aria-hidden="true" />
+        <Heart className={isLiked ? "h-4 w-4 fill-current" : "h-4 w-4"} aria-hidden="true" />
         {count}
       </SubmitButton>
     </form>

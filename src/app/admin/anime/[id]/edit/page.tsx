@@ -77,6 +77,8 @@ export default async function AdminAnimeEditPage({
         genres: true,
         releaseYear: true,
         coverImage: true,
+        trailerUrl: true,
+        airingDay: true,
         isPublished: true,
       },
     });

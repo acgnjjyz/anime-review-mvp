@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { UserRole } from "@prisma/client";
-import { CalendarDays, Clapperboard, Heart, MessageSquare, Tv } from "lucide-react";
+import {
+  CalendarDays,
+  Clapperboard,
+  Heart,
+  MessageSquare,
+  MessageSquareText,
+  Tv,
+} from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { CommentForm } from "@/components/CommentForm";
@@ -13,6 +20,10 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { ReviewLikeButton } from "@/components/ReviewLikeButton";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { SetupNotice } from "@/components/SetupNotice";
+import { TagVotePanel } from "@/components/TagVotePanel";
+import { TrailerPanel } from "@/components/TrailerPanel";
+import { TrailerModalButton } from "@/components/TrailerModalButton";
+import { WatchStatusForm } from "@/components/WatchStatusForm";
 import { getCurrentUserProfile } from "@/lib/auth";
 import { hasDatabaseEnv } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
@@ -89,15 +100,20 @@ export default async function AnimeDetailPage({
           },
           orderBy: { createdAt: "desc" },
         },
+        tagVotes: {
+          include: {
+            tag: true,
+          },
+        },
         _count: { select: { favorites: true } },
       },
     });
   } catch {
     return (
       <SetupNotice
-        title="作品詳細を読み込めません"
-        description="データベース接続に失敗しました。DATABASE_URLとSupabaseのDB状態を確認してください。"
-        detail="接続後に npm.cmd run db:push と npm.cmd run db:seed を実行してください。"
+        title="Could not load anime detail"
+        description="Check the database connection and Supabase PostgreSQL status."
+        detail="When the connection works, run npm.cmd run db:push and npm.cmd run db:seed."
       />
     );
   }
@@ -109,6 +125,16 @@ export default async function AnimeDetailPage({
   }
 
   let favorite = null;
+  let currentShelf = null;
+  let allTags: { id: string; name: string }[] = [];
+  let relatedAnime: {
+    id: string;
+    slug: string;
+    title: string;
+    coverImage: string;
+    releaseYear: number;
+    ratings: { score: number }[];
+  }[] = [];
 
   try {
     favorite = user
@@ -121,11 +147,41 @@ export default async function AnimeDetailPage({
           },
         })
       : null;
+    currentShelf = user
+      ? await prisma.animeShelf.findUnique({
+          where: {
+            animeId_userId: {
+              animeId: anime.id,
+              userId: user.id,
+            },
+          },
+        })
+      : null;
+    allTags = await prisma.animeTag.findMany({
+      orderBy: { name: "asc" },
+    });
+    relatedAnime = await prisma.anime.findMany({
+      where: {
+        id: { not: anime.id },
+        isPublished: true,
+        genres: { hasSome: anime.genres },
+      },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        coverImage: true,
+        releaseYear: true,
+        ratings: { select: { score: true } },
+      },
+      orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
+      take: 6,
+    });
   } catch {
     return (
       <SetupNotice
-        title="お気に入り状態を読み込めません"
-        description="データベース接続に失敗しました。DATABASE_URLを確認してください。"
+        title="Could not load favorite state"
+        description="Check the database connection and try again."
       />
     );
   }
@@ -134,64 +190,101 @@ export default async function AnimeDetailPage({
   const myReview = user
     ? anime.reviews.find((review) => review.userId === user.id)
     : null;
+  const tagVotes = allTags
+    .map((tag) => {
+      const votes = anime.tagVotes.filter((vote) => vote.tagId === tag.id);
+
+      return {
+        id: tag.id,
+        name: tag.name,
+        count: votes.length,
+        isVoted: Boolean(user && votes.some((vote) => vote.userId === user.id)),
+      };
+    })
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "ja"));
 
   return (
-    <div className="bg-paper">
-      <section className="bg-ink text-white">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[340px_1fr]">
+    <div className="portal-shell">
+      <section className="relative isolate overflow-hidden">
+        <div
+          className="absolute inset-0 -z-10 scale-105 bg-cover bg-center opacity-42 blur-sm"
+          style={{ backgroundImage: `url(${anime.coverImage})` }}
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#050509] via-[#050509]/92 to-[#050509]/42" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-36 bg-gradient-to-t from-[#050509] to-transparent" />
+
+        <div className="mx-auto grid max-w-[1640px] gap-6 px-3 py-7 sm:px-4 lg:grid-cols-[260px_1fr] lg:px-6 lg:py-9 xl:grid-cols-[300px_1fr]">
           <img
-            alt={`${anime.title}のキービジュアル`}
-            className="aspect-[4/5] w-full rounded object-cover shadow-soft"
+            alt={`${anime.title} poster`}
+            className="aspect-[3/4] w-full max-w-sm rounded-3xl border border-white/10 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.4)]"
             src={anime.coverImage}
           />
           <div className="flex flex-col justify-center">
             <div className="flex flex-wrap gap-2">
               {!anime.isPublished ? (
-                <span className="rounded bg-coral px-2 py-1 text-xs font-black text-white">
-                  非公開
+                <span className="rounded-full border border-red-300/30 bg-red-500/20 px-3 py-1 text-xs font-black text-red-100">
+                  Private preview
                 </span>
               ) : null}
               {anime.genres.map((genre) => (
-                <span key={genre} className="rounded bg-white/12 px-2 py-1 text-xs font-bold">
+                <span className="portal-chip rounded-full px-3 py-1 text-xs font-black" key={genre}>
                   {genre}
                 </span>
               ))}
             </div>
-            <h1 className="mt-5 text-4xl font-black leading-tight">{anime.title}</h1>
+            <h1 className="mt-4 text-4xl font-black leading-tight text-white sm:text-6xl">
+              {anime.title}
+            </h1>
             {anime.titleEn ? (
-              <p className="mt-2 text-sm font-bold uppercase text-slate-300">{anime.titleEn}</p>
+              <p className="mt-2 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
+                {anime.titleEn}
+              </p>
             ) : null}
-            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-100">{anime.synopsis}</p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">{anime.synopsis}</p>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
               <ScoreBadge count={anime.ratings.length} score={score} />
-              <span className="inline-flex items-center gap-2 rounded bg-white/12 px-3 py-1.5 text-sm font-bold">
-                <Heart className="h-4 w-4" aria-hidden="true" />
-                {anime._count.favorites}
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1.5 text-sm font-bold text-slate-300">
+                <Heart className="h-4 w-4 text-rose-200" aria-hidden="true" />
+                {anime._count.favorites} favorites
               </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1.5 text-sm font-bold text-slate-300">
+                <MessageSquare className="h-4 w-4 text-cyan-200" aria-hidden="true" />
+                {anime.reviews.length} reviews
+              </span>
+            </div>
+            <div className="mt-8 flex flex-wrap items-start gap-3">
+              <TrailerModalButton trailerUrl={anime.trailerUrl} />
               <FavoriteButton
                 animeId={anime.id}
                 isFavorite={Boolean(favorite)}
                 isLoggedIn={Boolean(user)}
               />
+              <Link
+                className="portal-button-secondary inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-black"
+                href="#review-form"
+              >
+                <MessageSquareText className="h-4 w-4" aria-hidden="true" />
+                Review
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1fr_360px]">
+      <section className="mx-auto grid max-w-[1640px] gap-5 px-3 py-6 sm:px-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-6">
         <div className="space-y-6">
           <MessageBanner error={query.error} message={query.message} />
           <ReviewForm animeId={anime.id} existingReview={myReview} isLoggedIn={Boolean(user)} />
 
-          <div>
+          <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-ink">レビュー</h2>
-              <span className="text-sm font-bold text-slate-500">{anime.reviews.length}件</span>
+              <h2 className="text-2xl font-black text-white">Reviews</h2>
+              <span className="text-sm font-bold text-slate-500">{anime.reviews.length}</span>
             </div>
             {anime.reviews.length === 0 ? (
               <EmptyState
-                description="ログインすると、この作品への最初のレビューを書けます。"
-                title="まだレビューがありません"
+                description="Log in and become the first person to review this anime."
+                title="No reviews yet"
               />
             ) : (
               <div className="space-y-4">
@@ -204,18 +297,20 @@ export default async function AnimeDetailPage({
                   );
 
                   return (
-                    <article className="rounded border border-slate-200 bg-white p-5" key={review.id}>
+                    <article className="portal-panel-soft rounded-2xl p-5" key={review.id}>
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <h3 className="text-lg font-black text-ink">{review.title}</h3>
+                          <h3 className="text-lg font-black text-white">{review.title}</h3>
                           <p className="mt-1 text-sm text-slate-500">
-                            {review.user.name ?? "匿名ユーザー"} ・{" "}
+                            {review.user.name ?? "Anonymous"} /{" "}
                             {review.updatedAt.toLocaleDateString("ja-JP")}
                           </p>
                         </div>
                         <ScoreBadge score={review.score} />
                       </div>
-                      <p className="mt-4 whitespace-pre-wrap leading-8 text-slate-700">{review.body}</p>
+                      <p className="mt-4 whitespace-pre-wrap leading-8 text-slate-300">
+                        {review.body}
+                      </p>
                       <div className="mt-4 flex flex-wrap items-start gap-3">
                         <ReviewLikeButton
                           count={review._count.likes}
@@ -235,19 +330,19 @@ export default async function AnimeDetailPage({
                 })}
               </div>
             )}
-          </div>
+          </section>
 
-          <div>
+          <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-ink">コメント</h2>
-              <span className="text-sm font-bold text-slate-500">{anime.comments.length}件</span>
+              <h2 className="text-2xl font-black text-white">Comments</h2>
+              <span className="text-sm font-bold text-slate-500">{anime.comments.length}</span>
             </div>
             <CommentForm animeId={anime.id} isLoggedIn={Boolean(user)} />
             {anime.comments.length === 0 ? (
               <div className="mt-4">
                 <EmptyState
-                  description="この作品へのコメントはまだありません。ログインすると最初のコメントを書けます。"
-                  title="コメントはまだありません"
+                  description="Comments from logged-in users will appear here."
+                  title="No comments yet"
                 />
               </div>
             ) : (
@@ -255,45 +350,88 @@ export default async function AnimeDetailPage({
                 <CommentList comments={anime.comments} currentUserId={user?.id ?? null} />
               </div>
             )}
-          </div>
+          </section>
         </div>
 
-        <aside className="space-y-4">
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <h2 className="text-xl font-black text-ink">作品情報</h2>
+        <aside className="space-y-3 lg:sticky lg:top-[72px] lg:self-start">
+          <WatchStatusForm
+            animeId={anime.id}
+            currentStatus={currentShelf?.status ?? null}
+            isLoggedIn={Boolean(user)}
+          />
+
+          <TagVotePanel animeId={anime.id} isLoggedIn={Boolean(user)} tags={tagVotes} />
+
+          <div className="portal-panel rounded-2xl p-5">
+            <h2 className="text-xl font-black text-white">Anime Info</h2>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex items-center gap-3">
-                <Clapperboard className="h-4 w-4 text-mint" aria-hidden="true" />
-                <dt className="w-20 font-bold text-slate-500">制作</dt>
-                <dd className="font-medium text-ink">{anime.studio}</dd>
+                <Clapperboard className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                <dt className="w-24 font-bold text-slate-500">Studio</dt>
+                <dd className="font-medium text-slate-200">{anime.studio}</dd>
               </div>
               <div className="flex items-center gap-3">
-                <CalendarDays className="h-4 w-4 text-mint" aria-hidden="true" />
-                <dt className="w-20 font-bold text-slate-500">放送</dt>
-                <dd className="font-medium text-ink">{anime.season}</dd>
+                <CalendarDays className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                <dt className="w-24 font-bold text-slate-500">Season</dt>
+                <dd className="font-medium text-slate-200">{anime.season}</dd>
               </div>
               <div className="flex items-center gap-3">
-                <Tv className="h-4 w-4 text-mint" aria-hidden="true" />
-                <dt className="w-20 font-bold text-slate-500">話数</dt>
-                <dd className="font-medium text-ink">{anime.episodes}話</dd>
+                <CalendarDays className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                <dt className="w-24 font-bold text-slate-500">Year</dt>
+                <dd className="font-medium text-slate-200">{anime.releaseYear}</dd>
               </div>
               <div className="flex items-center gap-3">
-                <MessageSquare className="h-4 w-4 text-mint" aria-hidden="true" />
-                <dt className="w-20 font-bold text-slate-500">レビュー</dt>
-                <dd className="font-medium text-ink">{anime.reviews.length}件</dd>
+                <Tv className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                <dt className="w-24 font-bold text-slate-500">Episodes</dt>
+                <dd className="font-medium text-slate-200">{anime.episodes}</dd>
               </div>
               <div className="flex items-center gap-3">
-                <MessageSquare className="h-4 w-4 text-mint" aria-hidden="true" />
-                <dt className="w-20 font-bold text-slate-500">コメント</dt>
-                <dd className="font-medium text-ink">{anime.comments.length}件</dd>
+                <MessageSquare className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                <dt className="w-24 font-bold text-slate-500">Reviews</dt>
+                <dd className="font-medium text-slate-200">{anime.reviews.length}</dd>
               </div>
             </dl>
           </div>
+
+          <div id="official-pv">
+            <TrailerPanel trailerUrl={anime.trailerUrl} />
+          </div>
+
+          <section className="portal-panel rounded-2xl p-4">
+            <h2 className="text-base font-black text-white">Related Anime</h2>
+            <div className="mt-3 space-y-2">
+              {relatedAnime.length === 0 ? (
+                <p className="text-xs leading-5 text-slate-400">No related titles yet.</p>
+              ) : (
+                relatedAnime.map((item, index) => (
+                  <Link
+                    className="grid grid-cols-[24px_42px_1fr] items-center gap-2 rounded-xl border border-white/[0.07] bg-black/30 p-2 transition hover:border-violet-300/40"
+                    href={`/anime/${item.slug}`}
+                    key={item.id}
+                  >
+                    <span className="text-xs font-black text-violet-200">{index + 1}</span>
+                    <img
+                      alt={`${item.title} poster`}
+                      className="h-14 w-10 rounded-lg object-cover"
+                      src={item.coverImage}
+                    />
+                    <span className="min-w-0">
+                      <span className="line-clamp-2 text-xs font-black text-white">{item.title}</span>
+                      <span className="mt-1 block text-[0.68rem] font-bold text-slate-500">
+                        {item.releaseYear} / {averageScore(item.ratings)?.toFixed(1) ?? "未評価"}
+                      </span>
+                    </span>
+                  </Link>
+                ))
+              )}
+            </div>
+          </section>
+
           <Link
-            className="block rounded border border-slate-200 bg-white p-5 font-bold text-mint transition hover:border-mint"
+            className="portal-button-secondary block rounded-2xl p-5 text-sm font-black"
             href="/anime"
           >
-            作品一覧へ戻る
+            Back to Anime
           </Link>
         </aside>
       </section>

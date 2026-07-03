@@ -43,15 +43,15 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
         );
 
         return (
-          <article className="rounded border border-slate-200 bg-white p-4" key={comment.id}>
+          <article className="portal-panel-soft rounded-2xl p-4" key={comment.id}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-500">
-                  {comment.user.name ?? "匿名ユーザー"} ・ {formatDate(comment.createdAt)}
+                <p className="text-sm font-bold text-slate-300">
+                  {comment.user.name ?? "Anonymous"} · {formatDate(comment.createdAt)}
                 </p>
                 {isEdited ? (
-                  <p className="mt-1 text-xs font-medium text-slate-400">
-                    編集済み: {formatDate(comment.updatedAt)}
+                  <p className="mt-1 text-xs font-medium text-slate-500">
+                    Edited: {formatDate(comment.updatedAt)}
                   </p>
                 ) : null}
               </div>
@@ -66,31 +66,31 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
                   <form action={deleteComment}>
                     <input name="commentId" type="hidden" value={comment.id} />
                     <ConfirmSubmitButton
-                      className="inline-flex h-9 items-center justify-center gap-2 rounded border border-red-200 bg-white px-3 text-xs font-black text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:bg-red-100"
-                      confirmMessage="このコメントを削除しますか？"
-                      pendingLabel="削除中..."
+                      className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-red-400/30 bg-red-500/10 px-3 text-xs font-black text-red-100 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                      confirmMessage="Delete this comment?"
+                      pendingLabel="Deleting..."
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
-                      削除
+                      Delete
                     </ConfirmSubmitButton>
                   </form>
                 ) : null}
               </div>
             </div>
 
-            <p className="mt-3 whitespace-pre-wrap leading-7 text-slate-700">{comment.body}</p>
+            <p className="mt-3 whitespace-pre-wrap leading-7 text-slate-300">{comment.body}</p>
 
             {isMine ? (
-              <details className="mt-4 rounded border border-slate-200 bg-slate-50 p-3">
-                <summary className="cursor-pointer text-sm font-black text-mint">
-                  コメントを編集
+              <details className="mt-4 rounded-2xl border border-slate-700 bg-slate-950/50 p-3">
+                <summary className="cursor-pointer text-sm font-black text-cyan-200">
+                  Edit comment
                 </summary>
                 <form action={updateComment} className="mt-3">
                   <input name="commentId" type="hidden" value={comment.id} />
-                  <label className="block text-sm font-bold text-slate-700">
-                    編集本文
+                  <label className="block text-sm font-bold text-slate-300">
+                    Updated text
                     <textarea
-                      className="mt-1 min-h-24 w-full rounded border border-slate-300 bg-white px-3 py-3 leading-7 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                      className="portal-input mt-1 min-h-24 w-full rounded-xl px-3 py-3 leading-7"
                       defaultValue={comment.body}
                       maxLength={1000}
                       name="body"
@@ -98,13 +98,13 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
                     />
                   </label>
                   <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="text-xs font-medium text-slate-500">1000文字以内</span>
+                    <span className="text-xs font-medium text-slate-500">Up to 1000 characters</span>
                     <SubmitButton
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded bg-mint px-4 text-sm font-black text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-teal-300"
-                      pendingLabel="更新中..."
+                      className="portal-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50"
+                      pendingLabel="Updating..."
                     >
                       <Pencil className="h-4 w-4" aria-hidden="true" />
-                      更新する
+                      Update
                     </SubmitButton>
                   </div>
                 </form>

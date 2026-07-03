@@ -1,5 +1,6 @@
 "use server";
 
+import { AiringDay } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -13,6 +14,8 @@ type AnimeFormValues = {
   genres: string[];
   releaseYear: number;
   coverImage: string;
+  trailerUrl: string | null;
+  airingDay: AiringDay | null;
   isPublished: boolean;
 };
 
@@ -28,11 +31,11 @@ async function requireAdmin() {
   const { user, isAdmin } = await getAdminAccess();
 
   if (!user) {
-    redirectWithMessage("/login", "message", "管理画面にはログインが必要です。");
+    redirectWithMessage("/login", "message", "Log in to use the admin screen.");
   }
 
   if (!isAdmin) {
-    redirectWithMessage("/admin", "error", "管理者権限が必要です。");
+    redirectWithMessage("/admin", "error", "Admin permission is required.");
   }
 
   return user;
@@ -42,7 +45,7 @@ function parseGenres(value: string) {
   return Array.from(
     new Set(
       value
-        .split(/[,\n、，]/)
+        .split(/[,\n、]/)
         .map((genre) => genre.trim())
         .filter(Boolean),
     ),
@@ -58,36 +61,69 @@ function isValidHttpUrl(value: string) {
   }
 }
 
+function readAiringDay(value: FormDataEntryValue | null) {
+  const text = requireText(value);
+
+  if (!text) {
+    return null;
+  }
+
+  if (
+    text === AiringDay.MONDAY ||
+    text === AiringDay.TUESDAY ||
+    text === AiringDay.WEDNESDAY ||
+    text === AiringDay.THURSDAY ||
+    text === AiringDay.FRIDAY ||
+    text === AiringDay.SATURDAY ||
+    text === AiringDay.SUNDAY
+  ) {
+    return text;
+  }
+
+  return null;
+}
+
 function readAnimeForm(formData: FormData, redirectPath: string): AnimeFormValues {
   const title = requireText(formData.get("title"));
   const synopsis = requireText(formData.get("synopsis"));
   const genres = parseGenres(requireText(formData.get("genres")));
   const releaseYear = Number(formData.get("releaseYear"));
   const coverImage = requireText(formData.get("coverImage"));
+  const trailerUrl = requireText(formData.get("trailerUrl"));
+  const airingDay = readAiringDay(formData.get("airingDay"));
   const isPublished = formData.get("isPublished") === "on";
 
   if (!title) {
-    redirectWithMessage(redirectPath, "error", "タイトルを入力してください。");
+    redirectWithMessage(redirectPath, "error", "Title is required.");
   }
 
   if (!synopsis) {
-    redirectWithMessage(redirectPath, "error", "概要を入力してください。");
+    redirectWithMessage(redirectPath, "error", "Synopsis is required.");
   }
 
   if (genres.length === 0) {
-    redirectWithMessage(redirectPath, "error", "ジャンルを1つ以上入力してください。");
+    redirectWithMessage(redirectPath, "error", "Enter at least one genre.");
   }
 
   if (Number.isNaN(releaseYear) || releaseYear < 1950 || releaseYear > 2100) {
-    redirectWithMessage(redirectPath, "error", "放送年は1950から2100の範囲で入力してください。");
+    redirectWithMessage(redirectPath, "error", "Release year must be between 1950 and 2100.");
   }
 
   if (!coverImage || !isValidHttpUrl(coverImage)) {
-    redirectWithMessage(redirectPath, "error", "画像URLは http または https で始まるURLを入力してください。");
+    redirectWithMessage(redirectPath, "error", "Cover image URL must start with http or https.");
   }
 
-  if (title.length > 120 || synopsis.length > 2000 || coverImage.length > 1000) {
-    redirectWithMessage(redirectPath, "error", "入力内容が長すぎます。文字数を短くしてください。");
+  if (trailerUrl && !isValidHttpUrl(trailerUrl)) {
+    redirectWithMessage(redirectPath, "error", "Trailer URL must start with http or https.");
+  }
+
+  if (
+    title.length > 120 ||
+    synopsis.length > 2000 ||
+    coverImage.length > 1000 ||
+    trailerUrl.length > 1000
+  ) {
+    redirectWithMessage(redirectPath, "error", "Input is too long.");
   }
 
   return {
@@ -96,6 +132,8 @@ function readAnimeForm(formData: FormData, redirectPath: string): AnimeFormValue
     genres,
     releaseYear,
     coverImage,
+    trailerUrl: trailerUrl || null,
+    airingDay,
     isPublished,
   };
 }
@@ -124,9 +162,18 @@ async function createUniqueSlug(title: string) {
   return slug;
 }
 
+function revalidateAnimeSurfaces() {
+  revalidatePath("/");
+  revalidatePath("/anime");
+  revalidatePath("/ranking");
+  revalidatePath("/schedule");
+  revalidatePath("/admin");
+  revalidatePath("/admin/anime");
+}
+
 export async function createAdminAnime(formData: FormData) {
   if (!hasDatabaseEnv()) {
-    redirectWithMessage("/admin/anime", "error", "データベース接続の設定が必要です。");
+    redirectWithMessage("/admin/anime", "error", "Database is not configured.");
   }
 
   await requireAdmin();
@@ -140,29 +187,21 @@ export async function createAdminAnime(formData: FormData) {
         slug: await createUniqueSlug(values.title),
         titleEn: null,
         studio: "Admin Studio",
-        season: `${values.releaseYear} 未定`,
+        season: `${values.releaseYear} Season`,
         episodes: 12,
       },
     });
   } catch {
-    redirectWithMessage(
-      "/admin/anime/new",
-      "error",
-      "作品の作成に失敗しました。少し時間をおいて再度お試しください。",
-    );
+    redirectWithMessage("/admin/anime/new", "error", "Could not create anime.");
   }
 
-  revalidatePath("/");
-  revalidatePath("/anime");
-  revalidatePath("/ranking");
-  revalidatePath("/admin");
-  revalidatePath("/admin/anime");
-  redirectWithMessage("/admin/anime", "message", "作品を追加しました。");
+  revalidateAnimeSurfaces();
+  redirectWithMessage("/admin/anime", "message", "Anime created.");
 }
 
 export async function updateAdminAnime(formData: FormData) {
   if (!hasDatabaseEnv()) {
-    redirectWithMessage("/admin/anime", "error", "データベース接続の設定が必要です。");
+    redirectWithMessage("/admin/anime", "error", "Database is not configured.");
   }
 
   await requireAdmin();
@@ -170,25 +209,19 @@ export async function updateAdminAnime(formData: FormData) {
   const animeId = requireText(formData.get("animeId"));
 
   if (!animeId) {
-    redirectWithMessage("/admin/anime", "error", "編集する作品情報が不足しています。");
+    redirectWithMessage("/admin/anime", "error", "Anime id is missing.");
   }
 
   const redirectPath = `/admin/anime/${animeId}/edit`;
   const values = readAnimeForm(formData, redirectPath);
 
-  let existingAnime: { id: string } | null = null;
-
-  try {
-    existingAnime = await prisma.anime.findUnique({
-      where: { id: animeId },
-      select: { id: true },
-    });
-  } catch {
-    redirectWithMessage("/admin/anime", "error", "データベースに接続できません。");
-  }
+  const existingAnime = await prisma.anime.findUnique({
+    where: { id: animeId },
+    select: { id: true, slug: true },
+  });
 
   if (!existingAnime) {
-    redirectWithMessage("/admin/anime", "error", "編集する作品が見つかりません。");
+    redirectWithMessage("/admin/anime", "error", "Anime was not found.");
   }
 
   try {
@@ -197,24 +230,17 @@ export async function updateAdminAnime(formData: FormData) {
       data: values,
     });
   } catch {
-    redirectWithMessage(
-      redirectPath,
-      "error",
-      "作品の更新に失敗しました。少し時間をおいて再度お試しください。",
-    );
+    redirectWithMessage(redirectPath, "error", "Could not update anime.");
   }
 
-  revalidatePath("/");
-  revalidatePath("/anime");
-  revalidatePath("/ranking");
-  revalidatePath("/admin");
-  revalidatePath("/admin/anime");
-  redirectWithMessage("/admin/anime", "message", "作品を更新しました。");
+  revalidateAnimeSurfaces();
+  revalidatePath(`/anime/${existingAnime.slug}`);
+  redirectWithMessage("/admin/anime", "message", "Anime updated.");
 }
 
 export async function deleteAdminAnime(formData: FormData) {
   if (!hasDatabaseEnv()) {
-    redirectWithMessage("/admin/anime", "error", "データベース接続の設定が必要です。");
+    redirectWithMessage("/admin/anime", "error", "Database is not configured.");
   }
 
   await requireAdmin();
@@ -222,54 +248,43 @@ export async function deleteAdminAnime(formData: FormData) {
   const animeId = requireText(formData.get("animeId"));
 
   if (!animeId) {
-    redirectWithMessage("/admin/anime", "error", "削除する作品情報が不足しています。");
+    redirectWithMessage("/admin/anime", "error", "Anime id is missing.");
   }
 
-  let anime:
-    | {
-        id: string;
-        title: string;
-        _count: {
-          reviews: number;
-          ratings: number;
-          comments: number;
-          favorites: number;
-        };
-      }
-    | null = null;
-
-  try {
-    anime = await prisma.anime.findUnique({
-      where: { id: animeId },
-      select: {
-        id: true,
-        title: true,
-        _count: {
-          select: {
-            reviews: true,
-            ratings: true,
-            comments: true,
-            favorites: true,
-          },
+  const anime = await prisma.anime.findUnique({
+    where: { id: animeId },
+    select: {
+      id: true,
+      _count: {
+        select: {
+          reviews: true,
+          ratings: true,
+          comments: true,
+          favorites: true,
+          shelves: true,
+          tagVotes: true,
         },
       },
-    });
-  } catch {
-    redirectWithMessage("/admin/anime", "error", "データベースに接続できません。");
-  }
+    },
+  });
 
   if (!anime) {
-    redirectWithMessage("/admin/anime", "error", "削除する作品が見つかりません。");
+    redirectWithMessage("/admin/anime", "error", "Anime was not found.");
   }
 
   const relatedCount =
-    anime._count.reviews + anime._count.ratings + anime._count.comments + anime._count.favorites;
+    anime._count.reviews +
+    anime._count.ratings +
+    anime._count.comments +
+    anime._count.favorites +
+    anime._count.shelves +
+    anime._count.tagVotes;
 
   if (relatedCount > 0) {
     redirectWithMessage(
       "/admin/anime",
       "error",
-      "レビュー等があるため削除できません。先に関連データを整理してください。",
+      "This anime has reviews, favorites, shelves, or tag votes and cannot be deleted safely.",
     );
   }
 
@@ -278,24 +293,16 @@ export async function deleteAdminAnime(formData: FormData) {
       where: { id: anime.id },
     });
   } catch {
-    redirectWithMessage(
-      "/admin/anime",
-      "error",
-      "作品の削除に失敗しました。少し時間をおいて再度お試しください。",
-    );
+    redirectWithMessage("/admin/anime", "error", "Could not delete anime.");
   }
 
-  revalidatePath("/");
-  revalidatePath("/anime");
-  revalidatePath("/ranking");
-  revalidatePath("/admin");
-  revalidatePath("/admin/anime");
-  redirectWithMessage("/admin/anime", "message", "作品を削除しました。");
+  revalidateAnimeSurfaces();
+  redirectWithMessage("/admin/anime", "message", "Anime deleted.");
 }
 
 export async function toggleAdminAnimePublished(formData: FormData) {
   if (!hasDatabaseEnv()) {
-    redirectWithMessage("/admin/anime", "error", "データベース接続の設定が必要です。");
+    redirectWithMessage("/admin/anime", "error", "Database is not configured.");
   }
 
   await requireAdmin();
@@ -304,7 +311,7 @@ export async function toggleAdminAnimePublished(formData: FormData) {
   const nextPublished = formData.get("isPublished") === "true";
 
   if (!animeId) {
-    redirectWithMessage("/admin/anime", "error", "公開状態を切り替える作品情報が不足しています。");
+    redirectWithMessage("/admin/anime", "error", "Anime id is missing.");
   }
 
   try {
@@ -313,21 +320,13 @@ export async function toggleAdminAnimePublished(formData: FormData) {
       data: { isPublished: nextPublished },
     });
   } catch {
-    redirectWithMessage(
-      "/admin/anime",
-      "error",
-      "公開状態の切り替えに失敗しました。少し時間をおいて再度お試しください。",
-    );
+    redirectWithMessage("/admin/anime", "error", "Could not update publish state.");
   }
 
-  revalidatePath("/");
-  revalidatePath("/anime");
-  revalidatePath("/ranking");
-  revalidatePath("/admin");
-  revalidatePath("/admin/anime");
+  revalidateAnimeSurfaces();
   redirectWithMessage(
     "/admin/anime",
     "message",
-    nextPublished ? "作品を公開しました。" : "作品を非公開にしました。",
+    nextPublished ? "Anime published." : "Anime unpublished.",
   );
 }

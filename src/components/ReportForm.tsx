@@ -14,55 +14,55 @@ type ReportFormProps = {
 export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: ReportFormProps) {
   if (!isLoggedIn) {
     return (
-      <Link className="text-xs font-bold text-slate-500 hover:text-mint" href="/login">
-        通報するにはログイン
+      <Link className="text-xs font-bold text-slate-500 hover:text-cyan-200" href="/login">
+        Login to report
       </Link>
     );
   }
 
   if (isReported) {
-    return <span className="text-xs font-bold text-slate-400">通報済み</span>;
+    return <span className="text-xs font-bold text-slate-500">Reported</span>;
   }
 
   return (
-    <details className="rounded border border-slate-200 bg-slate-50 p-3">
-      <summary className="cursor-pointer text-xs font-black text-slate-600">
+    <details className="rounded-2xl border border-slate-700 bg-slate-950/60 p-3">
+      <summary className="cursor-pointer text-xs font-black text-slate-300">
         <span className="inline-flex items-center gap-1">
           <Flag className="h-3.5 w-3.5" aria-hidden="true" />
-          通報
+          Report
         </span>
       </summary>
       <form action={createReport} className="mt-3 space-y-3">
         <input name="targetId" type="hidden" value={targetId} />
         <input name="targetType" type="hidden" value={targetType} />
-        <label className="block text-xs font-black text-slate-600">
-          理由
+        <label className="block text-xs font-black text-slate-300">
+          Reason
           <select
-            className="mt-1 h-9 w-full rounded border border-slate-300 bg-white px-2 text-xs outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+            className="portal-input mt-1 h-9 w-full rounded-xl px-2 text-xs"
             name="selectedReason"
             required
           >
-            <option value="スパム・宣伝">スパム・宣伝</option>
-            <option value="誹謗中傷">誹謗中傷</option>
-            <option value="ネタバレ配慮不足">ネタバレ配慮不足</option>
-            <option value="その他">その他</option>
+            <option value="Spam or promotion">Spam or promotion</option>
+            <option value="Harassment or hate">Harassment or hate</option>
+            <option value="Major spoiler without warning">Major spoiler without warning</option>
+            <option value="Other">Other</option>
           </select>
         </label>
-        <label className="block text-xs font-black text-slate-600">
-          補足
+        <label className="block text-xs font-black text-slate-300">
+          Details
           <textarea
-            className="mt-1 min-h-20 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+            className="portal-input mt-1 min-h-20 w-full rounded-xl px-3 py-2 text-sm"
             maxLength={500}
             name="customReason"
-            placeholder="任意で詳しい理由を入力"
+            placeholder="Optional details"
           />
         </label>
         <SubmitButton
-          className="inline-flex h-9 items-center gap-2 rounded bg-ink px-3 text-xs font-black text-white transition hover:bg-slate-700 disabled:bg-slate-300"
-          pendingLabel="送信中..."
+          className="portal-button-secondary inline-flex h-9 items-center gap-2 rounded-full px-3 text-xs font-black disabled:opacity-50"
+          pendingLabel="Sending..."
         >
           <Flag className="h-4 w-4" aria-hidden="true" />
-          通報する
+          Send Report
         </SubmitButton>
       </form>
     </details>

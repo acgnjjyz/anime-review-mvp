@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { AiringDay, PrismaClient, UserRole } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -27,6 +27,29 @@ const seedUsers = [
     email: "seed-ren@example.invalid",
     name: "レン",
   },
+];
+
+const airingDays = [
+  AiringDay.MONDAY,
+  AiringDay.TUESDAY,
+  AiringDay.WEDNESDAY,
+  AiringDay.THURSDAY,
+  AiringDay.FRIDAY,
+  AiringDay.SATURDAY,
+  AiringDay.SUNDAY,
+];
+
+const defaultTags = [
+  "\u6ce3\u3051\u308b",
+  "\u795e\u4f5c\u753b",
+  "\u9b31\u5c55\u958b",
+  "\u30d0\u30c8\u30eb",
+  "\u604b\u611b",
+  "\u9752\u6625",
+  "\u30db\u30e9\u30fc",
+  "\u30df\u30b9\u30c6\u30ea\u30fc",
+  "\u97f3\u697d\u304c\u826f\u3044",
+  "\u96f0\u56f2\u6c17\u304c\u826f\u3044",
 ];
 
 function getAdminEmails() {
@@ -477,8 +500,13 @@ async function main() {
   const animeBySlug = new Map<string, { id: string }>();
   const reviewByKey = new Map<string, { id: string; animeId: string; userId: string }>();
 
-  for (const anime of animeList) {
-    const animeData = { ...anime, isPublished: true };
+  for (const [index, anime] of animeList.entries()) {
+    const animeData = {
+      ...anime,
+      trailerUrl: null,
+      airingDay: airingDays[index % airingDays.length],
+      isPublished: true,
+    };
     const savedAnime = await prisma.anime.upsert({
       where: { slug: anime.slug },
       update: animeData,
@@ -488,36 +516,38 @@ async function main() {
     animeBySlug.set(anime.slug, savedAnime);
   }
 
-  const users = await Promise.all([
-    prisma.user.upsert({
-      where: { id: seedUsers[0].id },
+  const tags: { id: string; name: string }[] = [];
+
+  for (const name of defaultTags) {
+    const tag = await prisma.animeTag.upsert({
+      where: { name },
+      update: {},
+      create: { name },
+    });
+
+    tags.push(tag);
+  }
+
+  const users: { id: string }[] = [];
+
+  for (const seedUser of seedUsers) {
+    const user = await prisma.user.upsert({
+      where: { id: seedUser.id },
       update: {
-        email: seedUsers[0].email,
-        name: seedUsers[0].name,
+        email: seedUser.email,
+        name: seedUser.name,
         role: UserRole.USER,
       },
       create: {
-        id: seedUsers[0].id,
-        email: seedUsers[0].email,
-        name: seedUsers[0].name,
+        id: seedUser.id,
+        email: seedUser.email,
+        name: seedUser.name,
         role: UserRole.USER,
       },
-    }),
-    prisma.user.upsert({
-      where: { id: seedUsers[1].id },
-      update: {
-        email: seedUsers[1].email,
-        name: seedUsers[1].name,
-        role: UserRole.USER,
-      },
-      create: {
-        id: seedUsers[1].id,
-        email: seedUsers[1].email,
-        name: seedUsers[1].name,
-        role: UserRole.USER,
-      },
-    }),
-  ]);
+    });
+
+    users.push(user);
+  }
 
   const adminEmails = getAdminEmails();
 
@@ -689,12 +719,59 @@ async function main() {
     });
   }
 
+  const tagVotePairs = [
+    { animeSlug: "starlight-railway", tagIndexes: [1, 5, 8] },
+    { animeSlug: "after-school-alchemy", tagIndexes: [3, 4, 5] },
+    { animeSlug: "library-of-rain", tagIndexes: [0, 8, 9] },
+    { animeSlug: "neon-kendo-club", tagIndexes: [1, 3, 5] },
+    { animeSlug: "magnolia-detective", tagIndexes: [7, 9] },
+  ];
+
+  for (const pair of tagVotePairs) {
+    const anime = animeBySlug.get(pair.animeSlug);
+
+    if (!anime) {
+      continue;
+    }
+
+    for (const user of users) {
+      for (const tagIndex of pair.tagIndexes) {
+        const tag = tags[tagIndex];
+
+        if (!tag) {
+          continue;
+        }
+
+        await prisma.animeTagVote.upsert({
+          where: {
+            animeId_tagId_userId: {
+              animeId: anime.id,
+              tagId: tag.id,
+              userId: user.id,
+            },
+          },
+          update: {},
+          create: {
+            animeId: anime.id,
+            tagId: tag.id,
+            userId: user.id,
+          },
+        });
+      }
+    }
+  }
+
   console.log(`Seeded ${animeList.length} anime titles.`);
 }
 
 main()
   .catch((error) => {
     if (isDatabaseConnectionError(error)) {
+      console.error("DBに接続できませんでした。");
+      console.error("先に npm.cmd run db:push が成功する状態にしてください。");
+      console.error("P1001 が出る場合は、READMEの接続URL手順を確認してください。");
+      process.exitCode = 1;
+      return;
       console.error("DBに接続できませんでした。");
       console.error("先に npm.cmd run db:push が成功する状態にしてください。");
       console.error("SupabaseのDirect connectionでP1001が出る場合は、READMEの「db:push で P1001 が出る場合」を確認してください。");

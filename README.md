@@ -1,4 +1,4 @@
-# AniMemo MVP
+# アニサーチ MVP
 
 Next.js + TypeScript + Tailwind CSS + Prisma + PostgreSQL + Supabase Auth で作る、アニメレビューサイトのMVPです。
 

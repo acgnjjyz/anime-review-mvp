@@ -1,10 +1,12 @@
-import { Search } from "lucide-react";
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
+import { Filter, RotateCcw, SlidersHorizontal } from "lucide-react";
 
 import { AnimeCard } from "@/components/AnimeCard";
 import { EmptyState } from "@/components/EmptyState";
 import { MessageBanner } from "@/components/MessageBanner";
+import { PortalSelect } from "@/components/PortalSelect";
+import { RightPortalSidebar } from "@/components/RightPortalSidebar";
 import { SetupNotice } from "@/components/SetupNotice";
 import { getCurrentUserProfile } from "@/lib/auth";
 import { hasDatabaseEnv } from "@/lib/env";
@@ -18,6 +20,7 @@ type AnimeListPageProps = {
   searchParams: Promise<{
     q?: string;
     genre?: string;
+    tag?: string;
     year?: string;
     sort?: string;
     page?: string;
@@ -27,6 +30,15 @@ type AnimeListPageProps = {
 };
 
 type AnimeSort = "score" | "reviews" | "newest" | "oldest";
+type RecentReview = {
+  id: string;
+  title: string;
+  score: number;
+  updatedAt: Date;
+  user: { name: string | null };
+  anime: { slug: string; title: string; coverImage: string };
+};
+
 const PAGE_SIZE = 12;
 
 function normalizeSort(value: string | undefined): AnimeSort {
@@ -59,6 +71,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
   const selectedGenre = params.genre?.trim() ?? "";
+  const selectedTag = params.tag?.trim() ?? "";
   const selectedYearText = params.year?.trim() ?? "";
   const selectedYear = /^\d{4}$/.test(selectedYearText) ? Number(selectedYearText) : null;
   const sort = normalizeSort(params.sort);
@@ -73,12 +86,19 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
         { titleEn: { contains: query, mode: "insensitive" } },
         { synopsis: { contains: query, mode: "insensitive" } },
         { studio: { contains: query, mode: "insensitive" } },
+        { reviews: { some: { title: { contains: query, mode: "insensitive" } } } },
+        { reviews: { some: { body: { contains: query, mode: "insensitive" } } } },
+        { tagVotes: { some: { tag: { name: { contains: query, mode: "insensitive" } } } } },
       ],
     });
   }
 
   if (selectedGenre) {
     filters.push({ genres: { has: selectedGenre } });
+  }
+
+  if (selectedTag) {
+    filters.push({ tagVotes: { some: { tag: { name: selectedTag } } } });
   }
 
   if (selectedYear !== null) {
@@ -88,36 +108,55 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
   let animeList: AnimeCardData[] = [];
   let filterOptions: { genres: string[]; releaseYear: number }[] = [];
   let favorites: { animeId: string }[] = [];
+  let sidebarAnime: AnimeCardData[] = [];
+  let recentReviews: RecentReview[] = [];
 
   try {
-    [animeList, filterOptions, favorites] = await Promise.all([
-      prisma.anime.findMany({
-        where: { AND: filters },
-        include: {
-          reviews: { select: { score: true } },
-          ratings: { select: { score: true } },
-          _count: { select: { favorites: true } },
-        },
-        orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
-      }),
-      prisma.anime.findMany({
-        where: { isPublished: true },
-        select: { genres: true, releaseYear: true },
-        orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
-      }),
-      user
-        ? prisma.favorite.findMany({
-            where: { userId: user.id },
-            select: { animeId: true },
-          })
-        : Promise.resolve([]),
-    ]);
+    animeList = await prisma.anime.findMany({
+      where: { AND: filters },
+      include: {
+        reviews: { select: { score: true } },
+        ratings: { select: { score: true } },
+        _count: { select: { favorites: true } },
+      },
+      orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
+    });
+    filterOptions = await prisma.anime.findMany({
+      where: { isPublished: true },
+      select: { genres: true, releaseYear: true },
+      orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
+    });
+    favorites = user
+      ? await prisma.favorite.findMany({
+          where: { userId: user.id },
+          select: { animeId: true },
+        })
+      : [];
+    sidebarAnime = await prisma.anime.findMany({
+      where: { isPublished: true },
+      include: {
+        reviews: { select: { score: true } },
+        ratings: { select: { score: true } },
+        _count: { select: { favorites: true } },
+      },
+      orderBy: [{ releaseYear: "desc" }, { title: "asc" }],
+      take: 12,
+    });
+    recentReviews = await prisma.review.findMany({
+      where: { anime: { isPublished: true } },
+      include: {
+        anime: { select: { slug: true, title: true, coverImage: true } },
+        user: { select: { name: true } },
+      },
+      orderBy: { updatedAt: "desc" },
+      take: 5,
+    });
   } catch {
     return (
       <SetupNotice
-        title="作品一覧を読み込めません"
-        description="データベース接続に失敗しました。DATABASE_URLとSupabaseのDB状態を確認してください。"
-        detail="接続できる状態にしてから npm.cmd run db:push と npm.cmd run db:seed を実行してください。"
+        title="Could not load anime"
+        description="Check the database connection and Supabase PostgreSQL status."
+        detail="When the connection is ready, run npm.cmd run db:push and npm.cmd run db:seed."
       />
     );
   }
@@ -128,6 +167,57 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
   const years = Array.from(new Set(filterOptions.map((anime) => anime.releaseYear))).sort(
     (a, b) => b - a,
   );
+  const genreOptions = [
+    { label: "Genre", value: "" },
+    ...genres.map((genre) => ({ label: genre, value: genre })),
+  ];
+  const yearOptions = [
+    { label: "Year", value: "" },
+    ...years.map((year) => ({ label: String(year), value: String(year) })),
+  ];
+  const sortOptions = [
+    { label: "Recently updated", value: "newest" },
+    { label: "Oldest anime", value: "oldest" },
+    { label: "Highest score", value: "score" },
+    { label: "Most reviewed", value: "reviews" },
+  ];
+  const countryOptions = [
+    { label: "Country", value: "" },
+    { label: "Japan", value: "jp" },
+    { label: "Original", value: "original" },
+  ];
+  const seasonOptions = [
+    { label: "Season", value: "" },
+    { label: "Spring", value: "spring" },
+    { label: "Summer", value: "summer" },
+    { label: "Autumn", value: "autumn" },
+    { label: "Winter", value: "winter" },
+  ];
+  const typeOptions = [
+    { label: "Type", value: "" },
+    { label: "TV", value: "tv" },
+    { label: "Movie", value: "movie" },
+    { label: "OVA", value: "ova" },
+    { label: "ONA", value: "ona" },
+  ];
+  const statusOptions = [
+    { label: "Status", value: "" },
+    { label: "Watching", value: "watching" },
+    { label: "Completed", value: "completed" },
+    { label: "Planned", value: "planned" },
+  ];
+  const languageOptions = [
+    { label: "Language", value: "" },
+    { label: "Japanese", value: "ja" },
+    { label: "Subtitled", value: "sub" },
+    { label: "Dubbed", value: "dub" },
+  ];
+  const ratingOptions = [
+    { label: "Rating", value: "" },
+    { label: "9+ score", value: "9" },
+    { label: "8+ score", value: "8" },
+    { label: "7+ score", value: "7" },
+  ];
   const favoriteAnimeIds = new Set(favorites.map((favorite) => favorite.animeId));
   const sortedAnimeList = [...animeList].sort((a, b) => {
     if (sort === "score") {
@@ -150,8 +240,21 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
 
     return b.releaseYear - a.releaseYear || compareByTitle(a, b);
   });
+  const sideRanking = sidebarAnime
+    .map((anime) => ({ ...anime, average: averageScore(anime.ratings) }))
+    .filter((anime) => anime.average !== null)
+    .sort((a, b) => (b.average ?? 0) - (a.average ?? 0))
+    .slice(0, 5);
+  const sideMostReviewed = [...sidebarAnime]
+    .sort((a, b) => b.reviews.length - a.reviews.length || b.releaseYear - a.releaseYear)
+    .slice(0, 5);
+  const sideRecentlyAdded = sidebarAnime.slice(0, 5);
   const hasSearchConditions =
-    Boolean(query) || Boolean(selectedGenre) || Boolean(selectedYearText) || sort !== "newest";
+    Boolean(query) ||
+    Boolean(selectedGenre) ||
+    Boolean(selectedTag) ||
+    Boolean(selectedYearText) ||
+    sort !== "newest";
   const totalCount = sortedAnimeList.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const currentPage = Math.min(requestedPage, totalPages);
@@ -172,6 +275,10 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
       nextParams.set("genre", selectedGenre);
     }
 
+    if (selectedTag) {
+      nextParams.set("tag", selectedTag);
+    }
+
     if (selectedYearText) {
       nextParams.set("year", selectedYearText);
     }
@@ -190,173 +297,196 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Anime</p>
-          <h1 className="mt-2 text-3xl font-black text-ink">アニメ一覧</h1>
-          <form className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(140px,1fr)_minmax(120px,1fr)_minmax(160px,1fr)_auto]" action="/anime">
-            <label className="text-xs font-black text-slate-500">
-              キーワード
+    <div className="portal-shell">
+      <section className="border-b border-white/10 bg-[#08080d]/88">
+        <div className="mx-auto max-w-[1640px] px-3 py-5 sm:px-4 lg:px-6">
+          <form
+            action="/anime"
+            className="space-y-4"
+            id="anime-search"
+          >
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-white lg:text-3xl">
+                  Advanced Anime Filter - Find Your Perfect Series
+                </h1>
+                <p className="mt-1 text-sm text-slate-500">Search and narrow the anime catalog.</p>
+              </div>
+              {hasSearchConditions ? (
+                <Link
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 underline decoration-slate-700 underline-offset-4 transition hover:text-white"
+                  href="/anime"
+                >
+                  <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                  Clear filters
+                </Link>
+              ) : null}
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+              <label className="block">
+                <span className="sr-only">Search</span>
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                  className="portal-input h-10 w-full rounded-lg px-3 text-sm"
                 defaultValue={query}
                 name="q"
-                placeholder="タイトル・スタジオ・あらすじ"
+                  placeholder="Search..."
               />
             </label>
-            <label className="text-xs font-black text-slate-500">
-              ジャンル
-              <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
-                defaultValue={selectedGenre}
-                name="genre"
+              <div id="genres">
+                <PortalSelect
+                  hideLabel
+                  label="Genre"
+                  name="genre"
+                  options={genreOptions}
+                  value={selectedGenre}
+                />
+              </div>
+              <PortalSelect
+                hideLabel
+                label="Country"
+                name="country"
+                options={countryOptions}
+                value=""
+              />
+              <PortalSelect
+                hideLabel
+                label="Season"
+                name="season"
+                options={seasonOptions}
+                value=""
+              />
+              <PortalSelect hideLabel label="Year" name="year" options={yearOptions} value={selectedYearText} />
+              <PortalSelect hideLabel label="Type" name="type" options={typeOptions} value="" />
+              <PortalSelect hideLabel label="Status" name="status" options={statusOptions} value="" />
+              <PortalSelect
+                hideLabel
+                label="Language"
+                name="language"
+                options={languageOptions}
+                value=""
+              />
+              <PortalSelect hideLabel label="Rating" name="rating" options={ratingOptions} value="" />
+              <PortalSelect hideLabel label="Recently updated" name="sort" options={sortOptions} value={sort} />
+              <button
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(124,58,237,0.22)] transition hover:bg-violet-500 xl:w-max"
+                type="submit"
               >
-                <option value="">すべて</option>
-                {genres.map((genre) => (
-                  <option key={genre} value={genre}>
-                    {genre}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-xs font-black text-slate-500">
-              放送年
-              <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
-                defaultValue={selectedYearText}
-                name="year"
-              >
-                <option value="">すべて</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-xs font-black text-slate-500">
-              並び替え
-              <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
-                defaultValue={sort}
-                name="sort"
-              >
-                <option value="newest">新しい作品順</option>
-                <option value="oldest">古い作品順</option>
-                <option value="score">平均点が高い順</option>
-                <option value="reviews">レビュー数が多い順</option>
-              </select>
-            </label>
-            <button
-              className="inline-flex h-11 items-center justify-center gap-2 rounded bg-ink px-4 text-sm font-black text-white hover:bg-slate-700 lg:self-end"
-              type="submit"
-            >
-              <Search className="h-4 w-4" aria-hidden="true" />
-              検索
-            </button>
+                <Filter className="h-4 w-4" aria-hidden="true" />
+                Filter
+              </button>
+            </div>
           </form>
-          {hasSearchConditions ? (
-            <Link className="mt-3 inline-flex text-sm font-bold text-mint hover:text-teal-700" href="/anime">
-              条件をリセット
-            </Link>
-          ) : null}
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
-        <MessageBanner error={params.error} message={params.message} />
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-sm font-bold text-slate-500">
-            {totalCount === 0
-              ? "0件"
-              : `${totalCount}件中 ${startIndex + 1}-${startIndex + paginatedAnimeList.length}件`}
-          </p>
-        </div>
-        {totalCount === 0 ? (
-          <EmptyState
-            actionHref={hasSearchConditions ? "/anime" : undefined}
-            actionLabel={hasSearchConditions ? "検索条件をリセット" : undefined}
-            description={
-              hasSearchConditions
-                ? "キーワード、ジャンル、放送年の条件を変えて検索してください。"
-                : "作品データがまだありません。npm.cmd run db:seed で初期データを投入できます。"
-            }
-            title={hasSearchConditions ? "条件に合う作品がありません" : "作品がありません"}
-          />
-        ) : (
-          <>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {paginatedAnimeList.map((anime) => (
-                <AnimeCard
-                  anime={anime}
-                  isFavorite={favoriteAnimeIds.has(anime.id)}
-                  key={anime.id}
-                />
-              ))}
-            </div>
+      <section className="mx-auto grid max-w-[1640px] gap-5 overflow-hidden px-3 py-6 sm:px-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-6">
+        <div className="min-w-0 space-y-5">
+          <MessageBanner error={params.error} message={params.message} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="inline-flex items-center gap-2 text-sm font-bold text-slate-400">
+              <SlidersHorizontal className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+              {totalCount === 0
+                ? "0 results"
+                : `${totalCount} results / ${startIndex + 1}-${startIndex + paginatedAnimeList.length}`}
+            </p>
+          </div>
 
-            {totalPages > 1 ? (
-              <nav className="flex flex-col gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between" aria-label="ページネーション">
-                <p className="text-sm font-bold text-slate-500">
-                  {currentPage} / {totalPages}ページ
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  {currentPage > 1 ? (
-                    <Link
-                      className="inline-flex h-10 items-center rounded border border-slate-200 px-3 text-sm font-bold text-ink hover:border-mint hover:text-mint"
-                      href={buildPageHref(currentPage - 1)}
-                    >
-                      前へ
-                    </Link>
-                  ) : (
-                    <span className="inline-flex h-10 items-center rounded border border-slate-100 px-3 text-sm font-bold text-slate-300">
-                      前へ
-                    </span>
-                  )}
+          {totalCount === 0 ? (
+            <EmptyState
+              actionHref={hasSearchConditions ? "/anime" : undefined}
+              actionLabel={hasSearchConditions ? "Reset filters" : undefined}
+              description={
+                hasSearchConditions
+                  ? "Try a different keyword, genre, tag, year, or sort option."
+                  : "No published anime data is available yet."
+              }
+              title={hasSearchConditions ? "No anime matched your filters" : "No anime yet"}
+            />
+          ) : (
+            <>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
+                {paginatedAnimeList.map((anime) => (
+                  <AnimeCard
+                    anime={anime}
+                    isFavorite={favoriteAnimeIds.has(anime.id)}
+                    key={anime.id}
+                  />
+                ))}
+              </div>
 
-                  {pageNumbers.map((pageNumber, index) => {
-                    const previousPage = pageNumbers[index - 1];
-                    const needsEllipsis = previousPage && pageNumber - previousPage > 1;
-
-                    return (
-                      <span className="inline-flex items-center gap-2" key={pageNumber}>
-                        {needsEllipsis ? (
-                          <span className="text-sm font-bold text-slate-400">...</span>
-                        ) : null}
-                        {pageNumber === currentPage ? (
-                          <span className="inline-flex h-10 min-w-10 items-center justify-center rounded bg-ink px-3 text-sm font-black text-white">
-                            {pageNumber}
-                          </span>
-                        ) : (
-                          <Link
-                            className="inline-flex h-10 min-w-10 items-center justify-center rounded border border-slate-200 px-3 text-sm font-bold text-ink hover:border-mint hover:text-mint"
-                            href={buildPageHref(pageNumber)}
-                          >
-                            {pageNumber}
-                          </Link>
-                        )}
+              {totalPages > 1 ? (
+                <nav
+                  className="portal-panel flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between"
+                  aria-label="Pagination"
+                >
+                  <p className="text-sm font-bold text-slate-400">
+                    Page {currentPage} / {totalPages}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {currentPage > 1 ? (
+                      <Link
+                        className="portal-button-secondary inline-flex h-10 items-center rounded-full px-3 text-sm font-black"
+                        href={buildPageHref(currentPage - 1)}
+                      >
+                        Prev
+                      </Link>
+                    ) : (
+                      <span className="inline-flex h-10 items-center rounded-full border border-slate-800 px-3 text-sm font-black text-slate-600">
+                        Prev
                       </span>
-                    );
-                  })}
+                    )}
 
-                  {currentPage < totalPages ? (
-                    <Link
-                      className="inline-flex h-10 items-center rounded border border-slate-200 px-3 text-sm font-bold text-ink hover:border-mint hover:text-mint"
-                      href={buildPageHref(currentPage + 1)}
-                    >
-                      次へ
-                    </Link>
-                  ) : (
-                    <span className="inline-flex h-10 items-center rounded border border-slate-100 px-3 text-sm font-bold text-slate-300">
-                      次へ
-                    </span>
-                  )}
-                </div>
-              </nav>
-            ) : null}
-          </>
-        )}
+                    {pageNumbers.map((pageNumber, index) => {
+                      const previousPage = pageNumbers[index - 1];
+                      const needsEllipsis = previousPage && pageNumber - previousPage > 1;
+
+                      return (
+                        <span className="inline-flex items-center gap-2" key={pageNumber}>
+                          {needsEllipsis ? (
+                            <span className="text-sm font-bold text-slate-500">...</span>
+                          ) : null}
+                          {pageNumber === currentPage ? (
+                            <span className="portal-button-primary inline-flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm font-black">
+                              {pageNumber}
+                            </span>
+                          ) : (
+                            <Link
+                              className="portal-button-secondary inline-flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm font-black"
+                              href={buildPageHref(pageNumber)}
+                            >
+                              {pageNumber}
+                            </Link>
+                          )}
+                        </span>
+                      );
+                    })}
+
+                    {currentPage < totalPages ? (
+                      <Link
+                        className="portal-button-secondary inline-flex h-10 items-center rounded-full px-3 text-sm font-black"
+                        href={buildPageHref(currentPage + 1)}
+                      >
+                        Next
+                      </Link>
+                    ) : (
+                      <span className="inline-flex h-10 items-center rounded-full border border-slate-800 px-3 text-sm font-black text-slate-600">
+                        Next
+                      </span>
+                    )}
+                  </div>
+                </nav>
+              ) : null}
+            </>
+          )}
+        </div>
+
+        <RightPortalSidebar
+          latestReviews={recentReviews}
+          mostReviewed={sideMostReviewed}
+          recentlyAdded={sideRecentlyAdded}
+          topRated={sideRanking}
+        />
       </section>
     </div>
   );

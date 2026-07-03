@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Heart, MessageSquare, Star } from "lucide-react";
+import { BookmarkCheck, Heart, MessageSquare, Star } from "lucide-react";
+import { WatchStatus } from "@prisma/client";
 
 import { AnimeCard } from "@/components/AnimeCard";
 import { EmptyState } from "@/components/EmptyState";
@@ -12,6 +13,14 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const shelfGroups = [
+  { status: WatchStatus.WANT_TO_WATCH, label: "\u89b3\u305f\u3044" },
+  { status: WatchStatus.WATCHING, label: "\u8996\u8074\u4e2d" },
+  { status: WatchStatus.COMPLETED, label: "\u89b3\u7d42\u308f\u3063\u305f" },
+  { status: WatchStatus.DROPPED, label: "\u4e2d\u65ad" },
+  { status: WatchStatus.FAVORITE, label: "\u304a\u6c17\u306b\u5165\u308a" },
+];
+
 export default async function MyPage() {
   if (!hasDatabaseEnv()) {
     return <SetupNotice />;
@@ -20,7 +29,7 @@ export default async function MyPage() {
   const user = await getSyncedCurrentUser();
 
   if (!user) {
-    redirect("/login?message=マイページを見るにはログインしてください。");
+    redirect("/login?message=Log in to view MyPage.");
   }
 
   let profile = null;
@@ -54,13 +63,28 @@ export default async function MyPage() {
           orderBy: { createdAt: "desc" },
           take: 3,
         },
+        animeShelves: {
+          where: {
+            anime: { isPublished: true },
+          },
+          include: {
+            anime: {
+              include: {
+                reviews: { select: { score: true } },
+                ratings: { select: { score: true } },
+                _count: { select: { favorites: true } },
+              },
+            },
+          },
+          orderBy: { updatedAt: "desc" },
+        },
       },
     });
   } catch {
     return (
       <SetupNotice
-        title="マイページを読み込めません"
-        description="データベース接続に失敗しました。DATABASE_URLとSupabaseのDB状態を確認してください。"
+        title="Could not load MyPage"
+        description="Check the database connection and Supabase PostgreSQL status."
       />
     );
   }
@@ -75,38 +99,47 @@ export default async function MyPage() {
       : profile.reviews.reduce((sum, review) => sum + review.score, 0) / profile.reviews.length;
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">My Page</p>
-          <h1 className="mt-2 text-3xl font-black text-ink">{profile.name ?? "ユーザー"}さん</h1>
+    <div className="portal-shell">
+      <section className="border-b border-slate-800 bg-slate-950/60">
+        <div className="mx-auto max-w-7xl px-4 py-9">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-300">MyPage</p>
+          <h1 className="mt-2 text-3xl font-black text-white">
+            {profile.name ?? "User"}'s anime shelf
+          </h1>
           <p className="mt-2 text-sm text-slate-500">{profile.email}</p>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[320px_1fr]">
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[320px_1fr]">
         <aside className="space-y-4">
-          <div className="rounded border border-slate-200 bg-white p-5">
-            <h2 className="text-xl font-black text-ink">活動サマリー</h2>
+          <div className="portal-panel rounded-2xl p-5">
+            <h2 className="text-xl font-black text-white">Activity Summary</h2>
             <div className="mt-4 grid gap-3">
-              <div className="flex items-center justify-between rounded bg-slate-50 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-600">
-                  <MessageSquare className="h-4 w-4 text-mint" aria-hidden="true" />
-                  レビュー
+              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
+                  <MessageSquare className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+                  Reviews
                 </span>
-                <span className="text-lg font-black text-ink">{profile.reviews.length}</span>
+                <span className="text-lg font-black text-white">{profile.reviews.length}</span>
               </div>
-              <div className="flex items-center justify-between rounded bg-slate-50 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-600">
-                  <Heart className="h-4 w-4 text-coral" aria-hidden="true" />
-                  お気に入り
+              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
+                  <Heart className="h-4 w-4 text-rose-300" aria-hidden="true" />
+                  Favorites
                 </span>
-                <span className="text-lg font-black text-ink">{profile.favorites.length}</span>
+                <span className="text-lg font-black text-white">{profile.favorites.length}</span>
               </div>
-              <div className="flex items-center justify-between rounded bg-slate-50 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-600">
-                  <Star className="h-4 w-4 text-honey" aria-hidden="true" />
-                  平均点
+              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
+                  <BookmarkCheck className="h-4 w-4 text-violet-300" aria-hidden="true" />
+                  Shelf
+                </span>
+                <span className="text-lg font-black text-white">{profile.animeShelves.length}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
+                  <Star className="h-4 w-4 text-amber-200" aria-hidden="true" />
+                  Average
                 </span>
                 <ScoreBadge score={average} />
               </div>
@@ -114,37 +147,75 @@ export default async function MyPage() {
           </div>
         </aside>
 
-        <div className="space-y-8">
+        <div className="space-y-10">
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-ink">自分のレビュー</h2>
-              <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/anime">
-                作品を探す
+              <h2 className="text-2xl font-black text-white">Anime Shelf</h2>
+              <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/anime">
+                Browse anime
+              </Link>
+            </div>
+            {profile.animeShelves.length === 0 ? (
+              <EmptyState
+                actionHref="/anime"
+                actionLabel="Browse anime"
+                description="Save a watch status from an anime detail page and it will appear here."
+                title="Your shelf is empty"
+              />
+            ) : (
+              <div className="space-y-6">
+                {shelfGroups.map((group) => {
+                  const items = profile.animeShelves.filter((shelf) => shelf.status === group.status);
+
+                  if (items.length === 0) {
+                    return null;
+                  }
+
+                  return (
+                    <div className="portal-panel rounded-2xl p-4" key={group.status}>
+                      <h3 className="text-lg font-black text-white">{group.label}</h3>
+                      <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                        {items.map((shelf) => (
+                          <AnimeCard anime={shelf.anime} key={shelf.id} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          <section>
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-black text-white">My Reviews</h2>
+              <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/anime">
+                Find anime
               </Link>
             </div>
             {profile.reviews.length === 0 ? (
               <EmptyState
                 actionHref="/anime"
-                actionLabel="作品を探す"
-                description="作品詳細ページからレビューを投稿すると、ここに表示されます。"
-                title="まだレビューを書いていません"
+                actionLabel="Find anime"
+                description="Post a review from an anime detail page and it will appear here."
+                title="No reviews yet"
               />
             ) : (
               <div className="space-y-4">
                 {profile.reviews.map((review) => (
                   <Link
-                    className="block rounded border border-slate-200 bg-white p-5 transition hover:border-mint"
+                    className="portal-panel-soft block rounded-2xl p-5 transition hover:border-cyan-300/40"
                     href={`/anime/${review.anime.slug}`}
                     key={review.id}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-bold text-coral">{review.anime.title}</p>
-                        <h3 className="mt-1 text-lg font-black text-ink">{review.title}</h3>
+                        <p className="text-sm font-bold text-cyan-300">{review.anime.title}</p>
+                        <h3 className="mt-1 text-lg font-black text-white">{review.title}</h3>
                       </div>
                       <ScoreBadge score={review.score} />
                     </div>
-                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-400">
                       {review.body}
                     </p>
                   </Link>
@@ -155,17 +226,17 @@ export default async function MyPage() {
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-ink">最近のお気に入り</h2>
-              <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/favorites">
-                すべて見る
+              <h2 className="text-2xl font-black text-white">Recent Favorites</h2>
+              <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/favorites">
+                View all
               </Link>
             </div>
             {profile.favorites.length === 0 ? (
               <EmptyState
                 actionHref="/anime"
-                actionLabel="作品を探す"
-                description="作品詳細ページでお気に入りを押すと、ここに表示されます。"
-                title="お気に入りはまだありません"
+                actionLabel="Browse anime"
+                description="Favorite anime from detail pages to collect them here."
+                title="No favorites yet"
               />
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

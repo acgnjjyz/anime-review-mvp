@@ -3,17 +3,25 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  background: #050509;
+  overflow-x: hidden;
+}
+
 body {
+  min-height: 100vh;
   margin: 0;
-  background: #f8fafc;
-  color: #18212f;
+  padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  background: #050509;
+  color: #e5e7eb;
   font-family:
     ui-sans-serif,
     system-ui,
@@ -23,6 +31,51 @@ body {
     sans-serif;
 }
 
+.portal-main {
+  min-height: 100vh;
+  padding-top: 68px;
+}
+
+.portal-footer {
+  margin-left: 0;
+}
+
+.portal-sidebar-flyout {
+  position: absolute;
+  left: calc(100% + 0.55rem);
+  top: 0.55rem;
+  width: min(620px, calc(100vw - 236px));
+  min-height: 392px;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(18, 18, 22, 0.995), rgba(7, 7, 10, 0.995)),
+    #07070a;
+  padding: 1.25rem 1.75rem;
+  box-shadow:
+    30px 24px 90px rgba(0, 0, 0, 0.86),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 767px) {
+  .portal-sidebar-flyout {
+    position: static;
+    width: 100%;
+    min-height: auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.2rem;
+    padding: 1rem 1.5rem 1.25rem;
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 640px) {
+  body {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -30,11 +83,178 @@ a {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
+option {
+  background: #111827;
+  color: #f8fafc;
+}
+
+img {
+  background: #111827;
+}
+
 ::selection {
-  background: #f4a261;
-  color: #18212f;
+  background: rgba(99, 102, 241, 0.45);
+  color: #ffffff;
+}
+
+::placeholder {
+  color: #64748b;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050509;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a38;
+  border: 3px solid #050509;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.portal-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 48% -12%, rgba(109, 40, 217, 0.2), transparent 32rem),
+    linear-gradient(180deg, rgba(9, 9, 18, 0.96), rgba(5, 5, 9, 0.98) 28rem),
+    #050509;
+}
+
+.portal-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(18, 18, 29, 0.9), rgba(11, 11, 18, 0.96));
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34);
+}
+
+.portal-panel-soft {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(11, 11, 18, 0.8);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.26);
+}
+
+.portal-input {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(5, 5, 9, 0.78);
+  color: #f8fafc;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.portal-input:focus {
+  border-color: rgba(96, 165, 250, 0.78);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.portal-button-primary {
+  background: linear-gradient(135deg, #7c3aed, #2563eb 56%, #0891b2);
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(37, 99, 235, 0.28);
+}
+
+.portal-button-primary:hover {
+  filter: brightness(1.08);
+}
+
+.portal-button-secondary {
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.7);
+  color: #e0f2fe;
+}
+
+.portal-button-secondary:hover {
+  border-color: rgba(125, 211, 252, 0.65);
+  background: rgba(14, 165, 233, 0.12);
+}
+
+.portal-chip {
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  background: rgba(14, 165, 233, 0.1);
+  color: #bae6fd;
+}
+
+.portal-card-hover {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.portal-card-hover:hover {
+  border-color: rgba(168, 85, 247, 0.56);
+  box-shadow: 0 18px 48px rgba(124, 58, 237, 0.18);
+  transform: translateY(-2px) scale(1.015);
+}
+
+/* Darken existing light utility usage across admin and secondary pages. */
+.bg-paper {
+  background: transparent !important;
+}
+
+.bg-white {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+}
+
+.bg-slate-50 {
+  background-color: rgba(15, 23, 42, 0.76) !important;
+}
+
+.bg-slate-100 {
+  background-color: rgba(30, 41, 59, 0.82) !important;
+}
+
+.bg-slate-200 {
+  background-color: rgba(51, 65, 85, 0.85) !important;
+}
+
+.border-slate-100,
+.border-slate-200,
+.border-slate-300 {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+.text-ink {
+  color: #f8fafc !important;
+}
+
+.text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.text-slate-700,
+.text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+.shadow-soft {
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.24) !important;
 }
