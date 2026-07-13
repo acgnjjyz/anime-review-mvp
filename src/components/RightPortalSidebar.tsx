@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Clock3, MessageSquareText, Star, Trophy } from "lucide-react";
+import { Clock3, MessageSquareText, Star, Tags, Trophy } from "lucide-react";
 
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { averageScore, formatScore } from "@/lib/score";
@@ -27,11 +27,18 @@ type SidebarReview = {
   };
 };
 
+type SidebarTag = {
+  id: string;
+  name: string;
+  count: number;
+};
+
 type RightPortalSidebarProps = {
   topRated: SidebarAnime[];
   mostReviewed: SidebarAnime[];
   recentlyAdded: SidebarAnime[];
   latestReviews: SidebarReview[];
+  tagRanking?: SidebarTag[];
 };
 
 function rankClass(index: number) {
@@ -123,6 +130,43 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
   );
 }
 
+function TagRankingPanel({ tags }: { tags: SidebarTag[] }) {
+  return (
+    <section className="rounded-2xl border border-white/10 bg-[#0b0b12]/88 p-3">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="flex items-center gap-2 text-sm font-black text-white">
+          <Tags className="h-4 w-4 text-cyan-200" aria-hidden="true" />
+          Tag Ranking
+        </h2>
+        <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-200" href="/anime">
+          All
+        </Link>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {tags.length === 0 ? (
+          <p className="text-xs leading-5 text-slate-400">No tag votes yet.</p>
+        ) : (
+          tags.slice(0, 12).map((tag, index) => (
+            <Link
+              className="group inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-black/35 px-3 py-2 text-xs font-black text-slate-300 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-white"
+              href={`/anime?tag=${encodeURIComponent(tag.name)}`}
+              key={tag.id}
+            >
+              <span className={`grid h-5 w-5 place-items-center rounded-full text-[0.62rem] ${rankClass(index)}`}>
+                {index + 1}
+              </span>
+              <span>{tag.name}</span>
+              <span className="rounded-full bg-white/[0.08] px-1.5 py-0.5 text-[0.65rem] text-cyan-100">
+                {tag.count}
+              </span>
+            </Link>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
 function CompactAnimePanel({
   animeList,
   icon,
@@ -204,11 +248,13 @@ export function RightPortalSidebar({
   latestReviews,
   mostReviewed,
   recentlyAdded,
+  tagRanking = [],
   topRated,
 }: RightPortalSidebarProps) {
   return (
     <aside className="min-w-0 space-y-3 lg:sticky lg:top-[72px] lg:self-start">
       <TopAnimePanel animeList={topRated.length ? topRated : mostReviewed} />
+      <TagRankingPanel tags={tagRanking} />
       <CompactAnimePanel
         animeList={mostReviewed}
         icon={<Star className="h-4 w-4 text-violet-200" aria-hidden="true" />}

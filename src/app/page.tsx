@@ -26,6 +26,12 @@ type LatestReview = {
   anime: { slug: string; title: string; coverImage: string };
 };
 
+type TagRankingItem = {
+  id: string;
+  name: string;
+  count: number;
+};
+
 function withAverage(anime: AnimeCardData) {
   return {
     ...anime,
@@ -135,6 +141,7 @@ export default async function HomePage() {
   let recentlyAdded: AnimeCardData[] = [];
   let latestReviews: LatestReview[] = [];
   let favorites: { animeId: string }[] = [];
+  let tagRanking: TagRankingItem[] = [];
 
   try {
     animeList = await prisma.anime.findMany({
@@ -159,6 +166,17 @@ export default async function HomePage() {
       orderBy: { updatedAt: "desc" },
       take: 4,
     });
+    tagRanking = (
+      await prisma.animeTag.findMany({
+        select: {
+          id: true,
+          name: true,
+          _count: { select: { votes: true } },
+        },
+        orderBy: { votes: { _count: "desc" } },
+        take: 12,
+      })
+    ).map((tag) => ({ id: tag.id, name: tag.name, count: tag._count.votes }));
     favorites = user
       ? await prisma.favorite.findMany({
           where: { userId: user.id },
@@ -243,6 +261,7 @@ export default async function HomePage() {
             latestReviews={latestReviews}
             mostReviewed={trending.slice(0, 10)}
             recentlyAdded={recentlyAdded.slice(0, 6)}
+            tagRanking={tagRanking}
             topRated={topRated.slice(0, 10)}
           />
         </div>

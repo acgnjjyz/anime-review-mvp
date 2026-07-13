@@ -112,7 +112,7 @@ function GenreFlyout({ onSelect }: { onSelect: () => void }) {
 export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [activePanel, setActivePanel] = useState<"genres" | null>("genres");
+  const [activePanel, setActivePanel] = useState<"genres" | null>(null);
   const [dragProgress, setDragProgress] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const drawerRef = useRef<HTMLElement>(null);
@@ -233,7 +233,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
       />
 
       <aside
-        className="fixed bottom-3 left-0 top-[76px] z-[80] w-[236px] overflow-visible rounded-r-[1.6rem] border border-l-0 border-white/[0.08] bg-[#111111] shadow-[28px_0_82px_rgba(0,0,0,0.78)] will-change-transform md:w-[204px]"
+        className="fixed left-0 top-[76px] z-[80] max-h-[calc(100vh-96px)] w-[236px] overflow-visible rounded-r-[1.6rem] border border-l-0 border-white/[0.08] bg-[#111111] shadow-[28px_0_82px_rgba(0,0,0,0.78)] will-change-transform md:w-[204px]"
         id="portal-sidebar-drawer"
         ref={drawerRef}
         style={{

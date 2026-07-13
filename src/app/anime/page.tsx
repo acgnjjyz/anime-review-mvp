@@ -39,6 +39,12 @@ type RecentReview = {
   anime: { slug: string; title: string; coverImage: string };
 };
 
+type TagRankingItem = {
+  id: string;
+  name: string;
+  count: number;
+};
+
 const PAGE_SIZE = 12;
 
 function normalizeSort(value: string | undefined): AnimeSort {
@@ -110,6 +116,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
   let favorites: { animeId: string }[] = [];
   let sidebarAnime: AnimeCardData[] = [];
   let recentReviews: RecentReview[] = [];
+  let tagRanking: TagRankingItem[] = [];
 
   try {
     animeList = await prisma.anime.findMany({
@@ -151,6 +158,17 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
       orderBy: { updatedAt: "desc" },
       take: 5,
     });
+    tagRanking = (
+      await prisma.animeTag.findMany({
+        select: {
+          id: true,
+          name: true,
+          _count: { select: { votes: true } },
+        },
+        orderBy: { votes: { _count: "desc" } },
+        take: 12,
+      })
+    ).map((tag) => ({ id: tag.id, name: tag.name, count: tag._count.votes }));
   } catch {
     return (
       <SetupNotice
@@ -485,6 +503,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
           latestReviews={recentReviews}
           mostReviewed={sideMostReviewed}
           recentlyAdded={sideRecentlyAdded}
+          tagRanking={tagRanking}
           topRated={sideRanking}
         />
       </section>

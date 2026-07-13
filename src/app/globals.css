@@ -60,8 +60,12 @@ body {
 
 @media (max-width: 767px) {
   .portal-sidebar-flyout {
-    position: static;
-    width: 100%;
+    position: absolute;
+    left: 0.75rem;
+    top: 4.2rem;
+    width: calc(100% - 1.5rem);
+    max-height: min(52vh, 360px);
+    overflow-y: auto;
     min-height: auto;
     border-left: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 1.2rem;
