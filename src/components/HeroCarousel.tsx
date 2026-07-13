@@ -65,7 +65,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
   }
 
   function canStartDrag(target: EventTarget) {
-    return !(target as HTMLElement).closest("a,button,[data-no-slide='true']");
+    return !(target as HTMLElement).closest("a,button");
   }
 
   function beginDrag(clientX: number) {
@@ -233,8 +233,9 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
 
               <div
                 aria-hidden="true"
-                className="pointer-events-auto relative hidden h-[410px] cursor-default overflow-hidden rounded-[1.65rem] border border-white/10 bg-white/[0.04] p-2 shadow-[0_22px_68px_rgba(0,0,0,0.4)] lg:block xl:h-[500px]"
-                data-no-slide="true"
+                className={`pointer-events-auto relative hidden h-[410px] overflow-hidden rounded-[1.65rem] border border-white/10 bg-white/[0.04] p-2 shadow-[0_22px_68px_rgba(0,0,0,0.4)] lg:block xl:h-[500px] ${
+                  isDragging ? "cursor-grabbing" : "cursor-grab"
+                }`}
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
@@ -245,35 +246,6 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
                   event.stopPropagation();
                 }}
                 onDragStart={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onMouseDown={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onMouseMove={(event) => event.stopPropagation()}
-                onMouseUp={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onPointerCancel={(event) => event.stopPropagation()}
-                onPointerDown={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onPointerMove={(event) => event.stopPropagation()}
-                onPointerUp={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onTouchCancel={(event) => event.stopPropagation()}
-                onTouchEnd={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                }}
-                onTouchMove={(event) => event.stopPropagation()}
-                onTouchStart={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
                 }}
