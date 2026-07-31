@@ -497,9 +497,26 @@ const animeList = [
   },
 ];
 
-const titleOnlyAnimeNames = titleOnlyJapanAnimeData.titles
-  .map((title) => title.trim())
-  .filter(Boolean);
+type TitleOnlyAnimeEntry = {
+  title: string;
+  titleEn?: string | null;
+};
+
+const titleOnlyAnimeEntries: TitleOnlyAnimeEntry[] =
+  "entries" in titleOnlyJapanAnimeData &&
+  Array.isArray(titleOnlyJapanAnimeData.entries)
+    ? titleOnlyJapanAnimeData.entries
+        .map((entry) => ({
+          title: entry.title.trim(),
+          titleEn: entry.titleEn?.trim() || null,
+        }))
+        .filter((entry) => entry.title)
+    : titleOnlyJapanAnimeData.titles
+        .map((title) => ({
+          title: title.trim(),
+          titleEn: null,
+        }))
+        .filter((entry) => entry.title);
 
 const titleOnlyCoverImages = [
   "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
@@ -534,13 +551,13 @@ function slugifyTitle(name: string) {
     .slice(0, 72);
 }
 
-function createTitleOnlyAnime(name: string, index: number) {
-  const slugBase = slugifyTitle(name) || `title-${index + 1}`;
+function createTitleOnlyAnime(entry: TitleOnlyAnimeEntry, index: number) {
+  const slugBase = slugifyTitle(entry.title) || `title-${index + 1}`;
 
   return {
-    slug: `aniwaves-title-${slugBase}`,
-    title: name,
-    titleEn: null,
+    slug: `aniwaves-japan-title-${slugBase}`,
+    title: entry.title,
+    titleEn: entry.titleEn,
     synopsis:
       "Title-only catalog entry. Add an original review-site synopsis before using detailed metadata.",
     coverImage: titleOnlyCoverImages[index % titleOnlyCoverImages.length],
@@ -552,11 +569,11 @@ function createTitleOnlyAnime(name: string, index: number) {
   };
 }
 
-function createTitleOnlyAnimeList(names: string[]) {
+function createTitleOnlyAnimeList(entries: TitleOnlyAnimeEntry[]) {
   const usedSlugs = new Set<string>();
 
-  return names.map((name, index) => {
-    const anime = createTitleOnlyAnime(name, index);
+  return entries.map((entry, index) => {
+    const anime = createTitleOnlyAnime(entry, index);
     const baseSlug = anime.slug;
     let slug = baseSlug;
     let suffix = 2;
@@ -620,7 +637,7 @@ async function main() {
     animeBySlug.set(anime.slug, savedAnime);
   }
 
-  const titleOnlyAnimeList = createTitleOnlyAnimeList(titleOnlyAnimeNames);
+  const titleOnlyAnimeList = createTitleOnlyAnimeList(titleOnlyAnimeEntries);
   const titleOnlyRows = titleOnlyAnimeList.map((anime, index) => ({
     ...anime,
     trailerUrl: null,
@@ -932,6 +949,7 @@ async function main() {
 main()
   .catch((error) => {
     if (isDatabaseConnectionError(error)) {
+      console.error(getErrorMessage(error));
       console.error("DBに接続できませんでした。");
       console.error("先に npm.cmd run db:push が成功する状態にしてください。");
       console.error("P1001 が出る場合は、READMEの接続URL手順を確認してください。");
