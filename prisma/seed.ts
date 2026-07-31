@@ -497,13 +497,9 @@ const animeList = [
   },
 ];
 
-const titleOnlyAnimeNames = Array.from(
-  new Set(
-    titleOnlyJapanAnimeData.titles
-      .map((title) => title.trim())
-      .filter(Boolean),
-  ),
-);
+const titleOnlyAnimeNames = titleOnlyJapanAnimeData.titles
+  .map((title) => title.trim())
+  .filter(Boolean);
 
 const titleOnlyCoverImages = [
   "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
@@ -557,20 +553,24 @@ function createTitleOnlyAnime(name: string, index: number) {
 }
 
 function createTitleOnlyAnimeList(names: string[]) {
-  const seenSlugs = new Map<string, number>();
+  const usedSlugs = new Set<string>();
 
   return names.map((name, index) => {
     const anime = createTitleOnlyAnime(name, index);
-    const count = seenSlugs.get(anime.slug) ?? 0;
-    seenSlugs.set(anime.slug, count + 1);
+    const baseSlug = anime.slug;
+    let slug = baseSlug;
+    let suffix = 2;
 
-    if (count === 0) {
-      return anime;
+    while (usedSlugs.has(slug)) {
+      slug = `${baseSlug}-${suffix}`;
+      suffix += 1;
     }
+
+    usedSlugs.add(slug);
 
     return {
       ...anime,
-      slug: `${anime.slug}-${count + 1}`,
+      slug,
     };
   });
 }
@@ -583,6 +583,19 @@ function chunkArray<T>(items: T[], size: number) {
   }
 
   return chunks;
+}
+
+type AnimeRelationCounts = {
+  reviews: number;
+  ratings: number;
+  comments: number;
+  favorites: number;
+  shelves: number;
+  tagVotes: number;
+};
+
+function hasNoAnimeRelations(counts: AnimeRelationCounts) {
+  return Object.values(counts).every((count) => count === 0);
 }
 
 async function main() {
@@ -619,6 +632,44 @@ async function main() {
     await prisma.anime.createMany({
       data: chunk,
       skipDuplicates: true,
+    });
+  }
+
+  const activeTitleOnlySlugs = new Set(titleOnlyRows.map((anime) => anime.slug));
+  const titleOnlyRowsInDatabase = await prisma.anime.findMany({
+    where: {
+      studio: "Title Import",
+    },
+    select: {
+      id: true,
+      slug: true,
+      _count: {
+        select: {
+          reviews: true,
+          ratings: true,
+          comments: true,
+          favorites: true,
+          shelves: true,
+          tagVotes: true,
+        },
+      },
+    },
+  });
+  const staleTitleOnlyIds = titleOnlyRowsInDatabase
+    .filter(
+      (anime) =>
+        !activeTitleOnlySlugs.has(anime.slug) &&
+        hasNoAnimeRelations(anime._count),
+    )
+    .map((anime) => anime.id);
+
+  for (const chunk of chunkArray(staleTitleOnlyIds, 500)) {
+    await prisma.anime.deleteMany({
+      where: {
+        id: {
+          in: chunk,
+        },
+      },
     });
   }
 
