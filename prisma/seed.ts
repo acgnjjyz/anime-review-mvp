@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { AiringDay, PrismaClient, UserRole } from "@prisma/client";
+import titleOnlyJapanAnimeData from "./title-only-japan-anime.json";
 
 const prisma = new PrismaClient();
 
@@ -496,30 +497,13 @@ const animeList = [
   },
 ];
 
-const titleOnlyAnimeNames = [
-  "Mushoku Tensei: Jobless Reincarnation Season 3",
-  "Daemons of the Shadow Realm",
-  "That Time I Got Reincarnated as a Slime Season 4",
-  "You and I Are Polar Opposites Season 2",
-  "Sparks of Tomorrow",
-  "Rich Girl Caretaker: I'm Secretly the Caregiver of the Most Popular Girl in This Rich Kid School",
-  "The Cat and the Dragon",
-  "Jaadugar: A Witch in Mongolia",
-  "Welcome to Demon School! Iruma-kun Season 4",
-  "I Became a Legend After My 10 Year-Long Last Stand.",
-  "Crowned in a Hundred Days",
-  "Kaiju Girl Caramelise",
-  "Chainsmoker Cat",
-  "The Exiled Heavy Knight Knows How to Game the System",
-  "Tamon's B-Side",
-  "Mebius Dust",
-  "From Overshadowed to Overpowered: Second Reincarnation of a Talentless Sage",
-  "GANSO! BanG Dream Chan",
-  "BanG Dream! YUME\u221eMITA",
-  "Bungo Stray Dogs Wan! 2",
-  "Dara-san of Reiwa",
-  "Tomb Raider King",
-];
+const titleOnlyAnimeNames = Array.from(
+  new Set(
+    titleOnlyJapanAnimeData.titles
+      .map((title) => title.trim())
+      .filter(Boolean),
+  ),
+);
 
 const titleOnlyCoverImages = [
   "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
@@ -555,8 +539,10 @@ function slugifyTitle(name: string) {
 }
 
 function createTitleOnlyAnime(name: string, index: number) {
+  const slugBase = slugifyTitle(name) || `title-${index + 1}`;
+
   return {
-    slug: `aniwaves-title-${slugifyTitle(name)}`,
+    slug: `aniwaves-title-${slugBase}`,
     title: name,
     titleEn: null,
     synopsis:
@@ -570,14 +556,40 @@ function createTitleOnlyAnime(name: string, index: number) {
   };
 }
 
+function createTitleOnlyAnimeList(names: string[]) {
+  const seenSlugs = new Map<string, number>();
+
+  return names.map((name, index) => {
+    const anime = createTitleOnlyAnime(name, index);
+    const count = seenSlugs.get(anime.slug) ?? 0;
+    seenSlugs.set(anime.slug, count + 1);
+
+    if (count === 0) {
+      return anime;
+    }
+
+    return {
+      ...anime,
+      slug: `${anime.slug}-${count + 1}`,
+    };
+  });
+}
+
+function chunkArray<T>(items: T[], size: number) {
+  const chunks: T[][] = [];
+
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+
+  return chunks;
+}
+
 async function main() {
   const animeBySlug = new Map<string, { id: string }>();
   const reviewByKey = new Map<string, { id: string; animeId: string; userId: string }>();
 
-  const seededAnimeList = [
-    ...animeList,
-    ...titleOnlyAnimeNames.map((name, index) => createTitleOnlyAnime(name, index)),
-  ];
+  const seededAnimeList = animeList;
 
   for (const [index, anime] of seededAnimeList.entries()) {
     const animeData = {
@@ -593,6 +605,21 @@ async function main() {
     });
 
     animeBySlug.set(anime.slug, savedAnime);
+  }
+
+  const titleOnlyAnimeList = createTitleOnlyAnimeList(titleOnlyAnimeNames);
+  const titleOnlyRows = titleOnlyAnimeList.map((anime, index) => ({
+    ...anime,
+    trailerUrl: null,
+    airingDay: airingDays[(animeList.length + index) % airingDays.length],
+    isPublished: true,
+  }));
+
+  for (const chunk of chunkArray(titleOnlyRows, 500)) {
+    await prisma.anime.createMany({
+      data: chunk,
+      skipDuplicates: true,
+    });
   }
 
   const tags: { id: string; name: string }[] = [];
@@ -840,7 +867,15 @@ async function main() {
     }
   }
 
-  console.log(`Seeded ${seededAnimeList.length} anime titles.`);
+  const titleOnlyImportTotal = await prisma.anime.count({
+    where: {
+      studio: "Title Import",
+    },
+  });
+
+  console.log(
+    `Seeded ${seededAnimeList.length} demo anime titles and ensured ${titleOnlyImportTotal} title-only Japan anime names.`,
+  );
 }
 
 main()
