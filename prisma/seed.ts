@@ -496,11 +496,90 @@ const animeList = [
   },
 ];
 
+const titleOnlyAnimeNames = [
+  "Mushoku Tensei: Jobless Reincarnation Season 3",
+  "Daemons of the Shadow Realm",
+  "That Time I Got Reincarnated as a Slime Season 4",
+  "You and I Are Polar Opposites Season 2",
+  "Sparks of Tomorrow",
+  "Rich Girl Caretaker: I'm Secretly the Caregiver of the Most Popular Girl in This Rich Kid School",
+  "The Cat and the Dragon",
+  "Jaadugar: A Witch in Mongolia",
+  "Welcome to Demon School! Iruma-kun Season 4",
+  "I Became a Legend After My 10 Year-Long Last Stand.",
+  "Crowned in a Hundred Days",
+  "Kaiju Girl Caramelise",
+  "Chainsmoker Cat",
+  "The Exiled Heavy Knight Knows How to Game the System",
+  "Tamon's B-Side",
+  "Mebius Dust",
+  "From Overshadowed to Overpowered: Second Reincarnation of a Talentless Sage",
+  "GANSO! BanG Dream Chan",
+  "BanG Dream! YUME\u221eMITA",
+  "Bungo Stray Dogs Wan! 2",
+  "Dara-san of Reiwa",
+  "Tomb Raider King",
+];
+
+const titleOnlyCoverImages = [
+  "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=80",
+];
+
+const titleOnlyGenres = [
+  ["Fantasy", "Drama"],
+  ["Action", "Dark"],
+  ["Fantasy", "Adventure"],
+  ["Romance", "Youth"],
+  ["Youth", "Drama"],
+  ["School", "Romance"],
+  ["Comedy", "Slice of Life"],
+  ["Sci-Fi", "Mystery"],
+  ["Music", "Youth"],
+  ["Adventure", "Action"],
+];
+
+function slugifyTitle(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 72);
+}
+
+function createTitleOnlyAnime(name: string, index: number) {
+  return {
+    slug: `aniwaves-title-${slugifyTitle(name)}`,
+    title: name,
+    titleEn: null,
+    synopsis:
+      "Title-only catalog entry. Add an original review-site synopsis before using detailed metadata.",
+    coverImage: titleOnlyCoverImages[index % titleOnlyCoverImages.length],
+    studio: "Title Import",
+    season: "2026",
+    episodes: 0,
+    releaseYear: 2026,
+    genres: titleOnlyGenres[index % titleOnlyGenres.length],
+  };
+}
+
 async function main() {
   const animeBySlug = new Map<string, { id: string }>();
   const reviewByKey = new Map<string, { id: string; animeId: string; userId: string }>();
 
-  for (const [index, anime] of animeList.entries()) {
+  const seededAnimeList = [
+    ...animeList,
+    ...titleOnlyAnimeNames.map((name, index) => createTitleOnlyAnime(name, index)),
+  ];
+
+  for (const [index, anime] of seededAnimeList.entries()) {
     const animeData = {
       ...anime,
       trailerUrl: null,
@@ -761,7 +840,7 @@ async function main() {
     }
   }
 
-  console.log(`Seeded ${animeList.length} anime titles.`);
+  console.log(`Seeded ${seededAnimeList.length} anime titles.`);
 }
 
 main()
