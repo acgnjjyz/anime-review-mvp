@@ -109,7 +109,7 @@ function readAnimeForm(formData: FormData, redirectPath: string): AnimeFormValue
     redirectWithMessage(redirectPath, "error", "Release year must be between 1950 and 2100.");
   }
 
-  if (!coverImage || !isValidHttpUrl(coverImage)) {
+  if (!coverImage || (coverImage !== "/images/catalog-placeholder.svg" && !isValidHttpUrl(coverImage))) {
     redirectWithMessage(redirectPath, "error", "Cover image URL must start with http or https.");
   }
 

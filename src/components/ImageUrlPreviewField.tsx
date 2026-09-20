@@ -8,6 +8,7 @@ type ImageUrlPreviewFieldProps = {
 };
 
 function isHttpUrl(value: string) {
+  if (value === "/images/catalog-placeholder.svg") return true;
   try {
     const url = new URL(value);
     return url.protocol === "http:" || url.protocol === "https:";
@@ -38,7 +39,8 @@ export function ImageUrlPreviewField({ defaultValue = "" }: ImageUrlPreviewField
           }}
           placeholder="https://..."
           required
-          type="url"
+          type="text"
+          inputMode="url"
         />
       </label>
 

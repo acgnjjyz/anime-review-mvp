@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { AiringDay, PrismaClient, UserRole } from "@prisma/client";
 import titleOnlyJapanAnimeData from "./title-only-japan-anime.json";
+import japaneseTitleData from "./japanese-title-matches.json";
+import posterData from "../public/data/anime-posters.json";
 
 const prisma = new PrismaClient();
 
@@ -518,17 +520,6 @@ const titleOnlyAnimeEntries: TitleOnlyAnimeEntry[] =
         }))
         .filter((entry) => entry.title);
 
-const titleOnlyCoverImages = [
-  "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-  "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=80",
-];
-
 const titleOnlyGenres = [
   ["Fantasy", "Drama"],
   ["Action", "Dark"],
@@ -560,7 +551,7 @@ function createTitleOnlyAnime(entry: TitleOnlyAnimeEntry, index: number) {
     titleEn: entry.titleEn,
     synopsis:
       "Title-only catalog entry. Add an original review-site synopsis before using detailed metadata.",
-    coverImage: titleOnlyCoverImages[index % titleOnlyCoverImages.length],
+    coverImage: "/images/catalog-placeholder.svg",
     studio: "Title Import",
     season: "2026",
     episodes: 0,
@@ -571,6 +562,8 @@ function createTitleOnlyAnime(entry: TitleOnlyAnimeEntry, index: number) {
 
 function createTitleOnlyAnimeList(entries: TitleOnlyAnimeEntry[]) {
   const usedSlugs = new Set<string>();
+  const japaneseTitles = new Map(japaneseTitleData.matches.map((match) => [match.slug, match.title]));
+  const posters = new Map(posterData.matches.map((match) => [match.slug, match.coverImage]));
 
   return entries.map((entry, index) => {
     const anime = createTitleOnlyAnime(entry, index);
@@ -588,6 +581,8 @@ function createTitleOnlyAnimeList(entries: TitleOnlyAnimeEntry[]) {
     return {
       ...anime,
       slug,
+      title: japaneseTitles.get(slug) ?? anime.title,
+      coverImage: posters.get(slug) ?? anime.coverImage,
     };
   });
 }

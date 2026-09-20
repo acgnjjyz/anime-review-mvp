@@ -11,6 +11,7 @@ import {
 import { notFound } from "next/navigation";
 
 import { CommentForm } from "@/components/CommentForm";
+import { AnimePoster } from "@/components/AnimePoster";
 import { CommentList } from "@/components/CommentList";
 import { EmptyState } from "@/components/EmptyState";
 import { FavoriteButton } from "@/components/FavoriteButton";
@@ -214,7 +215,7 @@ export default async function AnimeDetailPage({
         <div className="absolute inset-x-0 bottom-0 -z-10 h-36 bg-gradient-to-t from-[#050509] to-transparent" />
 
         <div className="mx-auto grid max-w-[1640px] gap-6 px-3 py-7 sm:px-4 lg:grid-cols-[260px_1fr] lg:px-6 lg:py-9 xl:grid-cols-[300px_1fr]">
-          <img
+          <AnimePoster
             alt={`${anime.title} poster`}
             className="aspect-[3/4] w-full max-w-sm rounded-3xl border border-white/10 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.4)]"
             src={anime.coverImage}
@@ -410,7 +411,7 @@ export default async function AnimeDetailPage({
                     key={item.id}
                   >
                     <span className="text-xs font-black text-violet-200">{index + 1}</span>
-                    <img
+                    <AnimePoster
                       alt={`${item.title} poster`}
                       className="h-14 w-10 rounded-lg object-cover"
                       src={item.coverImage}

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Clock3, MessageSquareText, Star, Tags, Trophy } from "lucide-react";
 
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { AnimePoster } from "@/components/AnimePoster";
 import { averageScore, formatScore } from "@/lib/score";
 
 type SidebarAnime = {
@@ -106,7 +107,7 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
                 <span className={`grid h-6 w-6 place-items-center rounded-lg text-[0.68rem] font-black ${rankClass(index)}`}>
                   {index + 1}
                 </span>
-                <img
+                <AnimePoster
                   alt={`${anime.title} poster`}
                   className="h-14 w-10 rounded-lg object-cover"
                   src={anime.coverImage}
@@ -193,7 +194,7 @@ function CompactAnimePanel({
               href={`/anime/${anime.slug}`}
               key={anime.id}
             >
-              <img
+              <AnimePoster
                 alt={`${anime.title} poster`}
                 className="h-12 w-9 shrink-0 rounded-md object-cover"
                 src={anime.coverImage}

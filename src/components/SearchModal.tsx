@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CornerDownLeft, Filter, Search, Tags, X } from "lucide-react";
+import { AnimePoster } from "@/components/AnimePoster";
 
 export type SearchModalItem = {
   slug: string;
@@ -217,7 +218,7 @@ export function SearchModal({ items }: SearchModalProps) {
                     key={item.slug}
                     onClick={() => setIsOpen(false)}
                   >
-                    <img
+                    <AnimePoster
                       alt={`${item.title} poster`}
                       className="h-12 w-9 shrink-0 rounded-lg object-cover"
                       src={item.coverImage}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
+import { AnimePoster } from "@/components/AnimePoster";
 
 type ScheduleAnime = {
   id: string;
@@ -71,7 +72,7 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
               href={`/anime/${anime.slug}`}
               key={anime.id}
             >
-              <img
+              <AnimePoster
                 alt={`${anime.title} poster`}
                 className="h-24 w-16 shrink-0 rounded-xl object-cover"
                 src={anime.coverImage}

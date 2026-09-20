@@ -24,7 +24,12 @@ export default function RootLayout({
         <footer className="portal-footer border-t border-white/10 bg-[#050509]">
           <div className="mx-auto flex max-w-[1640px] flex-col gap-2 px-4 py-7 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-6">
             <p className="font-black tracking-wide text-slate-300">アニサーチ</p>
-            <p>Reviews, comments, favorites, reports, and admin tools.</p>
+            <p>
+              Poster data: <a className="underline hover:text-white" href="https://www.tvmaze.com/" target="_blank" rel="noreferrer">TVmaze</a>
+              {" / "}
+              <a className="underline hover:text-white" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>
+              {" / "}<a className="underline hover:text-white" href="/credits">出典</a>
+            </p>
           </div>
         </footer>
         <BottomDock />

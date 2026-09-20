@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Calendar, Heart, MessageSquare, Sparkles } from "lucide-react";
 
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { AnimePoster } from "@/components/AnimePoster";
 import { averageScore } from "@/lib/score";
 
 type AnimeCardProps = {
@@ -38,7 +39,7 @@ export function AnimeCard({
     <article className="portal-panel portal-card-hover group overflow-hidden rounded-2xl bg-[#0b0b12]">
       <Link className="block" href={`/anime/${anime.slug}`}>
         <div className="relative aspect-[0.74] overflow-hidden">
-          <img
+          <AnimePoster
             alt={`${anime.title} poster`}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
             src={anime.coverImage}
