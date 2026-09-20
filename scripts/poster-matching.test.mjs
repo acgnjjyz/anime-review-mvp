@@ -6,6 +6,13 @@ const title = { slug: "one", anidbId: "1", title: "Example", originalTitle: "Exa
 const record = { title: "Example", synonyms: [], sources: ["https://anidb.net/anime/1"], type: "TV", animeSeason: { year: 2000 } };
 const show = { id: 1, name: "Example", type: "Animation", language: "Japanese", premiered: "2000-01-01", url: "https://www.tvmaze.com/shows/1/example", image: { original: "https://static.tvmaze.com/uploads/images/original_untouched/1/1.jpg" } };
 
+test("can use an exact alternate metadata source identifier", () => {
+  const source = "https://example.org/anime/1";
+  const result = matchPosters([{ slug: "one", title: "Example", metadataSource: source }], [{ ...record, sources: [source] }], [show]);
+  assert.equal(result.matches[0].tvmazeId, 1);
+  assert.equal(result.matches[0].identitySource, source);
+});
+
 test("uses the matching premiere year instead of a same-name remake", () => {
   const result = matchPosters([title], [record], [show, { ...show, id: 2, premiered: "2020-01-01" }]);
   assert.equal(result.matches[0].tvmazeId, 1);

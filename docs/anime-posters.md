@@ -28,3 +28,16 @@ updated only by the dedicated apply script; do not reseed production demo data.
 
 TVmaze does not cover every anime, movie or OVA. Unmatched records stay without
 a poster pending an additional permitted provider or a manually verified image.
+
+`npm run posters:expand` reuses the downloaded caches to resolve additional
+catalog identities by intersecting exact original-title and English-title aliases.
+It preserves existing published matches and never reassigns their TVmaze IDs.
+The full collector uses the same expanded identity lookup and preservation rules.
+Run `node --test scripts/poster-matching.test.mjs scripts/catalog-identities.test.mjs`
+before applying a new batch.
+
+Movies need a separate provider. TMDB requires account API credentials and
+compliance with its attribution and usage terms (commercial use requires a
+separate license): https://developer.themoviedb.org/docs/faq . No TMDB images
+are imported by the current scripts. Never paste API tokens into chat or commit
+them; provider setup and attribution must be completed before an import.

@@ -14,6 +14,7 @@
     "titles:preview": "node scripts/apply-japanese-titles.mjs",
     "titles:apply": "node scripts/apply-japanese-titles.mjs --apply",
     "posters:collect": "node scripts/collect-anime-posters.mjs",
+    "posters:expand": "node scripts/expand-anime-posters.mjs",
     "posters:preview": "node scripts/apply-anime-posters.mjs",
     "posters:apply": "node scripts/apply-anime-posters.mjs --apply",
     "db:generate": "prisma generate",

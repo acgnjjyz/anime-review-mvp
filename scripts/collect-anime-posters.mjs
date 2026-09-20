@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { setTimeout as delay } from "node:timers/promises";
 import { decompress } from "fzstd";
 import { matchPosters } from "./poster-matching.mjs";
+import { resolveCatalogIdentities } from "./catalog-identities.mjs";
 
 const root = new URL("../", import.meta.url);
 const cache = new URL("work/poster-cache/", root);
@@ -64,7 +65,21 @@ for (let page = 0; page < 1000 && !finished; page += 6) {
 if (!finished) throw new Error("Provider pagination did not finish");
 
 const titleData = JSON.parse(await readFile(new URL("prisma/japanese-title-matches.json", root), "utf8"));
-const { matches, pending } = matchPosters(titleData.matches, offline.data, shows);
+const catalog = JSON.parse(await readFile(new URL("prisma/title-only-japan-anime.json", root), "utf8"));
+const identities = resolveCatalogIdentities(catalog.entries, titleData.matches, offline.data);
+const matched = matchPosters(identities.resolved, offline.data, shows);
+let previous = [];
+try { previous = JSON.parse(await readFile(new URL("public/data/anime-posters.json", root), "utf8")).matches; }
+catch (error) { if (error.code !== "ENOENT") throw error; }
+const bySlug = new Map(previous.map(entry => [entry.slug, entry]));
+const occupiedIds = new Set(previous.map(entry => entry.tvmazeId));
+for (const entry of matched.matches) {
+  if (bySlug.has(entry.slug) || occupiedIds.has(entry.tvmazeId)) continue;
+  bySlug.set(entry.slug, entry);
+  occupiedIds.add(entry.tvmazeId);
+}
+const matches = [...bySlug.values()];
+const pending = [...identities.unresolved, ...matched.pending].filter(entry => !bySlug.has(entry.slug));
 const result = { provider: "TVmaze", source: "https://www.tvmaze.com/api", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/", matchingSource: offline.repository, matchingSourceLicense: offline.license, matchedAt: new Date().toISOString(), totalCatalog: titleData.total, matched: matches.length, pending: titleData.total - matches.length, matches };
 await mkdir(new URL("public/data/", root), { recursive: true });
 await writeFile(new URL("public/data/anime-posters.json", root), JSON.stringify(result, null, 2) + "\n");

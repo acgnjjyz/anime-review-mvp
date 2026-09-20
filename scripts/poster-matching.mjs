@@ -2,7 +2,9 @@ const normalize = (value) => value.normalize("NFKC").toLowerCase().replace(/\s+/
 
 export function matchPosters(titles, metadata, shows) {
   const byId = new Map();
+  const bySource = new Map();
   for (const anime of metadata) for (const source of anime.sources) {
+    bySource.set(source, [...(bySource.get(source) ?? []), anime]);
     const match = source.match(/^https?:\/\/anidb.net\/(?:anime\/)?(\d+)$/);
     if (match) byId.set(match[1], [...(byId.get(match[1]) ?? []), anime]);
   }
@@ -15,7 +17,7 @@ export function matchPosters(titles, metadata, shows) {
   const matches = [];
   const pending = [];
   for (const title of titles) {
-    const records = byId.get(title.anidbId) ?? [];
+    const records = title.metadataSource ? bySource.get(title.metadataSource) ?? [] : byId.get(title.anidbId) ?? [];
     if (records.length !== 1) { pending.push({ slug: title.slug, reason: "missing-or-ambiguous-metadata" }); continue; }
     const record = records[0];
     const aliases = [title.title, title.titleEn, title.originalTitle, record.title, ...record.synonyms].filter(Boolean);
@@ -31,7 +33,7 @@ export function matchPosters(titles, metadata, shows) {
     if (!image || !/^https:\/\/static\.tvmaze\.com\/uploads\/images\//.test(image)) {
       pending.push({ slug: title.slug, reason: "no-poster" }); continue;
     }
-    matches.push({ slug: title.slug, title: title.title, anidbId: title.anidbId, tvmazeId: show.id, sourceUrl: show.url, coverImage: image, year: record.animeSeason.year, matchedName: show.name });
+    matches.push({ slug: title.slug, title: title.title, anidbId: title.anidbId, ...(title.metadataSource ? { identitySource: title.metadataSource } : {}), tvmazeId: show.id, sourceUrl: show.url, coverImage: image, year: record.animeSeason.year, matchedName: show.name });
   }
   const counts = new Map();
   for (const match of matches) counts.set(match.tvmazeId, (counts.get(match.tvmazeId) ?? 0) + 1);
