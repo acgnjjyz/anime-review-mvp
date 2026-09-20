@@ -12,6 +12,7 @@ import { notFound } from "next/navigation";
 
 import { CommentForm } from "@/components/CommentForm";
 import { AnimePoster } from "@/components/AnimePoster";
+import { OfficialSourceLink } from "@/components/OfficialSourceLink";
 import { CommentList } from "@/components/CommentList";
 import { EmptyState } from "@/components/EmptyState";
 import { FavoriteButton } from "@/components/FavoriteButton";
@@ -229,6 +230,7 @@ export default async function AnimeDetailPage({
               <br />{officialImage.copyright}
             </p>
           ) : null}
+          <OfficialSourceLink slug={anime.slug} coverImage={anime.coverImage} />
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex flex-wrap gap-2">

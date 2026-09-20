@@ -3,6 +3,7 @@ import { ArrowUpRight, Calendar, Heart, MessageSquare, Sparkles } from "lucide-r
 
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { AnimePoster } from "@/components/AnimePoster";
+import { OfficialSourceLink } from "@/components/OfficialSourceLink";
 import { averageScore } from "@/lib/score";
 
 type AnimeCardProps = {
@@ -74,6 +75,7 @@ export function AnimeCard({
       </Link>
 
       <div className="space-y-3 p-3">
+        <OfficialSourceLink slug={anime.slug} coverImage={anime.coverImage} />
         <div className="min-h-[3.2rem]">
           <Link
             className="line-clamp-2 text-base font-black leading-snug text-white transition hover:text-sky-200"

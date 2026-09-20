@@ -56,3 +56,17 @@ source, copyright and image type. The apply script and seed read both datasets;
 existing custom images remain protected. `/credits` and applicable detail pages
 display the official attribution. Deploy attribution before applying the batch.
 Test the collector with `node --test scripts/ghibli-source.test.mjs`.
+
+## Official source links for missing images
+
+`public/data/official-anime-links.json` is a manually verified correspondence of
+catalog slugs to official/producer/licensed distributor work pages. Each record
+includes its verification date, publisher, identity and year. Do not generate
+official URLs from titles or label search results as official sources. Recheck
+the target page before adding entries, especially old domains or redirects.
+
+`OfficialSourceLink` displays these links for placeholder images in cards and
+detail pages. Links open in a protected new tab, outside existing detail anchors.
+No images are downloaded or embedded from these pages, and linking does not
+imply reuse permission. Unverified works retain the placeholder without a link.
+No database migration is required. Run `node --test scripts/official-links.test.mjs`.

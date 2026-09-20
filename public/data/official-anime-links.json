@@ -1,0 +1,10 @@
+{
+  "description": "Manually verified official work pages. Links only; no permission to reproduce their images is implied.",
+  "matches": [
+    { "slug": "aniwaves-japan-title-bungaku-shoujo-movie", "title": "劇場版 文学少女", "anidbId": "6959", "year": 2010, "url": "https://www.production-ig.co.jp/works/bungaku-shoujo-movie/index.html", "publisher": "Production I.G", "label": "制作会社の作品ページ", "checkedAt": "2026-09-20" },
+    { "slug": "aniwaves-japan-title-hack-g-u-trilogy", "title": ".hack//G.U. TRILOGY", "anidbId": "5459", "year": 2008, "url": "https://www.b-ch.com/titles/2039/", "publisher": "バンダイチャンネル", "label": "正規配信元の作品ページ", "checkedAt": "2026-09-20" },
+    { "slug": "aniwaves-japan-title-hotaru-no-haka", "title": "火垂るの墓", "anidbId": "332", "year": 1988, "url": "https://www.ghibli.jp/works/hotarunohaka/", "publisher": "スタジオジブリ", "label": "公式作品ページ", "checkedAt": "2026-09-20" },
+    { "slug": "aniwaves-japan-title-kimi-no-na-wa", "title": "君の名は。", "anidbId": "11829", "year": 2016, "url": "https://www.kiminona.com/", "publisher": "映画公式サイト", "label": "公式サイト", "checkedAt": "2026-09-20" },
+    { "slug": "aniwaves-japan-title-koe-no-katachi", "title": "映画 聲の形", "anidbId": "10937", "year": 2016, "url": "https://koenokatachi-movie.com/", "publisher": "映画公式サイト", "label": "公式サイト", "checkedAt": "2026-09-20" }
+  ]
+}
