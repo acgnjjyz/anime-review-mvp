@@ -75,7 +75,7 @@ export function AnimeCard({
       </Link>
 
       <div className="space-y-3 p-3">
-        <OfficialSourceLink slug={anime.slug} coverImage={anime.coverImage} />
+        <OfficialSourceLink slug={anime.slug} title={anime.title} coverImage={anime.coverImage} />
         <div className="min-h-[3.2rem]">
           <Link
             className="line-clamp-2 text-base font-black leading-snug text-white transition hover:text-sky-200"

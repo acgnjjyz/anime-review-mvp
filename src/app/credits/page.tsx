@@ -22,6 +22,16 @@ export default function CreditsPage() {
       </p>
       <Link className="inline-block text-cyan-300 hover:underline" href="/anime">作品一覧へ</Link>
       <section>
+        <h2 className="text-lg font-bold text-white">画像未登録作品の参照リンク</h2>
+        <p>
+          確認済みの公式・正規掲載元リンクを優先しています。それ以外の「作品情報」は、
+          anime-offline-databaseの作品IDから照合した第三者データベースへのリンクで、公式サイトではありません。
+          リンク先の現在の稼働状況は全件確認していません。「掲載元を検索」は検索サービスを開きます。
+          いずれも画像の転載許諾を意味しません。
+        </p>
+        <a className="text-cyan-300 underline" href="/data/catalog-reference-links.json">参照リンクの対応表（JSON）</a>
+      </section>
+      <section>
         <h2 className="text-lg font-bold text-white">スタジオジブリ公式作品静止画</h2>
         <p>
           一部作品には、スタジオジブリが公開する作品静止画を使用しています。

@@ -230,7 +230,7 @@ export default async function AnimeDetailPage({
               <br />{officialImage.copyright}
             </p>
           ) : null}
-          <OfficialSourceLink slug={anime.slug} coverImage={anime.coverImage} />
+          <OfficialSourceLink slug={anime.slug} title={anime.title} coverImage={anime.coverImage} showSearch />
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex flex-wrap gap-2">

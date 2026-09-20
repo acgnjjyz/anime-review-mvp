@@ -70,3 +70,16 @@ detail pages. Links open in a protected new tab, outside existing detail anchors
 No images are downloaded or embedded from these pages, and linking does not
 imply reuse permission. Unverified works retain the placeholder without a link.
 No database migration is required. Run `node --test scripts/official-links.test.mjs`.
+
+`npm run links:build` processes the entire original catalog against the cached
+offline metadata. Unique identities with a unique recognized MyAnimeList, AniDB
+or Anime-Planet URL become **reference** links, never official links. The output
+is `public/data/catalog-reference-links.json` with explicit coverage counts and
+the source license. Links are identity-checked but not individually uptime-checked.
+No AniList API bulk collection is used.
+
+For unresolved identities the UI supplies a title-encoded search link, explicitly
+labelled as search. Detail pages also offer Google, Yahoo! and Yandex. Search only
+runs when the visitor clicks; it neither embeds nor downloads search images.
+Official links take precedence. All these links remain hidden for entries with
+registered images. Test with `npx tsx --test scripts/catalog-source-links.test.ts`.
