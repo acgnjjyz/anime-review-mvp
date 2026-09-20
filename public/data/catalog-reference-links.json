@@ -7,9 +7,9 @@
   },
   "coverage": {
     "total": 8879,
-    "missingImages": 5662,
+    "missingImages": 5608,
     "official": 5,
-    "reference": 5452,
+    "reference": 5398,
     "searchOnly": 205
   },
   "matches": [

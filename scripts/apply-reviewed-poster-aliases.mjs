@@ -1,0 +1,40 @@
+import { readFile, writeFile } from "node:fs/promises";
+import { setTimeout as delay } from "node:timers/promises";
+import { resolveCatalogIdentities } from "./catalog-identities.mjs";
+import { validateReviewedPoster } from "./reviewed-poster-match.mjs";
+
+const json = async path => JSON.parse(await readFile(path, "utf8"));
+const catalog = await json("prisma/title-only-japan-anime.json");
+const localized = await json("prisma/japanese-title-matches.json");
+const metadata = await json("work/poster-cache/offline.json");
+const reviewed = await json("prisma/reviewed-poster-aliases.json");
+const data = await json("public/data/anime-posters.json");
+const identities = new Map(resolveCatalogIdentities(catalog.entries, localized.matches, metadata.data).resolved.map(x => [x.slug, x]));
+const usedSlugs = new Set(data.matches.map(x => x.slug));
+const usedIds = new Set(data.matches.map(x => x.tvmazeId));
+const bySource = new Map();
+for (const record of metadata.data) for (const source of record.sources) bySource.set(source, [...(bySource.get(source) ?? []), record]);
+const additions = [];
+for (const review of reviewed.matches) {
+  if (usedSlugs.has(review.slug)) continue;
+  if (usedIds.has(review.tvmazeId)) throw new Error("Reviewed show already assigned");
+  const identity = identities.get(review.slug);
+  if (!identity || identity.title !== review.title) throw new Error("Reviewed title changed");
+  const source = identity.metadataSource ?? `https://anidb.net/anime/${identity.anidbId}`;
+  const records = bySource.get(source) ?? [];
+  if (records.length !== 1 || records[0].title !== review.original || records[0].animeSeason.year !== review.year || ![records[0].title, ...records[0].synonyms].includes(review.alias)) throw new Error("Reviewed identity changed");
+  const response = await fetch(`https://api.tvmaze.com/shows/${review.tvmazeId}`, { signal: AbortSignal.timeout(30000) });
+  if (!response.ok) throw new Error(`Provider request failed: ${response.status}`);
+  const show = await response.json();
+  if (!validateReviewedPoster(review, show)) throw new Error(`Review needs rechecking: ${review.slug}`);
+  const image = await fetch(show.image.original, { method: "HEAD", signal: AbortSignal.timeout(30000) });
+  if (!image.ok || !image.headers.get("content-type")?.startsWith("image/")) throw new Error("Reviewed image unavailable");
+  additions.push({ slug: review.slug, title: review.title, anidbId: identity.anidbId, identitySource: source, tvmazeId: show.id, sourceUrl: show.url, coverImage: show.image.original, year: review.year, matchedName: show.name, matchingMethod: "reviewed-alias", reviewedAlias: review.alias, reviewedAt: reviewed.reviewedAt });
+  usedSlugs.add(review.slug);
+  usedIds.add(show.id);
+  console.log(JSON.stringify({ checked: additions.length, title: review.title }));
+  await delay(650);
+}
+const matches = [...data.matches, ...additions];
+await writeFile("public/data/anime-posters.json", JSON.stringify({ ...data, matchedAt: new Date().toISOString(), matched: matches.length, pending: catalog.entries.length - matches.length, matches }, null, 2) + "\n");
+console.log(JSON.stringify({ added: additions.length, tvmazeTotal: matches.length }));

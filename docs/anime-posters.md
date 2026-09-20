@@ -83,3 +83,14 @@ labelled as search. Detail pages also offer Google, Yahoo! and Yandex. Search on
 runs when the visitor clicks; it neither embeds nor downloads search images.
 Official links take precedence. All these links remain hidden for entries with
 registered images. Test with `npx tsx --test scripts/catalog-source-links.test.ts`.
+
+## Reviewed punctuation aliases
+
+`node scripts/find-poster-alias-candidates.mjs` writes discovery candidates to
+ignored `work/` only. Punctuation-insensitive results must never be auto-applied:
+punctuation can distinguish seasons and metadata may group multiple catalog entries.
+Explicitly reviewed pairs are stored in `prisma/reviewed-poster-aliases.json`.
+`npm run posters:reviewed` rechecks their source IDs, exact current TVmaze name,
+year, format, image availability and duplicate assignments before updating the
+public mapping. It does not modify the database. Then run `links:build`, deploy,
+and use the existing `posters:preview` / `posters:apply` commands.
