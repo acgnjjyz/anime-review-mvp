@@ -29,6 +29,7 @@ import { getCurrentUserProfile } from "@/lib/auth";
 import { hasDatabaseEnv } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { averageScore } from "@/lib/score";
+import officialImages from "../../../../public/data/official-anime-images.json";
 
 export const dynamic = "force-dynamic";
 
@@ -188,6 +189,7 @@ export default async function AnimeDetailPage({
   }
 
   const score = averageScore(anime.ratings);
+  const officialImage = officialImages.matches.find(image => image.slug === anime.slug && image.coverImage === anime.coverImage);
   const myReview = user
     ? anime.reviews.find((review) => review.userId === user.id)
     : null;
@@ -215,11 +217,19 @@ export default async function AnimeDetailPage({
         <div className="absolute inset-x-0 bottom-0 -z-10 h-36 bg-gradient-to-t from-[#050509] to-transparent" />
 
         <div className="mx-auto grid max-w-[1640px] gap-6 px-3 py-7 sm:px-4 lg:grid-cols-[260px_1fr] lg:px-6 lg:py-9 xl:grid-cols-[300px_1fr]">
+          <div>
           <AnimePoster
             alt={`${anime.title} poster`}
             className="aspect-[3/4] w-full max-w-sm rounded-3xl border border-white/10 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.4)]"
             src={anime.coverImage}
           />
+          {officialImage ? (
+            <p className="mt-2 max-w-sm break-words text-xs leading-5 text-slate-400">
+              <a href={officialImage.sourceUrl} className="text-cyan-300 hover:underline">画像出典：スタジオジブリ公式作品静止画</a>
+              <br />{officialImage.copyright}
+            </p>
+          ) : null}
+          </div>
           <div className="flex flex-col justify-center">
             <div className="flex flex-wrap gap-2">
               {!anime.isPublished ? (

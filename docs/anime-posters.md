@@ -41,3 +41,18 @@ compliance with its attribution and usage terms (commercial use requires a
 separate license): https://developer.themoviedb.org/docs/faq . No TMDB images
 are imported by the current scripts. Never paste API tokens into chat or commit
 them; provider setup and attribution must be completed before an import.
+
+## Official Studio Ghibli stills
+
+`npm run posters:official` visits the official works index and individual work
+pages, requiring the published still-use notice, a gallery image, copyright
+credit, and a unique catalog identity with matching title and verified year.
+It skips works already covered by TVmaze and does not collect poster artwork,
+trailers or video. HTML is cached in ignored `work/ghibli-cache/`; only image
+URLs are stored. These stills are not CC-licensed or public domain.
+
+The separate `public/data/official-anime-images.json` records each official
+source, copyright and image type. The apply script and seed read both datasets;
+existing custom images remain protected. `/credits` and applicable detail pages
+display the official attribution. Deploy attribution before applying the batch.
+Test the collector with `node --test scripts/ghibli-source.test.mjs`.

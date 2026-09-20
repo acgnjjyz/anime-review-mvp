@@ -3,6 +3,7 @@ import { AiringDay, PrismaClient, UserRole } from "@prisma/client";
 import titleOnlyJapanAnimeData from "./title-only-japan-anime.json";
 import japaneseTitleData from "./japanese-title-matches.json";
 import posterData from "../public/data/anime-posters.json";
+import officialImageData from "../public/data/official-anime-images.json";
 
 const prisma = new PrismaClient();
 
@@ -563,7 +564,7 @@ function createTitleOnlyAnime(entry: TitleOnlyAnimeEntry, index: number) {
 function createTitleOnlyAnimeList(entries: TitleOnlyAnimeEntry[]) {
   const usedSlugs = new Set<string>();
   const japaneseTitles = new Map(japaneseTitleData.matches.map((match) => [match.slug, match.title]));
-  const posters = new Map(posterData.matches.map((match) => [match.slug, match.coverImage]));
+  const posters = new Map([...posterData.matches, ...officialImageData.matches].map((match) => [match.slug, match.coverImage]));
 
   return entries.map((entry, index) => {
     const anime = createTitleOnlyAnime(entry, index);

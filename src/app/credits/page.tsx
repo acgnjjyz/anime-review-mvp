@@ -1,4 +1,5 @@
 import Link from "next/link";
+import officialImages from "../../../public/data/official-anime-images.json";
 
 export default function CreditsPage() {
   return (
@@ -20,6 +21,24 @@ export default function CreditsPage() {
         <a className="ml-1 text-cyan-300 underline" href="/data/anime-posters.json">対応表と出典（JSON）</a>
       </p>
       <Link className="inline-block text-cyan-300 hover:underline" href="/anime">作品一覧へ</Link>
+      <section>
+        <h2 className="text-lg font-bold text-white">スタジオジブリ公式作品静止画</h2>
+        <p>
+          一部作品には、スタジオジブリが公開する作品静止画を使用しています。
+          <a className="text-cyan-300 underline" href={officialImages.termsUrl}>公式の提供案内</a>
+          および各作品ページの利用案内に基づき、作品紹介用に掲載しています。
+          これらの画像はCC BY-SAの対象ではありません。著作権は各権利者に帰属します。
+        </p>
+        <a className="text-cyan-300 underline" href="/data/official-anime-images.json">公式画像の対応表（JSON）</a>
+        <ul className="mt-4 divide-y divide-white/10">
+          {officialImages.matches.map(image => (
+            <li key={image.slug} className="py-3">
+              <a className="text-cyan-300 hover:underline" href={image.sourceUrl}>{image.officialTitle}</a>
+              <p className="break-words text-xs text-slate-400">{image.copyright}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </section>
   );
 }

@@ -9,7 +9,8 @@ const replaceable = new Set(originalPhotos.map((photo) => `https://images.unspla
 replaceable.add(placeholder);
 try {
   const data = JSON.parse(await readFile(new URL("../public/data/anime-posters.json", import.meta.url), "utf8"));
-  const matches = new Map(data.matches.map((match) => [match.slug, match]));
+  const official = JSON.parse(await readFile(new URL("../public/data/official-anime-images.json", import.meta.url), "utf8"));
+  const matches = new Map([...data.matches, ...official.matches].map((match) => [match.slug, match]));
   const rows = await prisma.anime.findMany({ where: { studio: "Title Import" }, select: { id: true, slug: true, title: true, coverImage: true } });
   const changes = rows.flatMap((row) => {
     if (!replaceable.has(row.coverImage)) return [];
