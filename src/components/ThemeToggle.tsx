@@ -14,7 +14,7 @@ export function ThemeToggle() {
     <button
       aria-label={label}
       aria-pressed={theme === "light"}
-      className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-line/[0.15] bg-raised text-secondary transition hover:border-violet-400/50 hover:text-violet-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400"
+      className="grid h-9 w-9 shrink-0 place-items-center text-secondary transition hover:text-violet-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       title={label}
       type="button"

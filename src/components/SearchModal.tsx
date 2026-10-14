@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CornerDownLeft, Filter, Search, Tags, X } from "lucide-react";
@@ -52,13 +53,42 @@ export function openSearchModal(anchor?: SearchModalAnchor) {
 }
 
 export function SearchOpenButton({ className, children }: SearchOpenButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    function onQuickAccess(event: KeyboardEvent) {
+      const target = event.target;
+
+      if (
+        event.key.toLowerCase() !== "s" ||
+        event.isComposing ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        (target instanceof HTMLElement &&
+          (target.isContentEditable || target.closest("input, textarea, select")))
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      const rect = buttonRef.current?.getBoundingClientRect();
+      openSearchModal(rect?.width ? clampAnchor(rect.left, rect.bottom, rect.width) : undefined);
+    }
+
+    document.addEventListener("keydown", onQuickAccess);
+    return () => document.removeEventListener("keydown", onQuickAccess);
+  }, []);
+
   return (
     <button
+      aria-haspopup="dialog"
       className={className}
       onClick={(event) => {
         const rect = event.currentTarget.getBoundingClientRect();
         openSearchModal(clampAnchor(rect.left, rect.bottom, rect.width));
       }}
+      ref={buttonRef}
       type="button"
     >
       {children}
@@ -67,8 +97,10 @@ export function SearchOpenButton({ className, children }: SearchOpenButtonProps)
 }
 
 export function SearchModal({ items }: SearchModalProps) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [anchor, setAnchor] = useState<SearchModalAnchor | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -78,6 +110,7 @@ export function SearchModal({ items }: SearchModalProps) {
       const detail = (event as CustomEvent<SearchModalAnchor | undefined>).detail;
 
       setAnchor(detail ?? null);
+      setActiveIndex(-1);
       setIsOpen(true);
     }
 
@@ -133,6 +166,7 @@ export function SearchModal({ items }: SearchModalProps) {
       })
       .slice(0, 10);
   }, [items, query]);
+  const visibleResults = results.slice(0, 6);
 
   if (!isOpen) {
     return null;
@@ -153,15 +187,49 @@ export function SearchModal({ items }: SearchModalProps) {
     >
       <div
         aria-modal="true"
+        aria-label="Search anime"
         className="mx-auto w-full max-w-[640px] overflow-hidden rounded-b-2xl border border-t-0 border-line/10 bg-popover portal-floating"
         ref={dialogRef}
         role="dialog"
       >
-        <div className="flex h-12 items-center gap-3 px-4">
+        <form
+          className="flex h-12 items-center gap-3 px-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const selected = activeIndex >= 0 ? visibleResults[activeIndex] : undefined;
+            router.push(selected ? `/anime/${selected.slug}` : `/anime?q=${encodeURIComponent(query.trim())}`);
+            setIsOpen(false);
+          }}
+        >
           <Search className="h-5 w-5 text-muted" aria-hidden="true" />
           <input
+            aria-label="Search anime"
             className="min-w-0 flex-1 bg-transparent text-sm font-medium text-heading outline-none placeholder:text-muted"
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setActiveIndex(-1);
+            }}
+            onKeyDown={(event) => {
+              if (event.nativeEvent.isComposing) {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                }
+                return;
+              }
+
+              if (!query || !visibleResults.length || (event.key !== "ArrowDown" && event.key !== "ArrowUp")) {
+                return;
+              }
+
+              event.preventDefault();
+              setActiveIndex((current) =>
+                event.key === "ArrowDown"
+                  ? (current + 1) % visibleResults.length
+                  : current <= 0
+                    ? visibleResults.length - 1
+                    : current - 1,
+              );
+            }}
             placeholder="Search anime..."
             ref={inputRef}
             value={query}
@@ -169,7 +237,10 @@ export function SearchModal({ items }: SearchModalProps) {
           {query ? (
             <button
               className="text-sm font-medium text-muted underline decoration-slate-600 underline-offset-4 transition hover:text-heading"
-              onClick={() => setQuery("")}
+              onClick={() => {
+                setQuery("");
+                setActiveIndex(-1);
+              }}
               type="button"
             >
               Clear
@@ -183,7 +254,7 @@ export function SearchModal({ items }: SearchModalProps) {
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
-        </div>
+        </form>
 
         <div className="flex items-end justify-between border-b border-line/10 px-4 pb-2">
           <Link
@@ -211,9 +282,10 @@ export function SearchModal({ items }: SearchModalProps) {
               </div>
             ) : (
               <div className="space-y-1">
-                {results.slice(0, 6).map((item) => (
+                {visibleResults.map((item, index) => (
                   <Link
-                    className="group flex gap-3 rounded-xl p-2 transition hover:bg-wash/[0.06]"
+                    aria-current={activeIndex === index ? "true" : undefined}
+                    className={`group flex gap-3 p-2 transition hover:bg-wash/[0.06] ${activeIndex === index ? "bg-wash/[0.06]" : ""}`}
                     href={`/anime/${item.slug}`}
                     key={item.slug}
                     onClick={() => setIsOpen(false)}

@@ -4,6 +4,7 @@ import { Trophy } from "lucide-react";
 import { AnimeCard } from "@/components/AnimeCard";
 import { EmptyState } from "@/components/EmptyState";
 import { HeroCarousel } from "@/components/HeroCarousel";
+import { HomeAnimeFilter } from "@/components/HomeAnimeFilter";
 import { RightPortalSidebar } from "@/components/RightPortalSidebar";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { SetupNotice } from "@/components/SetupNotice";
@@ -142,6 +143,7 @@ export default async function HomePage() {
   let latestReviews: LatestReview[] = [];
   let favorites: { animeId: string }[] = [];
   let tagRanking: TagRankingItem[] = [];
+  let filterOptions: { genres: string[]; releaseYear: number }[] = [];
 
   try {
     animeList = await prisma.anime.findMany({
@@ -183,6 +185,10 @@ export default async function HomePage() {
           select: { animeId: true },
         })
       : [];
+    filterOptions = await prisma.anime.findMany({
+      where: { isPublished: true },
+      select: { genres: true, releaseYear: true },
+    });
   } catch {
     return (
       <SetupNotice
@@ -194,6 +200,12 @@ export default async function HomePage() {
   }
 
   const favoriteAnimeIds = new Set(favorites.map((favorite) => favorite.animeId));
+  const genres = Array.from(new Set(filterOptions.flatMap((anime) => anime.genres))).sort((a, b) =>
+    a.localeCompare(b, "ja"),
+  );
+  const years = Array.from(new Set(filterOptions.map((anime) => anime.releaseYear))).sort(
+    (a, b) => b - a,
+  );
   const topRated = animeList
     .map(withAverage)
     .filter((anime) => anime.average !== null)
@@ -236,6 +248,7 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto max-w-[1780px] px-3 pb-4 sm:px-4 lg:px-6">
+        <HomeAnimeFilter genres={genres} years={years} />
         <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0 space-y-6">
           <div className="pt-1">

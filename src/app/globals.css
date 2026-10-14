@@ -102,34 +102,23 @@ body {
 
 .portal-sidebar-flyout {
   position: absolute;
-  left: calc(100% + 0.55rem);
-  top: 0.55rem;
-  width: min(620px, calc(100vw - 236px));
-  min-height: 392px;
+  left: 100%;
+  top: 0;
+  width: min(620px, calc(100vw - 164px));
+  min-height: 328px;
   border-radius: 0;
-  border: 1px solid rgb(var(--color-line) / 0.1);
-  background:
-    linear-gradient(180deg, rgb(var(--color-panel) / 0.995), rgb(var(--color-popover) / 0.995)),
-    rgb(var(--color-popover));
-  padding: 1.25rem 1.75rem;
-  box-shadow:
-    30px 24px 90px rgb(var(--color-shadow) / var(--floating-shadow-opacity)),
-    inset 0 1px 0 rgb(var(--color-wash) / 0.04);
-  backdrop-filter: blur(8px);
+  background: rgb(var(--color-popover));
+  padding: 1rem 1.5rem;
 }
 
 @media (max-width: 767px) {
   .portal-sidebar-flyout {
-    position: absolute;
-    left: 0.75rem;
-    top: 4.2rem;
-    width: calc(100% - 1.5rem);
-    max-height: min(52vh, 360px);
+    position: static;
+    width: 100%;
+    max-height: min(38vh, 320px);
     overflow-y: auto;
     min-height: auto;
-    border-left: 1px solid rgb(var(--color-line) / 0.06);
-    padding: 1rem 1.5rem 1.25rem;
-    box-shadow: none;
+    padding: 0.5rem 1rem 1rem;
   }
 }
 
