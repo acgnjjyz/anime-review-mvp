@@ -151,7 +151,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
 
   return (
     <section
-      className={`portal-media relative isolate h-[430px] min-h-[430px] select-none overflow-hidden rounded-none [touch-action:pan-y] sm:h-[450px] sm:min-h-[450px] md:h-[470px] md:min-h-[470px] lg:h-[540px] lg:min-h-[540px] lg:rounded-[1.7rem] xl:h-[590px] xl:min-h-[590px] ${
+      className={`portal-media relative isolate h-[430px] min-h-[430px] select-none overflow-hidden rounded-2xl [touch-action:pan-y] sm:h-[450px] sm:min-h-[450px] md:h-[470px] md:min-h-[470px] lg:h-[540px] lg:min-h-[540px] lg:rounded-[1.7rem] xl:h-[590px] xl:min-h-[590px] ${
         isDragging ? "cursor-grabbing" : "cursor-default"
       }`}
       onMouseDown={startMouseDrag}
