@@ -151,7 +151,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
 
   return (
     <section
-      className={`portal-media relative isolate h-[430px] min-h-[430px] select-none overflow-hidden rounded-2xl [touch-action:pan-y] sm:h-[450px] sm:min-h-[450px] md:h-[470px] md:min-h-[470px] lg:h-[540px] lg:min-h-[540px] lg:rounded-[1.7rem] xl:h-[590px] xl:min-h-[590px] ${
+      className={`portal-media relative isolate h-[430px] min-h-[430px] select-none overflow-hidden rounded-none [touch-action:pan-y] sm:h-[450px] sm:min-h-[450px] md:h-[470px] md:min-h-[470px] lg:h-[540px] lg:min-h-[540px] xl:h-[590px] xl:min-h-[590px] ${
         isDragging ? "cursor-grabbing" : "cursor-default"
       }`}
       onMouseDown={startMouseDrag}
@@ -233,7 +233,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
 
               <div
                 aria-hidden="true"
-                className={`pointer-events-auto relative hidden h-[410px] overflow-hidden rounded-[1.65rem] border border-line/10 bg-wash/[0.04] p-2 shadow-[0_22px_68px_rgba(0,0,0,0.4)] lg:block xl:h-[500px] ${
+                className={`pointer-events-auto relative hidden h-[410px] overflow-hidden rounded-none border border-line/10 bg-wash/[0.04] p-2 shadow-[0_22px_68px_rgba(0,0,0,0.4)] lg:block xl:h-[500px] ${
                   isDragging ? "cursor-grabbing" : "cursor-grab"
                 }`}
                 onClick={(event) => {

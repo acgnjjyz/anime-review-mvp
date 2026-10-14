@@ -233,7 +233,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
       />
 
       <aside
-        className="fixed left-0 top-[76px] z-[80] max-h-[calc(100vh-96px)] w-[236px] overflow-visible rounded-r-[1.6rem] border border-l-0 border-line/[0.08] bg-raised portal-floating will-change-transform md:w-[204px]"
+        className="fixed left-0 top-[76px] z-[80] max-h-[calc(100vh-96px)] w-[236px] overflow-visible rounded-none border border-l-0 border-line/[0.08] bg-raised portal-floating will-change-transform md:w-[204px]"
         id="portal-sidebar-drawer"
         ref={drawerRef}
         style={{

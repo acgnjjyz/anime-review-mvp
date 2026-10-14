@@ -50,7 +50,7 @@ export function BottomDockClient({ items }: { items: BottomDockItem[] }) {
     <div className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5 lg:hidden">
       <nav
         aria-label="Bottom navigation"
-        className="pointer-events-auto mx-auto flex w-[calc(100vw-24px)] max-w-[680px] items-center justify-between gap-1 rounded-[1.75rem] border border-sky-300/25 bg-canvas/95 px-2 py-2 portal-floating backdrop-blur-2xl sm:w-auto sm:justify-center sm:gap-2 sm:px-3"
+        className="pointer-events-auto mx-auto flex w-[calc(100vw-24px)] max-w-[680px] items-center justify-between gap-1 rounded-none border border-sky-300/25 bg-canvas/95 px-2 py-2 portal-floating backdrop-blur-2xl sm:w-auto sm:justify-center sm:gap-2 sm:px-3"
       >
         {items.map((item) => {
           const Icon = iconMap[item.kind];
