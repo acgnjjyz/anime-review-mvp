@@ -8,6 +8,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { SearchModal, SearchOpenButton, type SearchModalItem } from "@/components/SearchModal";
 import { SubmitButton } from "@/components/SubmitButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const ja = {
   admin: "管理",
@@ -119,6 +120,10 @@ export function HeaderClient({ isAdmin, isLoggedIn, randomHref, searchIndex }: H
               >
                 <Search className="h-5 w-5" aria-hidden="true" strokeWidth={2.7} />
               </button>
+
+              <div className="portal-header-theme">
+                <ThemeToggle />
+              </div>
 
               {isAdmin ? (
                 <Link

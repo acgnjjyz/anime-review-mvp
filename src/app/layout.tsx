@@ -3,7 +3,6 @@ import { Nunito } from "next/font/google";
 
 import { BottomDock } from "@/components/BottomDock";
 import { Header } from "@/components/Header";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { themeInitializationScript } from "@/lib/theme";
 import "./globals.css";
 
@@ -36,10 +35,7 @@ export default function RootLayout({
         <main className="portal-main">{children}</main>
         <footer className="portal-footer border-t border-line/10 bg-canvas">
           <div className="mx-auto flex max-w-[1640px] flex-col gap-2 px-4 py-7 text-xs text-muted sm:flex-row sm:items-center sm:justify-between lg:px-6">
-            <div className="flex items-center gap-3">
-              <p className="font-black tracking-wide text-secondary">アニサーチ</p>
-              <ThemeToggle />
-            </div>
+            <p className="font-black tracking-wide text-secondary">アニサーチ</p>
             <p>
               Poster data: <a className="underline hover:text-heading" href="https://www.tvmaze.com/" target="_blank" rel="noreferrer">TVmaze</a>
               {" / "}

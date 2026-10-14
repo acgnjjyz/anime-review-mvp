@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { ChevronRight, Menu, X } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ChevronRight, Menu } from "lucide-react";
 
 type DrawerLinkItem = {
   href: string;
@@ -58,24 +58,34 @@ function isActivePath(pathname: string, href: string) {
   return pathname === hrefPath || pathname.startsWith(`${hrefPath}/`);
 }
 
-function GenreFlyout({ onSelect }: { onSelect: () => void }) {
+function GenreFlyout({ isOpen, onSelect }: { isOpen: boolean; onSelect: () => void }) {
   return (
-    <div className="portal-sidebar-flyout" id="portal-sidebar-genres">
-      <div className="portal-sidebar-genre-grid">
-        {genreItems.map((genre) => (
-          <Link
-            className="portal-sidebar-genre-link"
-            href={`/anime?genre=${encodeURIComponent(genre.value)}`}
-            key={genre.value}
-            onClick={onSelect}
-          >
-            {genre.label}
+    <div
+      aria-hidden={!isOpen}
+      className="portal-sidebar-flyout"
+      data-open={isOpen}
+      id="portal-sidebar-genres"
+      inert={!isOpen}
+    >
+      <div className="portal-sidebar-flyout-content">
+        <div className="portal-sidebar-flyout-inner">
+          <div className="portal-sidebar-genre-grid">
+            {genreItems.map((genre) => (
+              <Link
+                className="portal-sidebar-genre-link"
+                href={`/anime?genre=${encodeURIComponent(genre.value)}`}
+                key={genre.value}
+                onClick={onSelect}
+              >
+                {genre.label}
+              </Link>
+            ))}
+          </div>
+          <Link className="mt-3 inline-block text-xs text-violet-ink hover:text-heading" href="/anime#genres" onClick={onSelect}>
+            All genres
           </Link>
-        ))}
+        </div>
       </div>
-      <Link className="mt-3 inline-block text-xs text-violet-ink hover:text-heading" href="/anime#genres" onClick={onSelect}>
-        All genres
-      </Link>
     </div>
   );
 }
@@ -83,12 +93,37 @@ function GenreFlyout({ onSelect }: { onSelect: () => void }) {
 export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomHref: string }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [drawerHeight, setDrawerHeight] = useState(0);
   const [activePanel, setActivePanel] = useState<"genres" | null>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const visibleDrawerItems = isAdmin
     ? [...drawerItems, { href: "/admin", label: "ADMIN", key: "admin" }]
     : drawerItems;
+
+  const changeDrawerOpen = useCallback((nextOpen: boolean) => {
+    setIsAnimating(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    setIsOpen(nextOpen);
+    if (!nextOpen) {
+      setActivePanel(null);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav) {
+      return;
+    }
+
+    // Measure the full navigation, not the clipped height of the animated drawer.
+    const measureHeight = () => setDrawerHeight(nav.getBoundingClientRect().height);
+    measureHeight();
+    const observer = new ResizeObserver(measureHeight);
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!isOpen) {
@@ -97,8 +132,8 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
 
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setIsOpen(false);
-        setActivePanel(null);
+        changeDrawerOpen(false);
+        buttonRef.current?.focus();
       }
     }
 
@@ -109,8 +144,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
         return;
       }
 
-      setIsOpen(false);
-      setActivePanel(null);
+      changeDrawerOpen(false);
     }
 
     document.addEventListener("keydown", closeOnEscape);
@@ -120,7 +154,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
       document.removeEventListener("keydown", closeOnEscape);
       document.removeEventListener("pointerdown", closeOnOutsideClick);
     };
-  }, [isOpen]);
+  }, [changeDrawerOpen, isOpen]);
 
   return (
     <>
@@ -130,20 +164,14 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
         aria-label={isOpen ? "Close menu" : "Open menu"}
         className="portal-menu-toggle"
         onClick={() => {
-          setIsOpen((current) => !current);
+          changeDrawerOpen(!isOpen);
           setActivePanel(null);
         }}
         ref={buttonRef}
         type="button"
       >
         <Menu
-          className={`absolute h-8 w-8 ${isOpen ? "opacity-0" : "opacity-100"}`}
-          strokeWidth={2.4}
-          strokeLinecap="butt"
-          aria-hidden="true"
-        />
-        <X
-          className={`absolute h-9 w-9 ${isOpen ? "opacity-100" : "opacity-0"}`}
+          className="absolute h-8 w-8"
           strokeWidth={2.4}
           strokeLinecap="butt"
           aria-hidden="true"
@@ -158,15 +186,23 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
       />
 
       <aside
+        aria-hidden={!isOpen}
         className="portal-sidebar"
+        data-animating={isAnimating}
+        data-open={isOpen}
         id="portal-sidebar-drawer"
         ref={drawerRef}
         onMouseLeave={() => setActivePanel(null)}
+        onTransitionEnd={(event) => {
+          if (event.target === event.currentTarget && event.propertyName === "height") {
+            setIsAnimating(false);
+          }
+        }}
         style={{
-          display: isOpen ? "block" : "none",
+          height: isOpen ? `calc(${drawerHeight}px + var(--portal-sidebar-extra-height))` : "0px",
         }}
       >
-        <nav aria-label="Expanded side navigation" inert={!isOpen}>
+        <nav aria-label="Expanded side navigation" inert={!isOpen} ref={navRef}>
           {visibleDrawerItems.map((item) => {
             const active = !["newest", "updated", "added"].includes(item.key) && isActivePath(pathname, item.href);
 
@@ -190,12 +226,10 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
                     {item.label}
                     <ChevronRight className="portal-sidebar-arrow" aria-hidden="true" />
                   </button>
-                  {activePanel === "genres" && isOpen ? (
-                    <GenreFlyout onSelect={() => {
-                      setIsOpen(false);
-                      setActivePanel(null);
-                    }} />
-                  ) : null}
+                  <GenreFlyout
+                    isOpen={activePanel === "genres" && isOpen}
+                    onSelect={() => changeDrawerOpen(false)}
+                  />
                 </div>
               );
             }
@@ -207,8 +241,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
                 href={item.href}
                 key={item.key}
                 onClick={() => {
-                  setIsOpen(false);
-                  setActivePanel(null);
+                  changeDrawerOpen(false);
                 }}
                 onMouseEnter={() => setActivePanel(null)}
               >
@@ -220,8 +253,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
             className="portal-sidebar-item portal-sidebar-mobile-random"
             href={randomHref}
             onClick={() => {
-              setIsOpen(false);
-              setActivePanel(null);
+              changeDrawerOpen(false);
             }}
           >
             Random
