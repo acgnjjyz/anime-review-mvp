@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import type { PointerEvent as ReactPointerEvent } from "react";
 import {
+  ChevronLeft,
   ChevronRight,
-  GripVertical,
   Menu,
   PlusCircle,
   Radio,
@@ -57,23 +56,6 @@ const genreItems = [
   { label: "Classic", value: "名作" },
 ];
 
-const MOBILE_DRAWER_WIDTH = 236;
-const DESKTOP_DRAWER_WIDTH = 204;
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
-function getDrawerWidth() {
-  if (typeof window === "undefined") {
-    return DESKTOP_DRAWER_WIDTH;
-  }
-
-  return window.matchMedia("(min-width: 768px)").matches
-    ? DESKTOP_DRAWER_WIDTH
-    : MOBILE_DRAWER_WIDTH;
-}
-
 function isActivePath(pathname: string, href: string) {
   const hrefPath = href.split("?")[0]?.split("#")[0] || "/";
 
@@ -113,15 +95,11 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [activePanel, setActivePanel] = useState<"genres" | null>(null);
-  const [dragProgress, setDragProgress] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const drawerRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const progressRef = useRef(0);
   const visibleDrawerItems = isAdmin
     ? [...drawerItems, { href: "/admin", label: "ADMIN", key: "admin" }]
     : drawerItems;
-  const progress = dragProgress ?? (isOpen ? 1 : 0);
 
   useEffect(() => {
     if (!isOpen) {
@@ -153,50 +131,6 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
     };
   }, [isOpen]);
 
-  function startDrag(event: ReactPointerEvent<HTMLElement>) {
-    if (event.button !== 0) {
-      return;
-    }
-
-    event.preventDefault();
-
-    const drawerWidth = getDrawerWidth();
-    const startX = event.clientX;
-    const startProgress = isOpen ? 1 : 0;
-
-    progressRef.current = startProgress;
-    setIsDragging(true);
-    setDragProgress(startProgress);
-    document.body.style.userSelect = "none";
-
-    function move(pointerEvent: globalThis.PointerEvent) {
-      const nextProgress = clamp(
-        startProgress + (pointerEvent.clientX - startX) / drawerWidth,
-        0,
-        1,
-      );
-
-      progressRef.current = nextProgress;
-      setDragProgress(nextProgress);
-    }
-
-    function end() {
-      const shouldOpen = progressRef.current >= 0.45;
-
-      setIsOpen(shouldOpen);
-      setDragProgress(null);
-      setIsDragging(false);
-      document.body.style.userSelect = "";
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", end);
-      window.removeEventListener("pointercancel", end);
-    }
-
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", end);
-    window.addEventListener("pointercancel", end);
-  }
-
   return (
     <>
       <button
@@ -218,18 +152,11 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
         />
       </button>
 
-      <button
-        aria-label="Drag to open menu"
-        className="fixed left-0 top-[68px] z-[70] h-[calc(100vh-68px)] w-4 cursor-grab touch-none bg-transparent active:cursor-grabbing"
-        onPointerDown={startDrag}
-        type="button"
-      />
-
       <div
         className={`fixed inset-0 z-[65] bg-black/[0.72] backdrop-blur-md transition-opacity duration-300 md:hidden ${
-          isOpen || isDragging ? "pointer-events-auto" : "pointer-events-none"
+          isOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
-        style={{ opacity: progress }}
+        style={{ opacity: isOpen ? 1 : 0 }}
       />
 
       <aside
@@ -237,22 +164,27 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
         id="portal-sidebar-drawer"
         ref={drawerRef}
         style={{
-          transform: `translateX(${(progress - 1) * 100}%)`,
-          transition: isDragging ? "none" : "transform 360ms cubic-bezier(0.22, 1, 0.36, 1)",
+          transform: isOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 360ms cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
         <button
-          aria-label="Drag menu"
-          className="absolute -right-4 top-0 z-[2] grid h-full w-8 cursor-grab touch-none place-items-center text-secondary active:cursor-grabbing"
-          onPointerDown={startDrag}
+          aria-controls="portal-sidebar-drawer"
+          aria-expanded={isOpen}
+          aria-label={isOpen ? "Close side menu" : "Open side menu"}
+          className="absolute -right-8 top-1/2 z-[2] grid h-20 w-8 -translate-y-1/2 cursor-pointer place-items-center border border-line/20 bg-panel text-secondary portal-floating transition-colors hover:border-violet-400/50 hover:text-violet-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400 md:-right-6 md:w-6"
+          onClick={() => setIsOpen((current) => !current)}
+          title={isOpen ? "Close side menu" : "Open side menu"}
           type="button"
         >
-          <span className="grid h-20 w-5 place-items-center rounded-full border border-line/10 bg-depth/70 portal-floating">
-            <GripVertical className="h-4 w-4" aria-hidden="true" />
-          </span>
+          {isOpen ? (
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          )}
         </button>
 
-        <nav className="space-y-0 py-5" aria-label="Expanded side navigation">
+        <nav className="space-y-0 py-5" aria-label="Expanded side navigation" inert={!isOpen}>
           {visibleDrawerItems.map((item) => {
             const active = isActivePath(pathname, item.href);
 
@@ -296,11 +228,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
           })}
         </nav>
 
-        <div className="border-t border-line/[0.06] px-6 py-4 text-xs leading-5 text-secondary">
-          Drag the edge to open or close.
-        </div>
-
-        {activePanel === "genres" && progress > 0.96 ? (
+        {activePanel === "genres" && isOpen ? (
           <GenreFlyout onSelect={() => setIsOpen(false)} />
         ) : null}
       </aside>
