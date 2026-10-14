@@ -65,15 +65,10 @@ export function LanguageToggle() {
   return (
     <div
       aria-label="Language"
-      className="flex shrink-0 items-center overflow-hidden border border-line/10 bg-field text-xs font-medium text-muted"
+      className="portal-language-toggle"
     >
       <button
         aria-pressed={locale === "en"}
-        className={
-          locale === "en"
-            ? "bg-[#e2e8f0] px-1.5 py-0.5 text-[#020617]"
-            : "px-1.5 py-0.5 transition hover:bg-wash/10 hover:text-foreground"
-        }
         onClick={() => updateLocale("en")}
         type="button"
       >
@@ -81,11 +76,6 @@ export function LanguageToggle() {
       </button>
       <button
         aria-pressed={locale === "ja"}
-        className={
-          locale === "ja"
-            ? "bg-[#e2e8f0] px-1.5 py-0.5 text-[#020617]"
-            : "px-1.5 py-0.5 transition hover:bg-wash/10 hover:text-foreground"
-        }
         onClick={() => updateLocale("ja")}
         type="button"
       >

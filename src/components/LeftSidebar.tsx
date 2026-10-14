@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 
 type DrawerLinkItem = {
   href: string;
@@ -13,14 +13,14 @@ type DrawerLinkItem = {
 };
 
 const drawerItems: DrawerLinkItem[] = [
-  { href: "/", label: "HOME", key: "home" },
-  { href: "/anime#genres", label: "GENRE", key: "genre", panel: "genres" },
-  { href: "/anime", label: "TYPES", key: "types" },
-  { href: "/anime?sort=newest", label: "NEWEST", key: "newest" },
-  { href: "/anime?sort=reviews", label: "UPDATED", key: "updated" },
-  { href: "/schedule", label: "ONGOING", key: "ongoing" },
-  { href: "/anime?sort=newest", label: "ADDED", key: "added" },
-  { href: "/mypage", label: "REQUEST", key: "request" },
+  { href: "/", label: "Home", key: "home" },
+  { href: "/anime#genres", label: "Genre", key: "genre", panel: "genres" },
+  { href: "/anime", label: "Types", key: "types" },
+  { href: "/anime?sort=newest", label: "Newest", key: "newest" },
+  { href: "/anime?sort=reviews", label: "Updated", key: "updated" },
+  { href: "/schedule", label: "Ongoing", key: "ongoing" },
+  { href: "/anime?sort=newest", label: "Added", key: "added" },
+  { href: "/mypage", label: "Request", key: "request" },
 ];
 
 const genreItems = [
@@ -61,10 +61,10 @@ function isActivePath(pathname: string, href: string) {
 function GenreFlyout({ onSelect }: { onSelect: () => void }) {
   return (
     <div className="portal-sidebar-flyout" id="portal-sidebar-genres">
-      <div className="grid grid-cols-1 gap-x-4 gap-y-1 md:grid-cols-4">
+      <div className="portal-sidebar-genre-grid">
         {genreItems.map((genre) => (
           <Link
-            className="min-w-0 px-1 py-1.5 text-sm font-medium text-muted [overflow-wrap:anywhere] transition hover:text-heading"
+            className="portal-sidebar-genre-link"
             href={`/anime?genre=${encodeURIComponent(genre.value)}`}
             key={genre.value}
             onClick={onSelect}
@@ -80,7 +80,7 @@ function GenreFlyout({ onSelect }: { onSelect: () => void }) {
   );
 }
 
-export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
+export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomHref: string }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [activePanel, setActivePanel] = useState<"genres" | null>(null);
@@ -128,7 +128,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
         aria-controls="portal-sidebar-drawer"
         aria-expanded={isOpen}
         aria-label={isOpen ? "Close menu" : "Open menu"}
-        className="fixed left-3 top-3.5 z-[90] grid h-10 w-10 place-items-center text-secondary transition hover:text-heading focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400"
+        className="portal-menu-toggle"
         onClick={() => {
           setIsOpen((current) => !current);
           setActivePanel(null);
@@ -137,52 +137,36 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
         type="button"
       >
         <Menu
-          className={`absolute h-7 w-7 transition ${isOpen ? "scale-75 opacity-0" : "scale-100 opacity-100"}`}
+          className={`absolute h-8 w-8 ${isOpen ? "opacity-0" : "opacity-100"}`}
+          strokeWidth={2.4}
+          strokeLinecap="butt"
           aria-hidden="true"
         />
         <X
-          className={`absolute h-7 w-7 transition ${isOpen ? "scale-100 opacity-100" : "scale-75 opacity-0"}`}
+          className={`absolute h-9 w-9 ${isOpen ? "opacity-100" : "opacity-0"}`}
+          strokeWidth={2.4}
+          strokeLinecap="butt"
           aria-hidden="true"
         />
       </button>
 
       <div
-        className={`fixed inset-x-0 bottom-0 top-[68px] z-[65] bg-black/[0.72] backdrop-blur-md transition-opacity duration-300 md:hidden ${
+        className={`portal-menu-backdrop ${
           isOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
         style={{ opacity: isOpen ? 1 : 0 }}
       />
 
       <aside
-        className="fixed left-3 top-[68px] z-[80] w-[176px] bg-popover will-change-transform md:w-[128px]"
+        className="portal-sidebar"
         id="portal-sidebar-drawer"
         ref={drawerRef}
         onMouseLeave={() => setActivePanel(null)}
         style={{
-          transform: isOpen ? "translateX(0)" : "translateX(calc(-100% - 12px))",
-          transition: "transform 220ms ease-out",
+          display: isOpen ? "block" : "none",
         }}
       >
-        <button
-          aria-controls="portal-sidebar-drawer"
-          aria-expanded={isOpen}
-          aria-label={isOpen ? "Close side menu" : "Open side menu"}
-          className="absolute -right-8 top-1/2 z-[2] grid h-20 w-8 -translate-y-1/2 cursor-pointer place-items-center border border-line/20 bg-panel text-secondary portal-floating transition-colors hover:border-violet-400/50 hover:text-violet-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400 md:-right-6 md:w-6"
-          onClick={() => {
-            setIsOpen((current) => !current);
-            setActivePanel(null);
-          }}
-          title={isOpen ? "Close side menu" : "Open side menu"}
-          type="button"
-        >
-          {isOpen ? (
-            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <ChevronRight className="h-4 w-4" aria-hidden="true" />
-          )}
-        </button>
-
-        <nav className="max-h-[calc(100dvh-84px)] overflow-y-auto py-1 md:overflow-visible" aria-label="Expanded side navigation" inert={!isOpen}>
+        <nav aria-label="Expanded side navigation" inert={!isOpen}>
           {visibleDrawerItems.map((item) => {
             const active = !["newest", "updated", "added"].includes(item.key) && isActivePath(pathname, item.href);
 
@@ -192,23 +176,19 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
                   <button
                     aria-controls="portal-sidebar-genres"
                     aria-expanded={activePanel === "genres"}
-                    className={
-                      activePanel === "genres"
-                        ? "flex h-10 w-full items-center justify-between bg-depth/20 px-5 text-left text-base font-normal uppercase text-heading"
-                        : "flex h-10 w-full items-center justify-between px-5 text-left text-base font-normal uppercase text-muted transition hover:bg-depth/20 hover:text-heading"
-                    }
+                    className="portal-sidebar-item"
                     onClick={() => setActivePanel((current) =>
-                      window.matchMedia("(min-width: 768px)").matches || current !== "genres" ? "genres" : null,
+                      window.matchMedia("(min-width: 1200px)").matches || current !== "genres" ? "genres" : null,
                     )}
                     onPointerEnter={(event) => {
-                      if (event.pointerType === "mouse" && window.matchMedia("(min-width: 768px)").matches) {
+                      if (event.pointerType === "mouse" && window.matchMedia("(min-width: 1200px)").matches) {
                         setActivePanel("genres");
                       }
                     }}
                     type="button"
                   >
                     {item.label}
-                    <ChevronRight className="h-3 w-3 shrink-0 text-secondary" aria-hidden="true" />
+                    <ChevronRight className="portal-sidebar-arrow" aria-hidden="true" />
                   </button>
                   {activePanel === "genres" && isOpen ? (
                     <GenreFlyout onSelect={() => {
@@ -222,11 +202,8 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
 
             return (
               <Link
-                className={
-                  active
-                    ? "flex h-10 items-center bg-wash/5 px-5 text-base font-normal uppercase text-heading"
-                    : "flex h-10 items-center px-5 text-base font-normal uppercase text-muted transition hover:bg-depth/20 hover:text-heading"
-                }
+                aria-current={active ? "page" : undefined}
+                className="portal-sidebar-item"
                 href={item.href}
                 key={item.key}
                 onClick={() => {
@@ -239,6 +216,16 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
               </Link>
             );
           })}
+          <Link
+            className="portal-sidebar-item portal-sidebar-mobile-random"
+            href={randomHref}
+            onClick={() => {
+              setIsOpen(false);
+              setActivePanel(null);
+            }}
+          >
+            Random
+          </Link>
         </nav>
       </aside>
     </>

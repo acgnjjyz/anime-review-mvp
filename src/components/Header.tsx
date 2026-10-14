@@ -1,7 +1,6 @@
 import { UserRole } from "@prisma/client";
 
 import { HeaderClient } from "@/components/HeaderClient";
-import { LeftSidebar } from "@/components/LeftSidebar";
 import type { SearchModalItem } from "@/components/SearchModal";
 import { getCurrentUserProfile } from "@/lib/auth";
 import { hasDatabaseEnv } from "@/lib/env";
@@ -61,7 +60,6 @@ export async function Header() {
 
   return (
     <>
-      <LeftSidebar isAdmin={isAdmin} />
       <HeaderClient
         isAdmin={isAdmin}
         isLoggedIn={Boolean(user)}

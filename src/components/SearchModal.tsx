@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CornerDownLeft, Filter, Search, Tags, X } from "lucide-react";
+import { CornerDownLeft, Filter, Search, Tags } from "lucide-react";
 import { AnimePoster } from "@/components/AnimePoster";
 
 export type SearchModalItem = {
@@ -36,7 +36,7 @@ function normalize(value: string) {
 }
 
 function clampAnchor(left: number, top: number, width: number): SearchModalAnchor {
-  const gutter = 12;
+  const gutter = 10;
   const availableWidth = Math.max(280, window.innerWidth - gutter * 2);
   const nextWidth = Math.min(width, availableWidth);
   const nextLeft = Math.min(Math.max(gutter, left), window.innerWidth - nextWidth - gutter);
@@ -73,7 +73,7 @@ export function SearchOpenButton({ className, children }: SearchOpenButtonProps)
 
       event.preventDefault();
       const rect = buttonRef.current?.getBoundingClientRect();
-      openSearchModal(rect?.width ? clampAnchor(rect.left, rect.bottom, rect.width) : undefined);
+      openSearchModal(rect?.width ? clampAnchor(rect.left, rect.top, rect.width) : undefined);
     }
 
     document.addEventListener("keydown", onQuickAccess);
@@ -86,7 +86,7 @@ export function SearchOpenButton({ className, children }: SearchOpenButtonProps)
       className={className}
       onClick={(event) => {
         const rect = event.currentTarget.getBoundingClientRect();
-        openSearchModal(clampAnchor(rect.left, rect.bottom, rect.width));
+        openSearchModal(clampAnchor(rect.left, rect.top, rect.width));
       }}
       ref={buttonRef}
       type="button"
@@ -140,12 +140,20 @@ export function SearchModal({ items }: SearchModalProps) {
       }
     }
 
+    function onResize() {
+      const trigger = document.querySelector<HTMLButtonElement>(".portal-header-search");
+      const rect = trigger?.getBoundingClientRect();
+      setAnchor(rect?.width ? clampAnchor(rect.left, rect.top, rect.width) : null);
+    }
+
     document.addEventListener("keydown", onKeyDown);
     document.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("resize", onResize);
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("resize", onResize);
     };
   }, [isOpen]);
 
@@ -174,13 +182,13 @@ export function SearchModal({ items }: SearchModalProps) {
 
   return (
     <div
-      className={anchor ? "fixed z-[80]" : "fixed inset-x-0 top-[68px] z-[80] px-3 sm:px-6"}
+      className={anchor ? "portal-search-anchor" : "portal-search-mobile"}
       style={
         anchor
           ? {
-              left: `${anchor.left}px`,
+              left: `${anchor.left - 1}px`,
               top: `${anchor.top}px`,
-              width: `${anchor.width}px`,
+              width: `${anchor.width + 2}px`,
             }
           : undefined
       }
@@ -188,12 +196,12 @@ export function SearchModal({ items }: SearchModalProps) {
       <div
         aria-modal="true"
         aria-label="Search anime"
-        className="mx-auto w-full max-w-[640px] overflow-hidden rounded-b-2xl border border-t-0 border-line/10 bg-popover portal-floating"
+        className="portal-search-dialog"
         ref={dialogRef}
         role="dialog"
       >
         <form
-          className="flex h-12 items-center gap-3 px-4"
+          className="portal-search-input-row"
           onSubmit={(event) => {
             event.preventDefault();
             const selected = activeIndex >= 0 ? visibleResults[activeIndex] : undefined;
@@ -201,10 +209,10 @@ export function SearchModal({ items }: SearchModalProps) {
             setIsOpen(false);
           }}
         >
-          <Search className="h-5 w-5 text-muted" aria-hidden="true" />
+          <Search className="portal-header-search-icon" aria-hidden="true" strokeWidth={2.7} />
           <input
             aria-label="Search anime"
-            className="min-w-0 flex-1 bg-transparent text-sm font-medium text-heading outline-none placeholder:text-muted"
+            className="portal-search-input"
             onChange={(event) => {
               setQuery(event.target.value);
               setActiveIndex(-1);
@@ -234,38 +242,34 @@ export function SearchModal({ items }: SearchModalProps) {
             ref={inputRef}
             value={query}
           />
-          {query ? (
-            <button
-              className="text-sm font-medium text-muted underline decoration-slate-600 underline-offset-4 transition hover:text-heading"
-              onClick={() => {
-                setQuery("");
-                setActiveIndex(-1);
-              }}
-              type="button"
-            >
-              Clear
-            </button>
-          ) : null}
           <button
-            aria-label="Close search"
-            className="grid h-8 w-8 place-items-center rounded-xl text-muted hover:bg-wash/10 hover:text-heading"
-            onClick={() => setIsOpen(false)}
+            aria-label="Clear search"
+            className="portal-search-clear"
+            onClick={() => {
+              setQuery("");
+              setActiveIndex(-1);
+              if (!query) {
+                setIsOpen(false);
+              } else {
+                inputRef.current?.focus();
+              }
+            }}
             type="button"
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            Clear
           </button>
         </form>
 
-        <div className="flex items-end justify-between border-b border-line/10 px-4 pb-2">
+        <div className="portal-search-head">
           <Link
-            className="border-b border-violet-400 pb-2 text-sm font-medium text-heading"
+            className="border-b border-violet-400 pb-1 text-sm font-semibold text-heading"
             href="/anime"
             onClick={() => setIsOpen(false)}
           >
             Anime
           </Link>
           <Link
-            className="inline-flex items-center gap-1.5 pb-2 text-sm font-medium text-muted transition hover:text-heading"
+            className="inline-flex items-center gap-1.5 pb-1 text-sm font-medium text-muted transition hover:text-heading"
             href="/anime#anime-search"
             onClick={() => setIsOpen(false)}
           >
@@ -316,7 +320,7 @@ export function SearchModal({ items }: SearchModalProps) {
           </div>
         ) : null}
 
-        <div className="flex flex-wrap items-center gap-3 bg-raised px-4 py-3 text-xs font-medium text-muted">
+        <div className="portal-search-foot">
           <span className="inline-flex items-center gap-1">
             <kbd className="rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               ↓
