@@ -222,7 +222,7 @@ export default async function HomePage() {
 
   return (
     <div className="portal-shell">
-      <section className="mx-auto max-w-[1780px] px-3 py-4 sm:px-4 lg:px-6">
+      <section className="mx-auto w-full max-w-[1780px] px-3 pt-4 sm:px-4 lg:max-w-none lg:px-0">
         {featured ? (
           <HeroCarousel items={heroItems} />
         ) : (
@@ -233,7 +233,9 @@ export default async function HomePage() {
             title="No featured anime yet"
           />
         )}
+      </section>
 
+      <section className="mx-auto max-w-[1780px] px-3 pb-4 sm:px-4 lg:px-6">
         <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0 space-y-6">
           <div className="pt-1">

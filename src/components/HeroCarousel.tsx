@@ -183,13 +183,13 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
             <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#050509] via-[#050509]/[0.28] to-black/[0.35] lg:via-transparent lg:to-black/[0.45]" />
             <div className="absolute right-12 top-16 -z-10 h-56 w-56 rounded-full bg-violet-500/[0.18] blur-3xl" />
 
-            <div className="mx-auto grid h-full max-w-[1860px] items-end gap-8 px-4 pb-16 pt-8 sm:pb-[4.5rem] lg:grid-cols-[minmax(360px,0.62fr)_minmax(680px,1fr)] lg:items-center lg:px-6 lg:py-7 xl:grid-cols-[minmax(420px,0.6fr)_minmax(860px,1.08fr)]">
-              <div className="max-w-[680px] lg:max-w-3xl">
+            <div className="mx-auto grid h-full max-w-[1860px] items-end gap-8 px-4 pb-16 pt-8 sm:pb-[4.5rem] lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1fr)] lg:items-center lg:px-6 lg:py-7 xl:grid-cols-[minmax(0,0.6fr)_minmax(0,1.08fr)]">
+              <div className="min-w-0 max-w-[680px] lg:max-w-3xl">
                 <p className="hidden items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-1.5 text-xs font-black text-cyan-ink sm:inline-flex">
                   <Sparkles className="h-4 w-4" aria-hidden="true" />
                   Featured Picks
                 </p>
-                <h1 className="mt-3 max-w-[720px] text-3xl font-black leading-tight text-heading sm:text-4xl md:text-5xl xl:text-[4.35rem] xl:leading-[1.04]">
+                <h1 className="mt-3 max-w-[720px] break-words text-3xl font-black leading-tight text-heading sm:text-4xl md:text-5xl xl:text-[4.35rem] xl:leading-[1.04]">
                   {item.title}
                 </h1>
                 {item.titleEn ? (
