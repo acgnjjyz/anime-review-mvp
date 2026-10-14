@@ -17,8 +17,8 @@ export function MessageBanner({ error, message }: MessageBannerProps) {
         role={error ? "alert" : "status"}
         className={
           error
-            ? "rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100"
-            : "rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-100"
+            ? "rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-ink"
+            : "rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-ink"
         }
       >
         {error ?? message}

@@ -20,7 +20,7 @@ export function AdminAnimeDeleteForm({ animeId, animeTitle }: AdminAnimeDeleteFo
 
       {!isConfirming ? (
         <button
-          className="inline-flex h-9 items-center gap-2 rounded border border-red-200 bg-white px-3 text-xs font-black text-red-600 transition hover:bg-red-50"
+          className="inline-flex h-9 items-center gap-2 rounded border border-red-200 bg-panel px-3 text-xs font-black text-red-600 transition hover:bg-red-50"
           onClick={() => setIsConfirming(true)}
           type="button"
         >
@@ -40,7 +40,7 @@ export function AdminAnimeDeleteForm({ animeId, animeTitle }: AdminAnimeDeleteFo
           </p>
           <div className="flex flex-wrap gap-2">
             <button
-              className="inline-flex h-9 items-center gap-1 rounded border border-slate-200 bg-white px-3 text-xs font-black text-slate-600 transition hover:bg-slate-50"
+              className="inline-flex h-9 items-center gap-1 rounded border border-stroke/20 bg-panel px-3 text-xs font-black text-secondary transition hover:bg-raised"
               onClick={() => setIsConfirming(false)}
               type="button"
             >

@@ -25,7 +25,7 @@ export default async function AdminAnimeNewPage({ searchParams }: AdminAnimeNewP
 
   if (!user) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/login"
@@ -41,7 +41,7 @@ export default async function AdminAnimeNewPage({ searchParams }: AdminAnimeNewP
 
   if (!isAdmin) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/"
@@ -56,12 +56,12 @@ export default async function AdminAnimeNewPage({ searchParams }: AdminAnimeNewP
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-4xl px-4 py-9">
           <p className="text-sm font-black text-coral">Admin</p>
-          <h1 className="mt-2 text-3xl font-black text-ink">作品追加</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
+          <h1 className="mt-2 text-3xl font-black text-heading">作品追加</h1>
+          <p className="mt-3 text-sm leading-6 text-secondary">
             MVPでは基本項目だけを登録します。studioや話数などはサーバー側で初期値を入れます。
           </p>
         </div>

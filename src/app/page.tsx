@@ -51,11 +51,11 @@ function SectionHeader({
   return (
     <div className="mb-4 flex items-end justify-between gap-4">
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{eyebrow}</p>
-        <h2 className="mt-1 text-xl font-black text-white sm:text-2xl">{title}</h2>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-ink">{eyebrow}</p>
+        <h2 className="mt-1 text-xl font-black text-heading sm:text-2xl">{title}</h2>
       </div>
       {href ? (
-        <Link className="text-sm font-black text-sky-200 hover:text-white" href={href}>
+        <Link className="text-sm font-black text-sky-ink hover:text-heading" href={href}>
           View all
         </Link>
       ) : null}
@@ -93,7 +93,7 @@ function AnimeRail({
 function LatestReviews({ reviews }: { reviews: LatestReview[] }) {
   if (reviews.length === 0) {
     return (
-      <div className="portal-panel-soft rounded-2xl p-5 text-sm leading-6 text-slate-400">
+      <div className="portal-panel-soft rounded-2xl p-5 text-sm leading-6 text-muted">
         Reviews will appear here after users post them.
       </div>
     );
@@ -115,15 +115,15 @@ function LatestReviews({ reviews }: { reviews: LatestReview[] }) {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <ScoreBadge score={review.score} />
-              <span className="text-xs font-bold text-slate-500">
+              <span className="text-xs font-bold text-muted">
                 {review.updatedAt.toLocaleDateString("ja-JP")}
               </span>
             </div>
-            <h3 className="mt-2 line-clamp-1 text-base font-black text-white">{review.title}</h3>
-            <p className="mt-1 text-sm font-bold text-slate-400">
+            <h3 className="mt-2 line-clamp-1 text-base font-black text-heading">{review.title}</h3>
+            <p className="mt-1 text-sm font-bold text-muted">
               {review.user.name ?? "Anonymous"} on {review.anime.title}
             </p>
-            <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-400">{review.body}</p>
+            <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted">{review.body}</p>
           </div>
         </Link>
       ))}
@@ -272,11 +272,11 @@ export default async function HomePage() {
       <section className="mx-auto max-w-[1640px] px-3 pb-16 sm:px-4 lg:px-6">
         <div className="portal-panel grid gap-4 rounded-3xl p-6 md:grid-cols-[1fr_auto] md:items-center">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-300">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-ink">
               Ranking
             </p>
-            <h2 className="mt-2 text-2xl font-black text-white">See the full score board</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
+            <h2 className="mt-2 text-2xl font-black text-heading">See the full score board</h2>
+            <p className="mt-2 text-sm leading-6 text-muted">
               Average scores are calculated from review ratings and update after edits or deletes.
             </p>
           </div>

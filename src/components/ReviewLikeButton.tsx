@@ -17,8 +17,8 @@ export function ReviewLikeButton({ reviewId, count, isLiked, isLoggedIn }: Revie
       <SubmitButton
         className={
           isLiked
-            ? "inline-flex h-9 items-center gap-2 rounded-full border border-rose-300/35 bg-rose-500/20 px-3 text-xs font-black text-rose-100 transition hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
-            : "inline-flex h-9 items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 text-xs font-black text-slate-300 transition hover:border-rose-300/50 hover:text-rose-100 disabled:cursor-not-allowed disabled:opacity-50"
+            ? "inline-flex h-9 items-center gap-2 rounded-full border border-rose-300/[0.35] bg-rose-500/20 px-3 text-xs font-black text-rose-ink transition hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+            : "inline-flex h-9 items-center gap-2 rounded-full border border-stroke/25 bg-field/70 px-3 text-xs font-black text-secondary transition hover:border-rose-300/50 hover:text-rose-ink disabled:cursor-not-allowed disabled:opacity-50"
         }
         disabled={!isLoggedIn}
         pendingLabel="Updating..."

@@ -12,9 +12,9 @@ export default function ErrorPage({
     <div className="portal-shell">
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="rounded-3xl border border-red-400/30 bg-red-500/10 p-6 shadow-soft">
-          <p className="text-sm font-black text-red-200">Error</p>
-          <h1 className="mt-2 text-2xl font-black text-white">Something went wrong</h1>
-          <p className="mt-3 leading-7 text-slate-300">
+          <p className="text-sm font-black text-red-ink">Error</p>
+          <h1 className="mt-2 text-2xl font-black text-heading">Something went wrong</h1>
+          <p className="mt-3 leading-7 text-secondary">
             Please check the connection or input state, then try loading the page again.
           </p>
           <button

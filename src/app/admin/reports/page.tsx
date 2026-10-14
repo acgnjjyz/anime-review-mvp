@@ -92,7 +92,7 @@ function statusClassName(status: ReportStatus) {
   }
 
   if (status === ReportStatus.REJECTED) {
-    return "rounded bg-slate-200 px-2 py-1 text-xs font-black text-slate-600";
+    return "rounded bg-raised px-2 py-1 text-xs font-black text-secondary";
   }
 
   return "rounded bg-amber-100 px-2 py-1 text-xs font-black text-amber-700";
@@ -111,7 +111,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
 
   if (!user) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/login"
@@ -127,7 +127,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
 
   if (!isAdmin) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/"
@@ -247,31 +247,31 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
           <p className="text-sm font-black text-coral">Admin</p>
-          <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-ink">
+          <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-heading">
             <Flag className="h-7 w-7 text-mint" aria-hidden="true" />
             通報管理
           </h1>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
+          <p className="mt-3 text-sm leading-6 text-secondary">
             通報内容を確認し、対象の削除、対応済み、却下までこの画面から処理できます。
           </p>
           <form className="mt-6 grid gap-3 lg:grid-cols-[1fr_180px_180px_auto]" action="/admin/reports">
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               検索
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
                 placeholder="投稿者メール・理由本文・対象本文・作品名"
               />
             </label>
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               対象種別
               <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={targetTypeFilter}
                 name="targetType"
               >
@@ -280,10 +280,10 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
                 <option value={ReportTargetType.COMMENT}>COMMENT</option>
               </select>
             </label>
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               ステータス
               <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={statusFilter}
                 name="status"
               >
@@ -312,7 +312,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
       <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
         <MessageBanner error={params.error} message={params.message} />
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-bold text-slate-500">
+          <p className="text-sm font-bold text-muted">
             {totalCount === 0 ? "0件" : `${totalCount}件中 ${startIndex + 1}-${startIndex + reports.length}件`}
           </p>
           <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/admin">
@@ -339,16 +339,16 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
               const author = target?.user;
 
               return (
-                <article className="rounded border border-slate-200 bg-white p-5 shadow-soft" key={report.id}>
+                <article className="rounded border border-stroke/20 bg-panel p-5 shadow-soft" key={report.id}>
                   <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={statusClassName(report.status)}>{statusLabel(report.status)}</span>
-                        <span className="rounded bg-slate-100 px-2 py-1 text-xs font-black text-slate-600">
+                        <span className="rounded bg-raised px-2 py-1 text-xs font-black text-secondary">
                           {targetTypeLabel(report.targetType)}
                         </span>
                       </div>
-                      <h2 className="mt-3 text-lg font-black text-ink">{targetTitle ?? "削除済みの投稿"}</h2>
+                      <h2 className="mt-3 text-lg font-black text-heading">{targetTitle ?? "削除済みの投稿"}</h2>
                       {anime ? (
                         <Link
                           className="mt-1 inline-flex text-sm font-bold text-mint hover:text-teal-700"
@@ -357,12 +357,12 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
                           作品詳細へ: {anime.title}
                         </Link>
                       ) : (
-                        <p className="mt-1 text-sm font-bold text-slate-400">対象作品は削除済み、または対象投稿がありません。</p>
+                        <p className="mt-1 text-sm font-bold text-muted">対象作品は削除済み、または対象投稿がありません。</p>
                       )}
-                      <p className="mt-2 text-sm text-slate-500">
+                      <p className="mt-2 text-sm text-muted">
                         投稿者: {author?.name ?? "不明"} / {author?.email ?? "不明"}
                       </p>
-                      <p className="mt-2 text-sm text-slate-500">
+                      <p className="mt-2 text-sm text-muted">
                         通報者: {report.reporter.name ?? "匿名ユーザー"} / {report.reporter.email} ・{" "}
                         {report.createdAt.toLocaleString("ja-JP")}
                       </p>
@@ -373,15 +373,15 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
                             {report.reason}
                           </p>
                         </div>
-                        <div className="rounded bg-slate-50 p-3">
-                          <p className="text-xs font-black text-slate-500">対象本文</p>
-                          <p className="mt-2 line-clamp-6 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+                        <div className="rounded bg-raised p-3">
+                          <p className="text-xs font-black text-muted">対象本文</p>
+                          <p className="mt-2 line-clamp-6 whitespace-pre-wrap text-sm leading-6 text-foreground">
                             {targetBody ?? "対象本文は削除済みです。"}
                           </p>
                         </div>
                       </div>
                       {report.resolvedBy ? (
-                        <p className="mt-3 text-xs font-bold text-slate-400">
+                        <p className="mt-3 text-xs font-bold text-muted">
                           最終対応: {report.resolvedBy.name ?? report.resolvedBy.email}
                         </p>
                       ) : null}
@@ -415,10 +415,10 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-slate-200 bg-white p-4" aria-label="ページネーション">
+          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link
-                className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                 href={buildPageHref(currentPage - 1)}
               >
                 前へ
@@ -429,7 +429,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
             </span>
             {currentPage < totalPages ? (
               <Link
-                className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                 href={buildPageHref(currentPage + 1)}
               >
                 次へ

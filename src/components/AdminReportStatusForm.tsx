@@ -13,7 +13,7 @@ export function AdminReportStatusForm({ reportId, status }: AdminReportStatusFor
     <form action={updateReportStatus} className="flex flex-col gap-2 sm:flex-row sm:items-center">
       <input name="reportId" type="hidden" value={reportId} />
       <select
-        className="h-9 rounded border border-slate-300 bg-white px-2 text-xs font-bold outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+        className="h-9 rounded border border-stroke/20 bg-panel px-2 text-xs font-bold outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
         defaultValue={status}
         name="status"
       >

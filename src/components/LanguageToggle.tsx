@@ -65,14 +65,14 @@ export function LanguageToggle() {
   return (
     <div
       aria-label="Language"
-      className="flex shrink-0 items-center overflow-hidden rounded-md border border-violet-300/25 bg-[#050608] text-xs font-black text-slate-400 shadow-[0_0_20px_rgba(124,58,237,0.18)]"
+      className="flex shrink-0 items-center overflow-hidden rounded-md border border-violet-300/25 bg-canvas text-xs font-black text-muted shadow-[0_0_20px_rgba(124,58,237,0.18)]"
     >
       <button
         aria-pressed={locale === "en"}
         className={
           locale === "en"
             ? "bg-[#e2e8f0] px-2.5 py-1.5 text-[#020617]"
-            : "px-2.5 py-1.5 transition hover:bg-white/10 hover:text-slate-100"
+            : "px-2.5 py-1.5 transition hover:bg-wash/10 hover:text-foreground"
         }
         onClick={() => updateLocale("en")}
         type="button"
@@ -84,7 +84,7 @@ export function LanguageToggle() {
         className={
           locale === "ja"
             ? "bg-violet-400 px-2.5 py-1.5 text-[#020617]"
-            : "px-2.5 py-1.5 transition hover:bg-white/10 hover:text-slate-100"
+            : "px-2.5 py-1.5 transition hover:bg-wash/10 hover:text-foreground"
         }
         onClick={() => updateLocale("ja")}
         type="button"

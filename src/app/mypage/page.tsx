@@ -100,45 +100,45 @@ export default async function MyPage() {
 
   return (
     <div className="portal-shell">
-      <section className="border-b border-slate-800 bg-slate-950/60">
+      <section className="border-b border-stroke/25 bg-field/60">
         <div className="mx-auto max-w-7xl px-4 py-9">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-300">MyPage</p>
-          <h1 className="mt-2 text-3xl font-black text-white">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink">MyPage</p>
+          <h1 className="mt-2 text-3xl font-black text-heading">
             {profile.name ?? "User"}'s anime shelf
           </h1>
-          <p className="mt-2 text-sm text-slate-500">{profile.email}</p>
+          <p className="mt-2 text-sm text-muted">{profile.email}</p>
         </div>
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[320px_1fr]">
         <aside className="space-y-4">
           <div className="portal-panel rounded-2xl p-5">
-            <h2 className="text-xl font-black text-white">Activity Summary</h2>
+            <h2 className="text-xl font-black text-heading">Activity Summary</h2>
             <div className="mt-4 grid gap-3">
-              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
-                  <MessageSquare className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+              <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-secondary">
+                  <MessageSquare className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
                   Reviews
                 </span>
-                <span className="text-lg font-black text-white">{profile.reviews.length}</span>
+                <span className="text-lg font-black text-heading">{profile.reviews.length}</span>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
-                  <Heart className="h-4 w-4 text-rose-300" aria-hidden="true" />
+              <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-secondary">
+                  <Heart className="h-4 w-4 text-rose-ink" aria-hidden="true" />
                   Favorites
                 </span>
-                <span className="text-lg font-black text-white">{profile.favorites.length}</span>
+                <span className="text-lg font-black text-heading">{profile.favorites.length}</span>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
-                  <BookmarkCheck className="h-4 w-4 text-violet-300" aria-hidden="true" />
+              <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-secondary">
+                  <BookmarkCheck className="h-4 w-4 text-violet-ink" aria-hidden="true" />
                   Shelf
                 </span>
-                <span className="text-lg font-black text-white">{profile.animeShelves.length}</span>
+                <span className="text-lg font-black text-heading">{profile.animeShelves.length}</span>
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <span className="inline-flex items-center gap-2 font-bold text-slate-300">
-                  <Star className="h-4 w-4 text-amber-200" aria-hidden="true" />
+              <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
+                <span className="inline-flex items-center gap-2 font-bold text-secondary">
+                  <Star className="h-4 w-4 text-amber-ink" aria-hidden="true" />
                   Average
                 </span>
                 <ScoreBadge score={average} />
@@ -150,8 +150,8 @@ export default async function MyPage() {
         <div className="space-y-10">
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-white">Anime Shelf</h2>
-              <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/anime">
+              <h2 className="text-2xl font-black text-heading">Anime Shelf</h2>
+              <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/anime">
                 Browse anime
               </Link>
             </div>
@@ -173,7 +173,7 @@ export default async function MyPage() {
 
                   return (
                     <div className="portal-panel rounded-2xl p-4" key={group.status}>
-                      <h3 className="text-lg font-black text-white">{group.label}</h3>
+                      <h3 className="text-lg font-black text-heading">{group.label}</h3>
                       <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {items.map((shelf) => (
                           <AnimeCard anime={shelf.anime} key={shelf.id} />
@@ -188,8 +188,8 @@ export default async function MyPage() {
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-white">My Reviews</h2>
-              <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/anime">
+              <h2 className="text-2xl font-black text-heading">My Reviews</h2>
+              <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/anime">
                 Find anime
               </Link>
             </div>
@@ -210,12 +210,12 @@ export default async function MyPage() {
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-bold text-cyan-300">{review.anime.title}</p>
-                        <h3 className="mt-1 text-lg font-black text-white">{review.title}</h3>
+                        <p className="text-sm font-bold text-cyan-ink">{review.anime.title}</p>
+                        <h3 className="mt-1 text-lg font-black text-heading">{review.title}</h3>
                       </div>
                       <ScoreBadge score={review.score} />
                     </div>
-                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-400">
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted">
                       {review.body}
                     </p>
                   </Link>
@@ -226,8 +226,8 @@ export default async function MyPage() {
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-white">Recent Favorites</h2>
-              <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/favorites">
+              <h2 className="text-2xl font-black text-heading">Recent Favorites</h2>
+              <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/favorites">
                 View all
               </Link>
             </div>

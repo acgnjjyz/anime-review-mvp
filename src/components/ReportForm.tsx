@@ -14,19 +14,19 @@ type ReportFormProps = {
 export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: ReportFormProps) {
   if (!isLoggedIn) {
     return (
-      <Link className="text-xs font-bold text-slate-500 hover:text-cyan-200" href="/login">
+      <Link className="text-xs font-bold text-muted hover:text-cyan-ink" href="/login">
         Login to report
       </Link>
     );
   }
 
   if (isReported) {
-    return <span className="text-xs font-bold text-slate-500">Reported</span>;
+    return <span className="text-xs font-bold text-muted">Reported</span>;
   }
 
   return (
-    <details className="rounded-2xl border border-slate-700 bg-slate-950/60 p-3">
-      <summary className="cursor-pointer text-xs font-black text-slate-300">
+    <details className="rounded-2xl border border-stroke/25 bg-field/60 p-3">
+      <summary className="cursor-pointer text-xs font-black text-secondary">
         <span className="inline-flex items-center gap-1">
           <Flag className="h-3.5 w-3.5" aria-hidden="true" />
           Report
@@ -35,7 +35,7 @@ export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: Rep
       <form action={createReport} className="mt-3 space-y-3">
         <input name="targetId" type="hidden" value={targetId} />
         <input name="targetType" type="hidden" value={targetType} />
-        <label className="block text-xs font-black text-slate-300">
+        <label className="block text-xs font-black text-secondary">
           Reason
           <select
             className="portal-input mt-1 h-9 w-full rounded-xl px-2 text-xs"
@@ -48,7 +48,7 @@ export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: Rep
             <option value="Other">Other</option>
           </select>
         </label>
-        <label className="block text-xs font-black text-slate-300">
+        <label className="block text-xs font-black text-secondary">
           Details
           <textarea
             className="portal-input mt-1 min-h-20 w-full rounded-xl px-3 py-2 text-sm"

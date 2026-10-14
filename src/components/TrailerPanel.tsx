@@ -28,16 +28,16 @@ export function TrailerPanel({ trailerUrl }: { trailerUrl: string | null }) {
     <section className="portal-panel rounded-2xl p-5">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-300">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-ink">
             Official PV
           </p>
-          <h2 className="mt-1 text-lg font-black text-white">Trailer</h2>
+          <h2 className="mt-1 text-lg font-black text-heading">Trailer</h2>
         </div>
-        <PlayCircle className="h-9 w-9 text-cyan-200" aria-hidden="true" />
+        <PlayCircle className="h-9 w-9 text-cyan-ink" aria-hidden="true" />
       </div>
 
       {embedUrl ? (
-        <div className="mt-4 aspect-video overflow-hidden rounded-2xl border border-slate-800 bg-black">
+        <div className="mt-4 aspect-video overflow-hidden rounded-2xl border border-stroke/25 bg-black">
           <iframe
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
@@ -57,7 +57,7 @@ export function TrailerPanel({ trailerUrl }: { trailerUrl: string | null }) {
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
         </Link>
       ) : (
-        <p className="mt-3 text-sm leading-6 text-slate-400">
+        <p className="mt-3 text-sm leading-6 text-muted">
           No official PV is registered yet. This site does not host anime episodes.
         </p>
       )}

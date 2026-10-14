@@ -1,7 +1,7 @@
 export default function AnimeListLoading() {
   return (
     <div className="portal-shell">
-      <section className="border-b border-slate-200 bg-slate-950/60">
+      <section className="border-b border-stroke/20 bg-field/60">
         <div className="mx-auto max-w-7xl px-4 py-9">
           <div className="h-4 w-16 animate-pulse rounded-full bg-slate-700" />
           <div className="mt-3 h-9 w-48 animate-pulse rounded-full bg-slate-700" />

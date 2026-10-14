@@ -316,7 +316,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
 
   return (
     <div className="portal-shell">
-      <section className="border-b border-white/10 bg-[#08080d]/88">
+      <section className="border-b border-line/10 bg-canvas-muted/[0.88]">
         <div className="mx-auto max-w-[1640px] px-3 py-5 sm:px-4 lg:px-6">
           <form
             action="/anime"
@@ -325,14 +325,14 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
           >
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-white lg:text-3xl">
+                <h1 className="text-2xl font-semibold tracking-tight text-heading lg:text-3xl">
                   Advanced Anime Filter - Find Your Perfect Series
                 </h1>
-                <p className="mt-1 text-sm text-slate-500">Search and narrow the anime catalog.</p>
+                <p className="mt-1 text-sm text-muted">Search and narrow the anime catalog.</p>
               </div>
               {hasSearchConditions ? (
                 <Link
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 underline decoration-slate-700 underline-offset-4 transition hover:text-white"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-muted underline decoration-slate-700 underline-offset-4 transition hover:text-heading"
                   href="/anime"
                 >
                   <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -402,8 +402,8 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
         <div className="min-w-0 space-y-5">
           <MessageBanner error={params.error} message={params.message} />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="inline-flex items-center gap-2 text-sm font-bold text-slate-400">
-              <SlidersHorizontal className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+            <p className="inline-flex items-center gap-2 text-sm font-bold text-muted">
+              <SlidersHorizontal className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
               {totalCount === 0
                 ? "0 results"
                 : `${totalCount} results / ${startIndex + 1}-${startIndex + paginatedAnimeList.length}`}
@@ -438,7 +438,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                   className="portal-panel flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between"
                   aria-label="Pagination"
                 >
-                  <p className="text-sm font-bold text-slate-400">
+                  <p className="text-sm font-bold text-muted">
                     Page {currentPage} / {totalPages}
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
@@ -450,7 +450,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                         Prev
                       </Link>
                     ) : (
-                      <span className="inline-flex h-10 items-center rounded-full border border-slate-800 px-3 text-sm font-black text-slate-600">
+                      <span className="inline-flex h-10 items-center rounded-full border border-stroke/25 px-3 text-sm font-black text-secondary">
                         Prev
                       </span>
                     )}
@@ -462,7 +462,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                       return (
                         <span className="inline-flex items-center gap-2" key={pageNumber}>
                           {needsEllipsis ? (
-                            <span className="text-sm font-bold text-slate-500">...</span>
+                            <span className="text-sm font-bold text-muted">...</span>
                           ) : null}
                           {pageNumber === currentPage ? (
                             <span className="portal-button-primary inline-flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm font-black">
@@ -488,7 +488,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                         Next
                       </Link>
                     ) : (
-                      <span className="inline-flex h-10 items-center rounded-full border border-slate-800 px-3 text-sm font-black text-slate-600">
+                      <span className="inline-flex h-10 items-center rounded-full border border-stroke/25 px-3 text-sm font-black text-secondary">
                         Next
                       </span>
                     )}

@@ -57,13 +57,13 @@ export default async function SchedulePage() {
 
   return (
     <div className="portal-shell">
-      <section className="border-b border-slate-800 bg-slate-950/60">
+      <section className="border-b border-stroke/25 bg-field/60">
         <div className="mx-auto max-w-7xl px-4 py-10">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-300">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink">
             Schedule
           </p>
-          <h1 className="mt-2 text-4xl font-black text-white">Weekly Anime Schedule</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+          <h1 className="mt-2 text-4xl font-black text-heading">Weekly Anime Schedule</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
             A portal-style weekly lineup for reviews and discovery. No episode streaming is
             provided.
           </p>
@@ -74,7 +74,7 @@ export default async function SchedulePage() {
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Weekdays">
           {days.map((day) => (
             <a
-              className="shrink-0 rounded-full border border-slate-700 bg-slate-900/70 px-4 py-2 text-sm font-black text-slate-300 transition hover:border-cyan-300/40 hover:text-white"
+              className="shrink-0 rounded-full border border-stroke/25 bg-raised/70 px-4 py-2 text-sm font-black text-secondary transition hover:border-cyan-300/40 hover:text-heading"
               href={`#${day.key.toLowerCase()}`}
               key={day.key}
               role="tab"
@@ -91,8 +91,8 @@ export default async function SchedulePage() {
             return (
               <section className="portal-panel rounded-3xl p-5" id={day.key.toLowerCase()} key={day.key}>
                 <div className="flex items-center gap-3">
-                  <CalendarDays className="h-5 w-5 text-cyan-300" aria-hidden="true" />
-                  <h2 className="text-2xl font-black text-white">
+                  <CalendarDays className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
+                  <h2 className="text-2xl font-black text-heading">
                     {day.label} / {day.ja}
                   </h2>
                 </div>
@@ -115,10 +115,10 @@ export default async function SchedulePage() {
                           src={anime.coverImage}
                         />
                         <div className="min-w-0 py-1">
-                          <p className="line-clamp-2 font-black leading-snug text-white">
+                          <p className="line-clamp-2 font-black leading-snug text-heading">
                             {anime.title}
                           </p>
-                          <p className="mt-2 line-clamp-1 text-xs font-bold text-violet-200">
+                          <p className="mt-2 line-clamp-1 text-xs font-bold text-violet-ink">
                             {anime.genres[0] ?? "Anime"} / {anime.releaseYear}
                           </p>
                           <div className="mt-3">

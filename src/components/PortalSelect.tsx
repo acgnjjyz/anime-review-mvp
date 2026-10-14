@@ -52,13 +52,13 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
   }, [isOpen]);
 
   return (
-    <div className="relative text-xs font-black uppercase tracking-wide text-slate-400" ref={rootRef}>
+    <div className="relative text-xs font-black uppercase tracking-wide text-muted" ref={rootRef}>
       {hideLabel ? <span className="sr-only">{label}</span> : <span>{label}</span>}
       <input name={name} type="hidden" value={selectedValue} />
       <button
         aria-expanded={isOpen}
         aria-label={label}
-        className={`portal-input flex h-10 w-full items-center justify-between gap-2 rounded-xl px-3 text-left text-sm font-bold normal-case tracking-normal text-white ${
+        className={`portal-input flex h-10 w-full items-center justify-between gap-2 rounded-xl px-3 text-left text-sm font-bold normal-case tracking-normal text-heading ${
           hideLabel ? "" : "mt-1"
         }`}
         onClick={() => setIsOpen((current) => !current)}
@@ -66,13 +66,13 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
       >
         <span className="truncate">{selectedOption.label}</span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-slate-400 transition ${isOpen ? "rotate-180" : ""}`}
+          className={`h-4 w-4 shrink-0 text-muted transition ${isOpen ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
       </button>
 
       {isOpen ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+0.45rem)] z-[110] max-h-72 overflow-hidden rounded-2xl border border-white/15 bg-[#08080d] p-1.5 shadow-[0_24px_70px_rgba(0,0,0,0.82)]">
+        <div className="absolute left-0 right-0 top-[calc(100%+0.45rem)] z-[110] max-h-72 overflow-hidden rounded-2xl border border-line/[0.15] bg-canvas-muted p-1.5 portal-floating">
           <div className="max-h-64 overflow-y-auto pr-1">
             {options.map((option) => {
               const active = option.value === selectedValue;
@@ -81,8 +81,8 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
                 <button
                   className={
                     active
-                      ? "flex w-full items-center justify-between gap-2 rounded-xl bg-violet-500/18 px-3 py-2 text-left text-sm font-black normal-case tracking-normal text-white"
-                      : "flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold normal-case tracking-normal text-slate-300 transition hover:bg-white/[0.06] hover:text-white"
+                      ? "flex w-full items-center justify-between gap-2 rounded-xl bg-violet-500/[0.18] px-3 py-2 text-left text-sm font-black normal-case tracking-normal text-heading"
+                      : "flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm font-bold normal-case tracking-normal text-secondary transition hover:bg-wash/[0.06] hover:text-heading"
                   }
                   key={`${name}-${option.value}`}
                   onClick={() => {
@@ -92,7 +92,7 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
                   type="button"
                 >
                   <span className="truncate">{option.label}</span>
-                  {active ? <Check className="h-4 w-4 shrink-0 text-cyan-200" aria-hidden="true" /> : null}
+                  {active ? <Check className="h-4 w-4 shrink-0 text-cyan-ink" aria-hidden="true" /> : null}
                 </button>
               );
             })}

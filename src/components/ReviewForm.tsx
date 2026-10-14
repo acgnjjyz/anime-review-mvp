@@ -19,8 +19,8 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
   if (!isLoggedIn) {
     return (
       <div className="portal-panel rounded-2xl p-5" id="review-form">
-        <h2 className="text-xl font-black text-white">Write a Review</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-400">
+        <h2 className="text-xl font-black text-heading">Write a Review</h2>
+        <p className="mt-2 text-sm leading-6 text-muted">
           Please log in to post a score and review for this anime.
         </p>
         <Link
@@ -41,14 +41,14 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
         <input name="animeId" type="hidden" value={animeId} />
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-xl font-black text-white">
+            <h2 className="text-xl font-black text-heading">
               {isEditing ? "Edit Your Review" : "Write a Review"}
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-muted">
               Scores update the ranking automatically.
             </p>
           </div>
-          <label className="text-sm font-bold text-slate-300">
+          <label className="text-sm font-bold text-secondary">
             Score
             <input
               className="portal-input mt-1 h-11 w-28 rounded-xl px-3 text-base font-black"
@@ -59,11 +59,11 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
               required
               type="number"
             />
-            <span className="mt-1 block text-xs font-medium text-slate-500">1-100</span>
+            <span className="mt-1 block text-xs font-medium text-muted">1-100</span>
           </label>
         </div>
 
-        <label className="mt-4 block text-sm font-bold text-slate-300">
+        <label className="mt-4 block text-sm font-bold text-secondary">
           Title
           <input
             className="portal-input mt-1 h-11 w-full rounded-xl px-3"
@@ -73,10 +73,10 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
             placeholder="What stayed with you?"
             required
           />
-          <span className="mt-1 block text-xs font-medium text-slate-500">Up to 80 characters</span>
+          <span className="mt-1 block text-xs font-medium text-muted">Up to 80 characters</span>
         </label>
 
-        <label className="mt-4 block text-sm font-bold text-slate-300">
+        <label className="mt-4 block text-sm font-bold text-secondary">
           Body
           <textarea
             className="portal-input mt-1 min-h-36 w-full rounded-xl px-3 py-3 leading-7"
@@ -87,7 +87,7 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
             placeholder="Share what you liked, what stood out, and who you would recommend it to."
             required
           />
-          <span className="mt-1 block text-xs font-medium text-slate-500">10-2000 characters</span>
+          <span className="mt-1 block text-xs font-medium text-muted">10-2000 characters</span>
         </label>
 
         <SubmitButton
@@ -103,7 +103,7 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
         <form action={deleteReview} className="rounded-2xl border border-red-400/30 bg-red-500/10 p-4">
           <input name="animeId" type="hidden" value={animeId} />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-red-100">
+            <p className="text-sm font-medium text-red-ink">
               Delete your review and its rating from this anime.
             </p>
             <ConfirmSubmitButton

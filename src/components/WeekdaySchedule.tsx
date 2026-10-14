@@ -35,14 +35,14 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
     <section className="mx-auto max-w-7xl px-4 py-10">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-300">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink">
             Weekly Lineup
           </p>
-          <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">
+          <h2 className="mt-2 text-2xl font-black text-heading sm:text-3xl">
             Schedule Style Picks
           </h2>
         </div>
-        <p className="max-w-xl text-sm leading-6 text-slate-400">
+        <p className="max-w-xl text-sm leading-6 text-muted">
           UI preview only. These are review-site recommendations, not episode streaming links.
         </p>
       </div>
@@ -52,8 +52,8 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
           <span
             className={
               index === todayIndex
-                ? "shrink-0 rounded-full border border-cyan-300/40 bg-cyan-400/20 px-4 py-2 text-sm font-black text-cyan-100"
-                : "shrink-0 rounded-full border border-slate-700 bg-slate-900/70 px-4 py-2 text-sm font-black text-slate-400"
+                ? "shrink-0 rounded-full border border-cyan-300/40 bg-cyan-400/20 px-4 py-2 text-sm font-black text-cyan-ink"
+                : "shrink-0 rounded-full border border-stroke/25 bg-raised/70 px-4 py-2 text-sm font-black text-muted"
             }
             key={group.key}
             role="tab"
@@ -78,19 +78,19 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
                 src={anime.coverImage}
               />
               <div className="min-w-0 py-1">
-                <p className="line-clamp-2 font-black leading-snug text-white">{anime.title}</p>
-                <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                  <CalendarDays className="h-3.5 w-3.5 text-cyan-300" aria-hidden="true" />
+                <p className="line-clamp-2 font-black leading-snug text-heading">{anime.title}</p>
+                <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-muted">
+                  <CalendarDays className="h-3.5 w-3.5 text-cyan-ink" aria-hidden="true" />
                   {anime.releaseYear}
                 </p>
-                <p className="mt-2 line-clamp-1 text-xs font-bold text-violet-200">
+                <p className="mt-2 line-clamp-1 text-xs font-bold text-violet-ink">
                   {anime.genres[0] ?? "Anime"}
                 </p>
               </div>
             </Link>
           ))
         ) : (
-          <div className="portal-panel-soft rounded-2xl p-5 text-sm font-bold text-slate-400">
+          <div className="portal-panel-soft rounded-2xl p-5 text-sm font-bold text-muted">
             No picks for this day yet.
           </div>
         )}

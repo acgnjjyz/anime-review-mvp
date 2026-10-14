@@ -50,14 +50,14 @@ export function BottomDockClient({ items }: { items: BottomDockItem[] }) {
     <div className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5 lg:hidden">
       <nav
         aria-label="Bottom navigation"
-        className="pointer-events-auto mx-auto flex w-[calc(100vw-24px)] max-w-[680px] items-center justify-between gap-1 rounded-[1.75rem] border border-sky-300/25 bg-[#050608]/95 px-2 py-2 shadow-[0_0_45px_rgba(37,99,235,0.28),0_18px_80px_rgba(0,0,0,0.68)] backdrop-blur-2xl sm:w-auto sm:justify-center sm:gap-2 sm:px-3"
+        className="pointer-events-auto mx-auto flex w-[calc(100vw-24px)] max-w-[680px] items-center justify-between gap-1 rounded-[1.75rem] border border-sky-300/25 bg-canvas/95 px-2 py-2 portal-floating backdrop-blur-2xl sm:w-auto sm:justify-center sm:gap-2 sm:px-3"
       >
         {items.map((item) => {
           const Icon = iconMap[item.kind];
           const isActive = item.kind === "search" ? false : isActiveItem(item, pathname, searchParams);
           const itemClass = isActive
-            ? "group relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-cyan-300/40 bg-gradient-to-br from-violet-500/30 via-blue-500/20 to-cyan-400/20 px-2 py-2 text-cyan-50 shadow-[0_0_28px_rgba(34,211,238,0.22)] transition sm:h-14 sm:min-w-20 sm:flex-none sm:px-4"
-            : "group relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-transparent px-2 py-2 text-slate-400 transition hover:border-sky-300/25 hover:bg-white/10 hover:text-cyan-100 hover:shadow-[0_0_26px_rgba(59,130,246,0.18)] sm:h-14 sm:min-w-20 sm:flex-none sm:px-4";
+            ? "group relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-cyan-300/40 bg-gradient-to-br from-violet-500/30 via-blue-500/20 to-cyan-400/20 px-2 py-2 text-cyan-ink shadow-[0_0_28px_rgba(34,211,238,0.22)] transition sm:h-14 sm:min-w-20 sm:flex-none sm:px-4"
+            : "group relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-transparent px-2 py-2 text-muted transition hover:border-sky-300/25 hover:bg-wash/10 hover:text-cyan-ink hover:shadow-[0_0_26px_rgba(59,130,246,0.18)] sm:h-14 sm:min-w-20 sm:flex-none sm:px-4";
           const content = (
             <>
               <span
@@ -103,7 +103,7 @@ export function BottomDockClient({ items }: { items: BottomDockItem[] }) {
           );
         })}
         <span className="pointer-events-none hidden h-10 w-px bg-gradient-to-b from-transparent via-sky-300/30 to-transparent sm:block" />
-        <span className="pointer-events-none hidden items-center gap-1 rounded-full border border-violet-300/15 bg-violet-500/10 px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.16em] text-violet-100 sm:inline-flex">
+        <span className="pointer-events-none hidden items-center gap-1 rounded-full border border-violet-300/[0.15] bg-violet-500/10 px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.16em] text-violet-ink sm:inline-flex">
           <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
           Dock
         </span>

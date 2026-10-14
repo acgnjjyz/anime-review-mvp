@@ -17,7 +17,7 @@ export function FavoriteButton({ animeId, isFavorite, isLoggedIn }: FavoriteButt
         <SubmitButton
           className={
             isFavorite
-              ? "inline-flex h-11 items-center gap-2 rounded-full border border-rose-300/40 bg-rose-500/20 px-4 text-sm font-black text-rose-100 transition hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
+              ? "inline-flex h-11 items-center gap-2 rounded-full border border-rose-300/40 bg-rose-500/20 px-4 text-sm font-black text-rose-ink transition hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
               : "portal-button-primary inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50"
           }
           disabled={!isLoggedIn}
@@ -29,7 +29,7 @@ export function FavoriteButton({ animeId, isFavorite, isLoggedIn }: FavoriteButt
         </SubmitButton>
       </form>
       {!isLoggedIn ? (
-        <p className="mt-2 text-xs font-medium text-slate-500">Login to save this anime.</p>
+        <p className="mt-2 text-xs font-medium text-muted">Login to save this anime.</p>
       ) : null}
     </div>
   );

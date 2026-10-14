@@ -46,11 +46,11 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
           <article className="portal-panel-soft rounded-2xl p-4" key={comment.id}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-sm font-bold text-slate-300">
+                <p className="text-sm font-bold text-secondary">
                   {comment.user.name ?? "Anonymous"} · {formatDate(comment.createdAt)}
                 </p>
                 {isEdited ? (
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1 text-xs font-medium text-muted">
                     Edited: {formatDate(comment.updatedAt)}
                   </p>
                 ) : null}
@@ -66,7 +66,7 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
                   <form action={deleteComment}>
                     <input name="commentId" type="hidden" value={comment.id} />
                     <ConfirmSubmitButton
-                      className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-red-400/30 bg-red-500/10 px-3 text-xs font-black text-red-100 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-red-400/30 bg-red-500/10 px-3 text-xs font-black text-red-ink transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
                       confirmMessage="Delete this comment?"
                       pendingLabel="Deleting..."
                     >
@@ -78,16 +78,16 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
               </div>
             </div>
 
-            <p className="mt-3 whitespace-pre-wrap leading-7 text-slate-300">{comment.body}</p>
+            <p className="mt-3 whitespace-pre-wrap leading-7 text-secondary">{comment.body}</p>
 
             {isMine ? (
-              <details className="mt-4 rounded-2xl border border-slate-700 bg-slate-950/50 p-3">
-                <summary className="cursor-pointer text-sm font-black text-cyan-200">
+              <details className="mt-4 rounded-2xl border border-stroke/25 bg-field/50 p-3">
+                <summary className="cursor-pointer text-sm font-black text-cyan-ink">
                   Edit comment
                 </summary>
                 <form action={updateComment} className="mt-3">
                   <input name="commentId" type="hidden" value={comment.id} />
-                  <label className="block text-sm font-bold text-slate-300">
+                  <label className="block text-sm font-bold text-secondary">
                     Updated text
                     <textarea
                       className="portal-input mt-1 min-h-24 w-full rounded-xl px-3 py-3 leading-7"
@@ -98,7 +98,7 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
                     />
                   </label>
                   <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="text-xs font-medium text-slate-500">Up to 1000 characters</span>
+                    <span className="text-xs font-medium text-muted">Up to 1000 characters</span>
                     <SubmitButton
                       className="portal-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50"
                       pendingLabel="Updating..."

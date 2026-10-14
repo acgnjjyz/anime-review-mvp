@@ -51,11 +51,11 @@ export default async function FavoritesPage() {
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
           <p className="text-sm font-black text-coral">Favorites</p>
-          <h1 className="mt-2 text-3xl font-black text-ink">お気に入り</h1>
+          <h1 className="mt-2 text-3xl font-black text-heading">お気に入り</h1>
         </div>
       </section>
 

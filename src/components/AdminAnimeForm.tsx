@@ -38,7 +38,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
     <form action={action} className="portal-panel space-y-5 rounded-2xl p-5">
       {anime ? <input name="animeId" type="hidden" value={anime.id} /> : null}
 
-      <label className="block text-sm font-bold text-slate-300">
+      <label className="block text-sm font-bold text-secondary">
         Title
         <input
           className="portal-input mt-1 h-11 w-full rounded-xl px-3"
@@ -50,7 +50,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
         />
       </label>
 
-      <label className="block text-sm font-bold text-slate-300">
+      <label className="block text-sm font-bold text-secondary">
         Synopsis
         <textarea
           className="portal-input mt-1 min-h-36 w-full rounded-xl px-3 py-3 leading-7"
@@ -63,7 +63,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
       </label>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="block text-sm font-bold text-slate-300">
+        <label className="block text-sm font-bold text-secondary">
           Genres
           <input
             className="portal-input mt-1 h-11 w-full rounded-xl px-3"
@@ -72,12 +72,12 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
             placeholder="Action, Romance, Mystery"
             required
           />
-          <span className="mt-1 block text-xs font-medium text-slate-500">
+          <span className="mt-1 block text-xs font-medium text-muted">
             Separate multiple genres with commas.
           </span>
         </label>
 
-        <label className="block text-sm font-bold text-slate-300">
+        <label className="block text-sm font-bold text-secondary">
           Release year
           <input
             className="portal-input mt-1 h-11 w-full rounded-xl px-3"
@@ -92,7 +92,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="block text-sm font-bold text-slate-300">
+        <label className="block text-sm font-bold text-secondary">
           Airing day
           <select
             className="portal-input mt-1 h-11 w-full rounded-xl px-3"
@@ -108,7 +108,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
           </select>
         </label>
 
-        <label className="block text-sm font-bold text-slate-300">
+        <label className="block text-sm font-bold text-secondary">
           Official PV / Trailer URL
           <input
             className="portal-input mt-1 h-11 w-full rounded-xl px-3"
@@ -118,7 +118,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
             placeholder="https://www.youtube.com/watch?v=..."
             type="url"
           />
-          <span className="mt-1 block text-xs font-medium text-slate-500">
+          <span className="mt-1 block text-xs font-medium text-muted">
             Official trailers only. Episode uploads are not supported.
           </span>
         </label>
@@ -126,16 +126,16 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
 
       <ImageUrlPreviewField defaultValue={anime?.coverImage} />
 
-      <label className="flex items-start gap-3 rounded-xl border border-slate-700 bg-slate-950/60 p-4 text-sm font-bold text-slate-300">
+      <label className="flex items-start gap-3 rounded-xl border border-stroke/25 bg-field/60 p-4 text-sm font-bold text-secondary">
         <input
-          className="mt-1 h-4 w-4 rounded border-slate-500 bg-slate-950 text-violet-500 focus:ring-violet-500"
+          className="mt-1 h-4 w-4 rounded border-stroke/40 bg-field text-violet-500 focus:ring-violet-500"
           defaultChecked={anime?.isPublished ?? true}
           name="isPublished"
           type="checkbox"
         />
         <span>
           Published
-          <span className="mt-1 block text-xs font-medium leading-5 text-slate-500">
+          <span className="mt-1 block text-xs font-medium leading-5 text-muted">
             Unpublished anime stays visible in admin, but hidden from public lists, ranking, and
             non-admin detail pages.
           </span>
@@ -143,7 +143,7 @@ export function AdminAnimeForm({ anime }: AdminAnimeFormProps) {
       </label>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Link className="text-sm font-bold text-sky-200 hover:text-white" href="/admin/anime">
+        <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/admin/anime">
           Back to anime admin
         </Link>
         <SubmitButton

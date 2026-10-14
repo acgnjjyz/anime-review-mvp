@@ -50,7 +50,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
 
   if (!user) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/login"
@@ -66,7 +66,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
 
   if (!isAdmin) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/"
@@ -142,19 +142,19 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
           <p className="text-sm font-black text-coral">Admin</p>
-          <h1 className="mt-2 text-3xl font-black text-ink">レビュー管理</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
+          <h1 className="mt-2 text-3xl font-black text-heading">レビュー管理</h1>
+          <p className="mt-3 text-sm leading-6 text-secondary">
             投稿されたレビューを検索し、不適切なレビューを削除できます。
           </p>
           <form className="mt-6 flex flex-col gap-3 sm:flex-row" action="/admin/reviews">
-            <label className="flex-1 text-xs font-black text-slate-500">
+            <label className="flex-1 text-xs font-black text-muted">
               検索
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
                 placeholder="タイトル・本文・作品名・ユーザー"
@@ -179,7 +179,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
       <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
         <MessageBanner error={params.error} message={params.message} />
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-bold text-slate-500">
+          <p className="text-sm font-bold text-muted">
             {totalCount === 0
               ? "0件"
               : `${totalCount}件中 ${startIndex + 1}-${startIndex + reviews.length}件`}
@@ -199,7 +199,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
         ) : (
           <div className="space-y-4">
             {reviews.map((review) => (
-              <article className="rounded border border-slate-200 bg-white p-5 shadow-soft" key={review.id}>
+              <article className="rounded border border-stroke/20 bg-panel p-5 shadow-soft" key={review.id}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -208,12 +208,12 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
                       </Link>
                       <ScoreBadge score={review.score} />
                     </div>
-                    <h2 className="mt-3 text-lg font-black text-ink">{review.title}</h2>
-                    <p className="mt-2 text-sm text-slate-500">
+                    <h2 className="mt-3 text-lg font-black text-heading">{review.title}</h2>
+                    <p className="mt-2 text-sm text-muted">
                       {review.user.name ?? "匿名ユーザー"} / {review.user.email} ・{" "}
                       {review.createdAt.toLocaleDateString("ja-JP")}
                     </p>
-                    <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                    <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-foreground">
                       {review.body}
                     </p>
                   </div>
@@ -229,9 +229,9 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-slate-200 bg-white p-4" aria-label="ページネーション">
+          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
-              <Link className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint" href={buildPageHref(currentPage - 1)}>
+              <Link className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint" href={buildPageHref(currentPage - 1)}>
                 前へ
               </Link>
             ) : null}
@@ -239,7 +239,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
               {currentPage} / {totalPages}
             </span>
             {currentPage < totalPages ? (
-              <Link className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint" href={buildPageHref(currentPage + 1)}>
+              <Link className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint" href={buildPageHref(currentPage + 1)}>
                 次へ
               </Link>
             ) : null}

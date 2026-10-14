@@ -26,7 +26,7 @@ export function AdminUserRoleForm({ currentAdminId, userId, role }: AdminUserRol
         </p>
         <div className="flex flex-wrap gap-2">
           <button
-            className="rounded border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700"
+            className="rounded border border-stroke/20 bg-panel px-3 py-2 text-xs font-black text-foreground"
             onClick={() => {
               setNextRole(role);
               setIsConfirmingSelfDemotion(false);
@@ -50,7 +50,7 @@ export function AdminUserRoleForm({ currentAdminId, userId, role }: AdminUserRol
     <form action={updateAdminUserRole} className="flex flex-col gap-2 sm:flex-row sm:items-center">
       <input name="userId" type="hidden" value={userId} />
       <select
-        className="h-9 rounded border border-slate-300 bg-white px-2 text-xs font-bold outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+        className="h-9 rounded border border-stroke/20 bg-panel px-2 text-xs font-bold outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
         name="role"
         onChange={(event) => setNextRole(event.target.value as "USER" | "ADMIN")}
         value={nextRole}

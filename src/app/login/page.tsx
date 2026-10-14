@@ -18,30 +18,30 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
 
   return (
-    <div className="bg-paper">
+    <div className="bg-transparent">
       <section className="mx-auto max-w-md px-4 py-12">
-        <div className="rounded border border-slate-200 bg-white p-6 shadow-soft">
+        <div className="rounded border border-stroke/20 bg-panel p-6 shadow-soft">
           <p className="text-sm font-black text-coral">Login</p>
-          <h1 className="mt-2 text-3xl font-black text-ink">ログイン</h1>
+          <h1 className="mt-2 text-3xl font-black text-heading">ログイン</h1>
           <div className="mt-5">
             <MessageBanner error={params.error} message={params.message} />
           </div>
 
           <form action={signIn} className="mt-5 space-y-4">
-            <label className="block text-sm font-bold text-slate-700">
+            <label className="block text-sm font-bold text-foreground">
               メールアドレス
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 name="email"
                 placeholder="you@example.com"
                 required
                 type="email"
               />
             </label>
-            <label className="block text-sm font-bold text-slate-700">
+            <label className="block text-sm font-bold text-foreground">
               パスワード
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 minLength={6}
                 name="password"
                 placeholder="6文字以上"
@@ -58,7 +58,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </SubmitButton>
           </form>
 
-          <p className="mt-5 text-center text-sm text-slate-600">
+          <p className="mt-5 text-center text-sm text-secondary">
             アカウントがない場合は{" "}
             <Link className="font-bold text-mint hover:text-teal-700" href="/signup">
               新規登録

@@ -62,7 +62,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
   if (!user) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/login"
@@ -78,7 +78,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
   if (!isAdmin) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/"
@@ -164,31 +164,31 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
           <p className="text-sm font-black text-coral">Admin</p>
-          <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-ink">
+          <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-heading">
             <Users className="h-7 w-7 text-mint" aria-hidden="true" />
             ユーザー管理
           </h1>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
+          <p className="mt-3 text-sm leading-6 text-secondary">
             DBに同期されたユーザーのroleを管理します。最後のADMINはUSERへ変更できません。
           </p>
           <form className="mt-6 grid gap-3 md:grid-cols-[1fr_180px_auto]" action="/admin/users">
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               メール検索
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
                 placeholder="user@example.com"
               />
             </label>
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               role
               <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={roleFilter}
                 name="role"
               >
@@ -216,7 +216,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
       <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
         <MessageBanner error={params.error} message={params.message} />
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-bold text-slate-500">
+          <p className="text-sm font-bold text-muted">
             {totalCount === 0 ? "0件" : `${totalCount}件中 ${startIndex + 1}-${startIndex + users.length}件`}
           </p>
           <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/admin">
@@ -232,10 +232,10 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
             title={hasFilters ? "条件に合うユーザーがありません" : "ユーザーがありません"}
           />
         ) : (
-          <div className="overflow-hidden rounded border border-slate-200 bg-white shadow-soft">
+          <div className="overflow-hidden rounded border border-stroke/20 bg-panel shadow-soft">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[960px] border-collapse text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                <thead className="bg-raised text-xs uppercase text-muted">
                   <tr>
                     <th className="px-4 py-3 font-black">メール</th>
                     <th className="px-4 py-3 font-black">表示名</th>
@@ -246,27 +246,27 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                     <th className="px-4 py-3 font-black">操作</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-line/10">
                   {users.map((targetUser) => (
                     <tr className="align-top" key={targetUser.id}>
-                      <td className="px-4 py-4 font-bold text-ink">{targetUser.email}</td>
-                      <td className="px-4 py-4 text-slate-700">{targetUser.name ?? "未設定"}</td>
+                      <td className="px-4 py-4 font-bold text-heading">{targetUser.email}</td>
+                      <td className="px-4 py-4 text-foreground">{targetUser.name ?? "未設定"}</td>
                       <td className="px-4 py-4">
                         <span
                           className={
                             targetUser.role === UserRole.ADMIN
                               ? "rounded bg-emerald-100 px-2 py-1 text-xs font-black text-emerald-700"
-                              : "rounded bg-slate-100 px-2 py-1 text-xs font-black text-slate-600"
+                              : "rounded bg-raised px-2 py-1 text-xs font-black text-secondary"
                           }
                         >
                           {targetUser.role}
                         </span>
                       </td>
-                      <td className="px-4 py-4 text-slate-600">
+                      <td className="px-4 py-4 text-secondary">
                         {targetUser.createdAt.toLocaleDateString("ja-JP")}
                       </td>
-                      <td className="px-4 py-4 font-bold text-slate-700">{targetUser._count.reviews}</td>
-                      <td className="px-4 py-4 font-bold text-slate-700">{targetUser._count.comments}</td>
+                      <td className="px-4 py-4 font-bold text-foreground">{targetUser._count.reviews}</td>
+                      <td className="px-4 py-4 font-bold text-foreground">{targetUser._count.comments}</td>
                       <td className="px-4 py-4">
                         <AdminUserRoleForm
                           currentAdminId={user.id}
@@ -283,10 +283,10 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-slate-200 bg-white p-4" aria-label="ページネーション">
+          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link
-                className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                 href={buildPageHref(currentPage - 1)}
               >
                 前へ
@@ -297,7 +297,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
             </span>
             {currentPage < totalPages ? (
               <Link
-                className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                 href={buildPageHref(currentPage + 1)}
               >
                 次へ

@@ -88,15 +88,15 @@ function GenreFlyout({ onSelect }: { onSelect: () => void }) {
   return (
     <div className="portal-sidebar-flyout">
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">Genre</p>
-        <Link className="text-xs font-black text-violet-200 hover:text-white" href="/anime#genres">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-ink">Genre</p>
+        <Link className="text-xs font-black text-violet-ink hover:text-heading" href="/anime#genres">
           All
         </Link>
       </div>
       <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-3 md:grid-cols-4">
         {genreItems.map((genre) => (
           <Link
-            className="rounded-xl px-3 py-2 text-sm font-bold text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+            className="rounded-xl px-3 py-2 text-sm font-bold text-muted transition hover:bg-wash/[0.06] hover:text-heading"
             href={`/anime?genre=${encodeURIComponent(genre.value)}`}
             key={genre.value}
             onClick={onSelect}
@@ -203,7 +203,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
         aria-controls="portal-sidebar-drawer"
         aria-expanded={isOpen}
         aria-label={isOpen ? "Close menu" : "Open menu"}
-        className="fixed left-4 top-3.5 z-[90] grid h-10 w-10 place-items-center rounded-2xl border border-white/10 bg-[#151515] text-slate-100 shadow-[0_12px_34px_rgba(0,0,0,0.5)] transition hover:border-violet-300/45 hover:text-white"
+        className="fixed left-4 top-3.5 z-[90] grid h-10 w-10 place-items-center rounded-2xl border border-line/10 bg-chrome text-foreground portal-floating transition hover:border-violet-300/[0.45] hover:text-heading"
         onClick={() => setIsOpen((current) => !current)}
         ref={buttonRef}
         type="button"
@@ -226,14 +226,14 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
       />
 
       <div
-        className={`fixed inset-0 z-[65] bg-black/72 backdrop-blur-md transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[65] bg-black/[0.72] backdrop-blur-md transition-opacity duration-300 md:hidden ${
           isOpen || isDragging ? "pointer-events-auto" : "pointer-events-none"
         }`}
         style={{ opacity: progress }}
       />
 
       <aside
-        className="fixed left-0 top-[76px] z-[80] max-h-[calc(100vh-96px)] w-[236px] overflow-visible rounded-r-[1.6rem] border border-l-0 border-white/[0.08] bg-[#111111] shadow-[28px_0_82px_rgba(0,0,0,0.78)] will-change-transform md:w-[204px]"
+        className="fixed left-0 top-[76px] z-[80] max-h-[calc(100vh-96px)] w-[236px] overflow-visible rounded-r-[1.6rem] border border-l-0 border-line/[0.08] bg-raised portal-floating will-change-transform md:w-[204px]"
         id="portal-sidebar-drawer"
         ref={drawerRef}
         style={{
@@ -243,11 +243,11 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
       >
         <button
           aria-label="Drag menu"
-          className="absolute -right-4 top-0 z-[2] grid h-full w-8 cursor-grab touch-none place-items-center text-slate-600 active:cursor-grabbing"
+          className="absolute -right-4 top-0 z-[2] grid h-full w-8 cursor-grab touch-none place-items-center text-secondary active:cursor-grabbing"
           onPointerDown={startDrag}
           type="button"
         >
-          <span className="grid h-20 w-5 place-items-center rounded-full border border-white/10 bg-black/70 shadow-[0_0_20px_rgba(0,0,0,0.45)]">
+          <span className="grid h-20 w-5 place-items-center rounded-full border border-line/10 bg-depth/70 portal-floating">
             <GripVertical className="h-4 w-4" aria-hidden="true" />
           </span>
         </button>
@@ -262,8 +262,8 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
                   aria-expanded={activePanel === "genres"}
                   className={
                     activePanel === "genres"
-                      ? "mx-3 flex h-12 w-[calc(100%-1.5rem)] items-center justify-between rounded-2xl bg-[#181818] px-4 text-left text-sm font-black uppercase text-cyan-100"
-                      : "mx-3 flex h-12 w-[calc(100%-1.5rem)] items-center justify-between rounded-2xl px-4 text-left text-sm font-black uppercase text-slate-500 transition hover:bg-[#171717] hover:text-white"
+                      ? "mx-3 flex h-12 w-[calc(100%-1.5rem)] items-center justify-between rounded-2xl bg-wash/5 px-4 text-left text-sm font-black uppercase text-cyan-ink"
+                      : "mx-3 flex h-12 w-[calc(100%-1.5rem)] items-center justify-between rounded-2xl px-4 text-left text-sm font-black uppercase text-muted transition hover:bg-chrome hover:text-heading"
                   }
                   key={item.key}
                   onClick={() => setActivePanel((current) => (current === "genres" ? null : "genres"))}
@@ -271,7 +271,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
                   type="button"
                 >
                   {item.label}
-                  <ChevronRight className="h-4 w-4 text-slate-600" aria-hidden="true" />
+                  <ChevronRight className="h-4 w-4 text-secondary" aria-hidden="true" />
                 </button>
               );
             }
@@ -280,8 +280,8 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
               <Link
                 className={
                   active
-                    ? "mx-3 flex h-12 items-center gap-3 rounded-2xl bg-[#181818] px-4 text-sm font-black uppercase text-white"
-                    : "mx-3 flex h-12 items-center gap-3 rounded-2xl px-4 text-sm font-black uppercase text-slate-500 transition hover:bg-[#171717] hover:text-white"
+                    ? "mx-3 flex h-12 items-center gap-3 rounded-2xl bg-wash/5 px-4 text-sm font-black uppercase text-heading"
+                    : "mx-3 flex h-12 items-center gap-3 rounded-2xl px-4 text-sm font-black uppercase text-muted transition hover:bg-chrome hover:text-heading"
                 }
                 href={item.href}
                 key={item.key}
@@ -296,7 +296,7 @@ export function LeftSidebar({ isAdmin }: { isAdmin: boolean }) {
           })}
         </nav>
 
-        <div className="border-t border-white/[0.06] px-6 py-4 text-xs leading-5 text-slate-600">
+        <div className="border-t border-line/[0.06] px-6 py-4 text-xs leading-5 text-secondary">
           Drag the edge to open or close.
         </div>
 

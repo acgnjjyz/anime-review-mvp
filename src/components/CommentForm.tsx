@@ -13,8 +13,8 @@ export function CommentForm({ animeId, isLoggedIn }: CommentFormProps) {
   if (!isLoggedIn) {
     return (
       <div className="portal-panel rounded-2xl p-5">
-        <h3 className="text-lg font-black text-white">Join the Comments</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-400">
+        <h3 className="text-lg font-black text-heading">Join the Comments</h3>
+        <p className="mt-2 text-sm leading-6 text-muted">
           Log in to leave a comment on this anime.
         </p>
         <Link
@@ -30,7 +30,7 @@ export function CommentForm({ animeId, isLoggedIn }: CommentFormProps) {
   return (
     <form action={createComment} className="portal-panel rounded-2xl p-5">
       <input name="animeId" type="hidden" value={animeId} />
-      <label className="block text-sm font-bold text-slate-300">
+      <label className="block text-sm font-bold text-secondary">
         Comment
         <textarea
           className="portal-input mt-1 min-h-28 w-full rounded-xl px-3 py-3 leading-7"
@@ -41,7 +41,7 @@ export function CommentForm({ animeId, isLoggedIn }: CommentFormProps) {
         />
       </label>
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-xs font-medium text-slate-500">Up to 1000 characters</span>
+        <span className="text-xs font-medium text-muted">Up to 1000 characters</span>
         <SubmitButton
           className="portal-button-primary inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50"
           pendingLabel="Posting..."

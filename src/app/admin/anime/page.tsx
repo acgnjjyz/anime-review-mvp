@@ -54,7 +54,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
 
   if (!user) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/login"
@@ -70,7 +70,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
 
   if (!isAdmin) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/"
@@ -180,14 +180,14 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
   }
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
           <p className="text-sm font-black text-coral">Admin</p>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-3xl font-black text-ink">作品管理</h1>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
+              <h1 className="text-3xl font-black text-heading">作品管理</h1>
+              <p className="mt-3 text-sm leading-6 text-secondary">
                 作品の登録・編集・削除を行う管理テーブルです。
               </p>
             </div>
@@ -201,19 +201,19 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
           </div>
 
           <form className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(140px,1fr)_minmax(120px,1fr)_auto]" action="/admin/anime">
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               タイトル検索
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
                 placeholder="タイトルで検索"
               />
             </label>
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               ジャンル
               <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={selectedGenre}
                 name="genre"
               >
@@ -225,10 +225,10 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                 ))}
               </select>
             </label>
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               放送年
               <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={selectedYearText}
                 name="year"
               >
@@ -263,7 +263,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
       <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
         <MessageBanner error={params.error} message={params.message} />
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-bold text-slate-500">
+          <p className="text-sm font-bold text-muted">
             {totalCount === 0
               ? "0件"
               : `${totalCount}件中 ${startIndex + 1}-${startIndex + animeList.length}件`}
@@ -286,10 +286,10 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
           />
         ) : (
           <>
-            <div className="overflow-hidden rounded border border-slate-200 bg-white shadow-soft">
+            <div className="overflow-hidden rounded border border-stroke/20 bg-panel shadow-soft">
               <div className="overflow-x-auto">
                 <table className="min-w-[1080px] w-full border-collapse text-left text-sm">
-                  <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                  <thead className="bg-raised text-xs uppercase text-muted">
                     <tr>
                       <th className="px-4 py-3 font-black">画像</th>
                       <th className="px-4 py-3 font-black">タイトル</th>
@@ -301,7 +301,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                       <th className="px-4 py-3 font-black">操作</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-line/10">
                     {animeList.map((anime) => {
                       const score = averageScore(anime.ratings);
 
@@ -316,13 +316,13 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                           </td>
                           <td className="px-4 py-4">
                             <Link
-                              className="font-black text-ink hover:text-mint"
+                              className="font-black text-heading hover:text-mint"
                               href={`/anime/${anime.slug}`}
                             >
                               {anime.title}
                             </Link>
                             {anime.titleEn ? (
-                              <p className="mt-1 text-xs font-medium uppercase text-slate-400">
+                              <p className="mt-1 text-xs font-medium uppercase text-muted">
                                 {anime.titleEn}
                               </p>
                             ) : null}
@@ -331,7 +331,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                             <div className="flex flex-wrap gap-1">
                               {anime.genres.map((genre) => (
                                 <span
-                                  className="rounded bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600"
+                                  className="rounded bg-raised px-2 py-1 text-xs font-bold text-secondary"
                                   key={genre}
                                 >
                                   {genre}
@@ -339,7 +339,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                               ))}
                             </div>
                           </td>
-                          <td className="px-4 py-4 font-bold text-slate-700">{anime.releaseYear}</td>
+                          <td className="px-4 py-4 font-bold text-foreground">{anime.releaseYear}</td>
                           <td className="px-4 py-4">
                             <form action={toggleAdminAnimePublished} className="space-y-2">
                               <input name="animeId" type="hidden" value={anime.id} />
@@ -352,27 +352,27 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                                 className={
                                   anime.isPublished
                                     ? "inline-flex rounded bg-emerald-100 px-2 py-1 text-xs font-black text-emerald-700"
-                                    : "inline-flex rounded bg-slate-200 px-2 py-1 text-xs font-black text-slate-600"
+                                    : "inline-flex rounded bg-raised px-2 py-1 text-xs font-black text-secondary"
                                 }
                               >
                                 {anime.isPublished ? "公開" : "非公開"}
                               </span>
                               <button
-                                className="block rounded border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 transition hover:border-mint hover:text-mint"
+                                className="block rounded border border-stroke/20 bg-panel px-3 py-1.5 text-xs font-black text-foreground transition hover:border-mint hover:text-mint"
                                 type="submit"
                               >
                                 {anime.isPublished ? "非公開にする" : "公開する"}
                               </button>
                             </form>
                           </td>
-                          <td className="px-4 py-4 font-bold text-slate-700">{anime.reviews.length}</td>
+                          <td className="px-4 py-4 font-bold text-foreground">{anime.reviews.length}</td>
                           <td className="px-4 py-4">
                             <ScoreBadge count={anime.ratings.length} score={score} />
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex flex-wrap gap-2">
                               <Link
-                                className="inline-flex h-9 items-center gap-2 rounded border border-slate-200 px-3 text-xs font-black text-slate-700 transition hover:border-mint hover:text-mint"
+                                className="inline-flex h-9 items-center gap-2 rounded border border-stroke/20 px-3 text-xs font-black text-foreground transition hover:border-mint hover:text-mint"
                                 href={`/admin/anime/${anime.id}/edit`}
                               >
                                 <Edit3 className="h-4 w-4" aria-hidden="true" />
@@ -390,20 +390,20 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
             </div>
 
             {totalPages > 1 ? (
-              <nav className="flex flex-col gap-3 rounded border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between" aria-label="ページネーション">
-                <p className="text-sm font-bold text-slate-500">
+              <nav className="flex flex-col gap-3 rounded border border-stroke/20 bg-panel p-4 sm:flex-row sm:items-center sm:justify-between" aria-label="ページネーション">
+                <p className="text-sm font-bold text-muted">
                   {currentPage} / {totalPages}ページ
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
                   {currentPage > 1 ? (
                     <Link
-                      className="inline-flex h-10 items-center rounded border border-slate-200 px-3 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                      className="inline-flex h-10 items-center rounded border border-stroke/20 px-3 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                       href={buildPageHref(currentPage - 1)}
                     >
                       前へ
                     </Link>
                   ) : (
-                    <span className="inline-flex h-10 items-center rounded border border-slate-100 px-3 text-sm font-bold text-slate-300">
+                    <span className="inline-flex h-10 items-center rounded border border-stroke/20 px-3 text-sm font-bold text-secondary">
                       前へ
                     </span>
                   )}
@@ -415,7 +415,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                     return (
                       <span className="inline-flex items-center gap-2" key={pageNumber}>
                         {needsEllipsis ? (
-                          <span className="text-sm font-bold text-slate-400">...</span>
+                          <span className="text-sm font-bold text-muted">...</span>
                         ) : null}
                         {pageNumber === currentPage ? (
                           <span className="inline-flex h-10 min-w-10 items-center justify-center rounded bg-ink px-3 text-sm font-black text-white">
@@ -423,7 +423,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                           </span>
                         ) : (
                           <Link
-                            className="inline-flex h-10 min-w-10 items-center justify-center rounded border border-slate-200 px-3 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                            className="inline-flex h-10 min-w-10 items-center justify-center rounded border border-stroke/20 px-3 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                             href={buildPageHref(pageNumber)}
                           >
                             {pageNumber}
@@ -435,13 +435,13 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
 
                   {currentPage < totalPages ? (
                     <Link
-                      className="inline-flex h-10 items-center rounded border border-slate-200 px-3 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                      className="inline-flex h-10 items-center rounded border border-stroke/20 px-3 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                       href={buildPageHref(currentPage + 1)}
                     >
                       次へ
                     </Link>
                   ) : (
-                    <span className="inline-flex h-10 items-center rounded border border-slate-100 px-3 text-sm font-bold text-slate-300">
+                    <span className="inline-flex h-10 items-center rounded border border-stroke/20 px-3 text-sm font-bold text-secondary">
                       次へ
                     </span>
                   )}

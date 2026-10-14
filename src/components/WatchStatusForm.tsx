@@ -23,11 +23,11 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
   if (!isLoggedIn) {
     return (
       <div className="portal-panel rounded-2xl p-5">
-        <h2 className="flex items-center gap-2 text-lg font-black text-white">
-          <BookmarkCheck className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+        <h2 className="flex items-center gap-2 text-lg font-black text-heading">
+          <BookmarkCheck className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
           My Anime Shelf
         </h2>
-        <p className="mt-3 text-sm leading-6 text-slate-400">
+        <p className="mt-3 text-sm leading-6 text-muted">
           Log in to save watch status for this anime.
         </p>
       </div>
@@ -37,11 +37,11 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
   return (
     <form action={updateWatchStatus} className="portal-panel rounded-2xl p-5">
       <input name="animeId" type="hidden" value={animeId} />
-      <h2 className="flex items-center gap-2 text-lg font-black text-white">
-        <BookmarkCheck className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+      <h2 className="flex items-center gap-2 text-lg font-black text-heading">
+        <BookmarkCheck className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
         My Anime Shelf
       </h2>
-      <label className="mt-4 block text-sm font-bold text-slate-300">
+      <label className="mt-4 block text-sm font-bold text-secondary">
         Watch status
         <select
           className="portal-input mt-1 h-11 w-full rounded-xl px-3"

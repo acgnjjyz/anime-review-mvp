@@ -48,37 +48,37 @@ function rankClass(index: number) {
   }
 
   if (index === 1) {
-    return "bg-violet-400 text-white";
+    return "bg-violet-400 text-heading";
   }
 
   if (index === 2) {
     return "bg-cyan-300 text-slate-950";
   }
 
-  return "bg-white/10 text-slate-300";
+  return "bg-wash/10 text-secondary";
 }
 
 function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#0b0b12]/95 p-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
+    <section className="rounded-2xl border border-line/10 bg-panel/95 p-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-white">
-            <Trophy className="h-5 w-5 text-amber-200" aria-hidden="true" />
+          <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-heading">
+            <Trophy className="h-5 w-5 text-amber-ink" aria-hidden="true" />
             Top rated anime
           </h2>
-          <p className="mt-1 text-xs font-medium text-slate-500">Based on your filters</p>
+          <p className="mt-1 text-xs font-medium text-muted">Based on your filters</p>
         </div>
-        <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-200" href="/ranking">
+        <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-ink" href="/ranking">
           Full
         </Link>
       </div>
-      <div className="mt-3 grid grid-cols-4 rounded-xl border border-white/10 bg-black/35 p-1 text-[0.65rem] font-black uppercase text-slate-500">
+      <div className="mt-3 grid grid-cols-4 rounded-xl border border-line/10 bg-depth/[0.35] p-1 text-[0.65rem] font-black uppercase text-muted">
         {["Today", "Week", "Month", "All"].map((tab) => (
           <span
             className={
               tab === "All"
-                ? "rounded-lg bg-violet-500/25 px-2 py-1.5 text-center text-violet-100"
+                ? "rounded-lg bg-violet-500/25 px-2 py-1.5 text-center text-violet-ink"
                 : "px-2 py-1.5 text-center"
             }
             key={tab}
@@ -90,7 +90,7 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
 
       <div className="mt-3 space-y-2">
         {animeList.length === 0 ? (
-          <p className="rounded-xl border border-white/10 bg-black/35 p-3 text-xs font-bold text-slate-400">
+          <p className="rounded-xl border border-line/10 bg-depth/[0.35] p-3 text-xs font-bold text-muted">
             No entries yet.
           </p>
         ) : (
@@ -100,7 +100,7 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
 
             return (
               <Link
-                className="group grid grid-cols-[28px_46px_1fr] items-center gap-2 rounded-xl border border-white/[0.08] bg-black/35 p-2 transition hover:border-violet-300/40 hover:bg-white/[0.04]"
+                className="group grid grid-cols-[28px_46px_1fr] items-center gap-2 rounded-xl border border-line/[0.08] bg-depth/[0.35] p-2 transition hover:border-violet-300/40 hover:bg-wash/[0.04]"
                 href={`/anime/${anime.slug}`}
                 key={anime.id}
               >
@@ -113,12 +113,12 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
                   src={anime.coverImage}
                 />
                 <span className="min-w-0">
-                  <span className="line-clamp-2 text-xs font-black leading-snug text-white group-hover:text-cyan-100">
+                  <span className="line-clamp-2 text-xs font-black leading-snug text-heading group-hover:text-cyan-ink">
                     {anime.title}
                   </span>
-                  <span className="mt-1 flex items-center gap-2 text-[0.68rem] font-bold text-slate-500">
+                  <span className="mt-1 flex items-center gap-2 text-[0.68rem] font-bold text-muted">
                     {anime.releaseYear}
-                    <span className="text-amber-200">{formatScore(score)}</span>
+                    <span className="text-amber-ink">{formatScore(score)}</span>
                     <span>({scoredItems.length})</span>
                   </span>
                 </span>
@@ -133,23 +133,23 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
 
 function TagRankingPanel({ tags }: { tags: SidebarTag[] }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#0b0b12]/88 p-3">
+    <section className="rounded-2xl border border-line/10 bg-panel/[0.88] p-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-sm font-black text-white">
-          <Tags className="h-4 w-4 text-cyan-200" aria-hidden="true" />
+        <h2 className="flex items-center gap-2 text-sm font-black text-heading">
+          <Tags className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
           Tag Ranking
         </h2>
-        <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-200" href="/anime">
+        <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-ink" href="/anime">
           All
         </Link>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {tags.length === 0 ? (
-          <p className="text-xs leading-5 text-slate-400">No tag votes yet.</p>
+          <p className="text-xs leading-5 text-muted">No tag votes yet.</p>
         ) : (
           tags.slice(0, 12).map((tag, index) => (
             <Link
-              className="group inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-black/35 px-3 py-2 text-xs font-black text-slate-300 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-white"
+              className="group inline-flex items-center gap-2 rounded-full border border-line/[0.08] bg-depth/[0.35] px-3 py-2 text-xs font-black text-secondary transition hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:text-heading"
               href={`/anime?tag=${encodeURIComponent(tag.name)}`}
               key={tag.id}
             >
@@ -157,7 +157,7 @@ function TagRankingPanel({ tags }: { tags: SidebarTag[] }) {
                 {index + 1}
               </span>
               <span>{tag.name}</span>
-              <span className="rounded-full bg-white/[0.08] px-1.5 py-0.5 text-[0.65rem] text-cyan-100">
+              <span className="rounded-full bg-wash/[0.08] px-1.5 py-0.5 text-[0.65rem] text-cyan-ink">
                 {tag.count}
               </span>
             </Link>
@@ -178,8 +178,8 @@ function CompactAnimePanel({
   title: string;
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#0b0b12]/88 p-3">
-      <h2 className="flex items-center gap-2 text-sm font-black text-white">
+    <section className="rounded-2xl border border-line/10 bg-panel/[0.88] p-3">
+      <h2 className="flex items-center gap-2 text-sm font-black text-heading">
         {icon}
         {title}
       </h2>
@@ -190,7 +190,7 @@ function CompactAnimePanel({
 
           return (
             <Link
-              className="flex gap-2 rounded-xl border border-white/[0.07] bg-black/30 p-2 transition hover:border-cyan-300/35"
+              className="flex gap-2 rounded-xl border border-line/[0.07] bg-depth/30 p-2 transition hover:border-cyan-300/[0.35]"
               href={`/anime/${anime.slug}`}
               key={anime.id}
             >
@@ -200,7 +200,7 @@ function CompactAnimePanel({
                 src={anime.coverImage}
               />
               <span className="min-w-0">
-                <span className="line-clamp-1 text-xs font-black text-white">{anime.title}</span>
+                <span className="line-clamp-1 text-xs font-black text-heading">{anime.title}</span>
                 <span className="mt-1 block">
                   <ScoreBadge count={scoredItems.length} score={score} compact />
                 </span>
@@ -215,23 +215,23 @@ function CompactAnimePanel({
 
 function LatestReviewList({ reviews }: { reviews: SidebarReview[] }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#0b0b12]/88 p-3">
-      <h2 className="flex items-center gap-2 text-sm font-black text-white">
-        <MessageSquareText className="h-4 w-4 text-cyan-200" aria-hidden="true" />
+    <section className="rounded-2xl border border-line/10 bg-panel/[0.88] p-3">
+      <h2 className="flex items-center gap-2 text-sm font-black text-heading">
+        <MessageSquareText className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
         Latest Reviews
       </h2>
       <div className="mt-3 space-y-2">
         {reviews.length === 0 ? (
-          <p className="text-xs leading-5 text-slate-400">No reviews yet.</p>
+          <p className="text-xs leading-5 text-muted">No reviews yet.</p>
         ) : (
           reviews.slice(0, 4).map((review) => (
             <Link
-              className="block rounded-xl border border-white/[0.07] bg-black/30 p-2 transition hover:border-sky-300/35"
+              className="block rounded-xl border border-line/[0.07] bg-depth/30 p-2 transition hover:border-sky-300/[0.35]"
               href={`/anime/${review.anime.slug}`}
               key={review.id}
             >
-              <p className="line-clamp-1 text-xs font-black text-white">{review.title}</p>
-              <p className="mt-1 line-clamp-1 text-[0.68rem] font-bold text-slate-500">
+              <p className="line-clamp-1 text-xs font-black text-heading">{review.title}</p>
+              <p className="mt-1 line-clamp-1 text-[0.68rem] font-bold text-muted">
                 {review.user.name ?? "Anonymous"} / {review.anime.title}
               </p>
               <div className="mt-1">
@@ -258,12 +258,12 @@ export function RightPortalSidebar({
       <TagRankingPanel tags={tagRanking} />
       <CompactAnimePanel
         animeList={mostReviewed}
-        icon={<Star className="h-4 w-4 text-violet-200" aria-hidden="true" />}
+        icon={<Star className="h-4 w-4 text-violet-ink" aria-hidden="true" />}
         title="Most Reviewed"
       />
       <CompactAnimePanel
         animeList={recentlyAdded}
-        icon={<Clock3 className="h-4 w-4 text-cyan-200" aria-hidden="true" />}
+        icon={<Clock3 className="h-4 w-4 text-cyan-ink" aria-hidden="true" />}
         title="Recently Added"
       />
       <LatestReviewList reviews={latestReviews} />

@@ -153,14 +153,14 @@ export function SearchModal({ items }: SearchModalProps) {
     >
       <div
         aria-modal="true"
-        className="mx-auto w-full max-w-[640px] overflow-hidden rounded-b-2xl border border-t-0 border-white/10 bg-[#161616] shadow-[0_28px_80px_rgba(0,0,0,0.72)]"
+        className="mx-auto w-full max-w-[640px] overflow-hidden rounded-b-2xl border border-t-0 border-line/10 bg-popover portal-floating"
         ref={dialogRef}
         role="dialog"
       >
         <div className="flex h-12 items-center gap-3 px-4">
-          <Search className="h-5 w-5 text-slate-500" aria-hidden="true" />
+          <Search className="h-5 w-5 text-muted" aria-hidden="true" />
           <input
-            className="min-w-0 flex-1 bg-transparent text-sm font-medium text-white outline-none placeholder:text-slate-500"
+            className="min-w-0 flex-1 bg-transparent text-sm font-medium text-heading outline-none placeholder:text-muted"
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search anime..."
             ref={inputRef}
@@ -168,7 +168,7 @@ export function SearchModal({ items }: SearchModalProps) {
           />
           {query ? (
             <button
-              className="text-sm font-medium text-slate-400 underline decoration-slate-600 underline-offset-4 transition hover:text-white"
+              className="text-sm font-medium text-muted underline decoration-slate-600 underline-offset-4 transition hover:text-heading"
               onClick={() => setQuery("")}
               type="button"
             >
@@ -177,7 +177,7 @@ export function SearchModal({ items }: SearchModalProps) {
           ) : null}
           <button
             aria-label="Close search"
-            className="grid h-8 w-8 place-items-center rounded-xl text-slate-500 hover:bg-white/10 hover:text-white"
+            className="grid h-8 w-8 place-items-center rounded-xl text-muted hover:bg-wash/10 hover:text-heading"
             onClick={() => setIsOpen(false)}
             type="button"
           >
@@ -185,16 +185,16 @@ export function SearchModal({ items }: SearchModalProps) {
           </button>
         </div>
 
-        <div className="flex items-end justify-between border-b border-white/10 px-4 pb-2">
+        <div className="flex items-end justify-between border-b border-line/10 px-4 pb-2">
           <Link
-            className="border-b border-violet-400 pb-2 text-sm font-medium text-white"
+            className="border-b border-violet-400 pb-2 text-sm font-medium text-heading"
             href="/anime"
             onClick={() => setIsOpen(false)}
           >
             Anime
           </Link>
           <Link
-            className="inline-flex items-center gap-1.5 pb-2 text-sm font-medium text-slate-400 transition hover:text-white"
+            className="inline-flex items-center gap-1.5 pb-2 text-sm font-medium text-muted transition hover:text-heading"
             href="/anime#anime-search"
             onClick={() => setIsOpen(false)}
           >
@@ -204,16 +204,16 @@ export function SearchModal({ items }: SearchModalProps) {
         </div>
 
         {query ? (
-          <div className="max-h-[46vh] overflow-y-auto border-b border-white/10 p-2">
+          <div className="max-h-[46vh] overflow-y-auto border-b border-line/10 p-2">
             {results.length === 0 ? (
-              <div className="rounded-xl px-3 py-3 text-sm font-bold text-slate-400">
+              <div className="rounded-xl px-3 py-3 text-sm font-bold text-muted">
                 No anime matched this search.
               </div>
             ) : (
               <div className="space-y-1">
                 {results.slice(0, 6).map((item) => (
                   <Link
-                    className="group flex gap-3 rounded-xl p-2 transition hover:bg-white/[0.06]"
+                    className="group flex gap-3 rounded-xl p-2 transition hover:bg-wash/[0.06]"
                     href={`/anime/${item.slug}`}
                     key={item.slug}
                     onClick={() => setIsOpen(false)}
@@ -224,14 +224,14 @@ export function SearchModal({ items }: SearchModalProps) {
                       src={item.coverImage}
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="line-clamp-1 text-sm font-bold text-slate-100 group-hover:text-cyan-100">
+                      <p className="line-clamp-1 text-sm font-bold text-foreground group-hover:text-cyan-ink">
                         {item.title}
                       </p>
-                      <p className="mt-0.5 line-clamp-1 text-xs font-medium text-slate-500">
+                      <p className="mt-0.5 line-clamp-1 text-xs font-medium text-muted">
                         {item.genres.join(" / ")}
                       </p>
                       {item.tags.length ? (
-                        <p className="mt-1 flex items-center gap-1 text-[0.68rem] font-bold text-violet-200">
+                        <p className="mt-1 flex items-center gap-1 text-[0.68rem] font-bold text-violet-ink">
                           <Tags className="h-3 w-3" aria-hidden="true" />
                           {item.tags.slice(0, 3).join("  ")}
                         </p>
@@ -244,24 +244,24 @@ export function SearchModal({ items }: SearchModalProps) {
           </div>
         ) : null}
 
-        <div className="flex flex-wrap items-center gap-3 bg-[#202020] px-4 py-3 text-xs font-medium text-slate-500">
+        <div className="flex flex-wrap items-center gap-3 bg-raised px-4 py-3 text-xs font-medium text-muted">
           <span className="inline-flex items-center gap-1">
-            <kbd className="rounded-md border border-white/15 bg-[#111] px-1.5 py-0.5 text-[0.65rem] text-slate-400">
+            <kbd className="rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               ↓
             </kbd>
-            <kbd className="rounded-md border border-white/15 bg-[#111] px-1.5 py-0.5 text-[0.65rem] text-slate-400">
+            <kbd className="rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               ↑
             </kbd>
             to navigate
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="inline-flex items-center rounded-md border border-white/15 bg-[#111] px-1.5 py-0.5 text-[0.65rem] text-slate-400">
+            <kbd className="inline-flex items-center rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               <CornerDownLeft className="h-3 w-3" aria-hidden="true" />
             </kbd>
             to select
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="rounded-md border border-white/15 bg-[#111] px-1.5 py-0.5 text-[0.65rem] text-slate-400">
+            <kbd className="rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               esc
             </kbd>
             to exit

@@ -36,7 +36,7 @@ export function AdminModerationDeleteForm(props: AdminModerationDeleteFormProps)
 
       {!isConfirming ? (
         <button
-          className="inline-flex h-9 items-center gap-2 rounded border border-red-200 bg-white px-3 text-xs font-black text-red-600 transition hover:bg-red-50"
+          className="inline-flex h-9 items-center gap-2 rounded border border-red-200 bg-panel px-3 text-xs font-black text-red-600 transition hover:bg-red-50"
           onClick={() => setIsConfirming(true)}
           type="button"
         >
@@ -53,7 +53,7 @@ export function AdminModerationDeleteForm(props: AdminModerationDeleteFormProps)
           <label className="block text-xs font-black text-red-700">
             削除理由
             <textarea
-              className="mt-1 min-h-20 w-full rounded border border-red-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200"
+              className="mt-1 min-h-20 w-full rounded border border-red-200 bg-panel px-3 py-2 text-sm font-medium text-foreground outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200"
               maxLength={500}
               name="reason"
               placeholder="例: 誹謗中傷を含むため"
@@ -62,7 +62,7 @@ export function AdminModerationDeleteForm(props: AdminModerationDeleteFormProps)
           </label>
           <div className="flex flex-wrap gap-2">
             <button
-              className="inline-flex h-9 items-center gap-1 rounded border border-slate-200 bg-white px-3 text-xs font-black text-slate-600 transition hover:bg-slate-50"
+              className="inline-flex h-9 items-center gap-1 rounded border border-stroke/20 bg-panel px-3 text-xs font-black text-secondary transition hover:bg-raised"
               onClick={() => setIsConfirming(false)}
               type="button"
             >

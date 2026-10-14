@@ -80,7 +80,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
 
   if (!user) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/login"
@@ -96,7 +96,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
 
   if (!isAdmin) {
     return (
-      <div className="bg-paper">
+      <div className="bg-transparent">
         <section className="mx-auto max-w-4xl px-4 py-12">
           <EmptyState
             actionHref="/"
@@ -178,31 +178,31 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
     : "/admin/moderation-logs/export";
 
   return (
-    <div className="bg-paper">
-      <section className="border-b border-slate-200 bg-white">
+    <div className="bg-transparent">
+      <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
           <p className="text-sm font-black text-coral">Admin</p>
-          <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-ink">
+          <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-heading">
             <ClipboardList className="h-7 w-7 text-mint" aria-hidden="true" />
             削除理由ログ
           </h1>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
+          <p className="mt-3 text-sm leading-6 text-secondary">
             管理者が削除したレビュー/コメントの理由と削除前本文を確認できます。
           </p>
           <form className="mt-6 grid gap-3 md:grid-cols-[1fr_180px_auto]" action="/admin/moderation-logs">
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               検索
               <input
-                className="mt-1 h-11 w-full rounded border border-slate-300 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
                 placeholder="管理者メール・投稿者メール・作品名・削除理由"
               />
             </label>
-            <label className="text-xs font-black text-slate-500">
+            <label className="text-xs font-black text-muted">
               対象種別
               <select
-                className="mt-1 h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
+                className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={targetTypeFilter}
                 name="targetType"
               >
@@ -238,7 +238,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
 
       <section className="mx-auto max-w-6xl space-y-5 px-4 py-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-bold text-slate-500">
+          <p className="text-sm font-bold text-muted">
             {totalCount === 0 ? "0件" : `${totalCount}件中 ${startIndex + 1}-${startIndex + logs.length}件`}
           </p>
           <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/admin">
@@ -256,29 +256,29 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
         ) : (
           <div className="space-y-4">
             {logs.map((log) => (
-              <article className="rounded border border-slate-200 bg-white p-5 shadow-soft" key={log.id}>
+              <article className="rounded border border-stroke/20 bg-panel p-5 shadow-soft" key={log.id}>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded bg-slate-100 px-2 py-1 text-xs font-black text-slate-600">
+                  <span className="rounded bg-raised px-2 py-1 text-xs font-black text-secondary">
                     {targetTypeLabel(log.targetType)}
                   </span>
-                  <span className="text-xs font-bold text-slate-400">
+                  <span className="text-xs font-bold text-muted">
                     {log.createdAt.toLocaleString("ja-JP")}
                   </span>
                 </div>
                 <div className="mt-3 grid gap-4 lg:grid-cols-[1fr_280px]">
                   <div>
-                    <h2 className="text-lg font-black text-ink">
+                    <h2 className="text-lg font-black text-heading">
                       {log.targetTitle ?? log.animeTitle ?? "削除済み投稿"}
                     </h2>
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-2 text-sm text-muted">
                       作品: {log.animeTitle ?? "不明"}
                     </p>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-muted">
                       投稿者: {log.authorName ?? "不明"} / {log.authorEmail ?? "不明"}
                     </p>
-                    <div className="mt-4 rounded bg-slate-50 p-3">
-                      <p className="text-xs font-black text-slate-500">削除前本文</p>
-                      <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                    <div className="mt-4 rounded bg-raised p-3">
+                      <p className="text-xs font-black text-muted">削除前本文</p>
+                      <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-foreground">
                         {log.targetBody ?? "本文は保存されていません。"}
                       </p>
                     </div>
@@ -302,10 +302,10 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-slate-200 bg-white p-4" aria-label="ページネーション">
+          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link
-                className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                 href={buildPageHref(currentPage - 1)}
               >
                 前へ
@@ -316,7 +316,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
             </span>
             {currentPage < totalPages ? (
               <Link
-                className="rounded border border-slate-200 px-3 py-2 text-sm font-bold text-ink hover:border-mint hover:text-mint"
+                className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
                 href={buildPageHref(currentPage + 1)}
               >
                 次へ
