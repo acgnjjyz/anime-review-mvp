@@ -76,12 +76,13 @@ function GenreFlyout({ isOpen, onSelect }: { isOpen: boolean; onSelect: () => vo
                 href={`/anime?genre=${encodeURIComponent(genre.value)}`}
                 key={genre.value}
                 onClick={onSelect}
+                title={genre.label}
               >
                 {genre.label}
               </Link>
             ))}
           </div>
-          <Link className="mt-3 inline-block text-xs text-violet-ink hover:text-heading" href="/anime#genres" onClick={onSelect}>
+          <Link className="portal-sidebar-genre-all mt-3 inline-block text-xs text-violet-ink hover:text-heading" href="/anime#genres" onClick={onSelect}>
             All genres
           </Link>
         </div>

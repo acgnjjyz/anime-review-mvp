@@ -485,7 +485,7 @@ body {
 
 .portal-sidebar-genre-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .portal-sidebar-genre-link {
@@ -495,7 +495,9 @@ body {
   font-size: 12.6px;
   font-weight: 700;
   line-height: 18.9px;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .portal-sidebar-genre-link:hover {
@@ -758,29 +760,43 @@ body {
     top: 0;
     left: 100%;
     width: 0;
-    min-height: 357.75px;
+    height: 0;
+    min-height: 100%;
     overflow: hidden;
-    padding: 15px 0;
+    padding: 0;
     border-radius: 0 0 6px 0;
     transition:
       width 250ms ease-out,
-      padding 250ms ease-out,
       visibility 0s linear 250ms;
   }
 
   .portal-sidebar-flyout[data-open="true"] {
     width: var(--portal-flyout-width);
+    height: auto;
     padding: 15px;
     transition-delay: 0s;
   }
 
   .portal-sidebar-flyout-inner {
-    width: calc(var(--portal-flyout-width) - 30px);
     padding: 0;
+  }
+
+  .portal-sidebar-flyout :is(.portal-sidebar-genre-grid, .portal-sidebar-genre-all) {
+    opacity: 0;
+  }
+
+  .portal-sidebar-flyout[data-open="true"] :is(.portal-sidebar-genre-grid, .portal-sidebar-genre-all) {
+    opacity: 1;
   }
 
   .portal-sidebar-genre-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1450px) {
+  .portal-sidebar-flyout {
+    --portal-flyout-width: 600px;
   }
 }
 
@@ -855,8 +871,6 @@ body {
   }
 
   .portal-sidebar-flyout {
-    --portal-flyout-width: 594px;
-    min-height: 392.625px;
     border-radius: 0 0 6.75px 0;
   }
 
