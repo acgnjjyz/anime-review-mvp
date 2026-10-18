@@ -22,7 +22,7 @@ type WatchStatusFormProps = {
 export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchStatusFormProps) {
   if (!isLoggedIn) {
     return (
-      <div className="portal-panel rounded-2xl p-5">
+      <div className="portal-panel rounded-2xl p-5" id="watch-status">
         <h2 className="flex items-center gap-2 text-lg font-black text-heading">
           <BookmarkCheck className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
           My Anime Shelf
@@ -35,7 +35,7 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
   }
 
   return (
-    <form action={updateWatchStatus} className="portal-panel rounded-2xl p-5">
+    <form action={updateWatchStatus} className="portal-panel rounded-2xl p-5" id="watch-status">
       <input name="animeId" type="hidden" value={animeId} />
       <h2 className="flex items-center gap-2 text-lg font-black text-heading">
         <BookmarkCheck className="h-5 w-5 text-cyan-ink" aria-hidden="true" />

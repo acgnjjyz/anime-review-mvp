@@ -1050,6 +1050,203 @@ img {
   transform: translateY(-2px) scale(1.015);
 }
 
+.portal-anime-preview-trigger {
+  position: relative;
+}
+
+.portal-anime-preview-info {
+  display: grid;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: rgb(5 5 9 / 0.85);
+  color: #fff;
+}
+
+.portal-anime-preview-positioner {
+  z-index: 60;
+  width: min(310px, calc(100vw - 24px));
+}
+
+.portal-anime-preview-positioner[data-open="false"] {
+  pointer-events: none;
+}
+
+.portal-anime-preview-panel {
+  --preview-bg: 35 35 35;
+  --preview-text: 170 170 170;
+  --preview-muted: 119 119 119;
+  --preview-accent: 174 139 232;
+  position: relative;
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px;
+  border: 1px solid rgb(var(--color-line) / 0.08);
+  border-radius: 4px;
+  background: rgb(var(--preview-bg));
+  box-shadow: 0 12px 36px rgb(var(--color-shadow) / 0.3);
+  color: rgb(var(--preview-text));
+  font-family: var(--font-portal-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+html[data-theme="light"] .portal-anime-preview-panel {
+  --preview-bg: 255 255 255;
+  --preview-text: 71 85 105;
+  --preview-muted: 100 116 139;
+  --preview-accent: 109 40 217;
+}
+
+.portal-anime-preview-close {
+  display: grid;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: rgb(var(--preview-muted));
+}
+
+.portal-anime-preview-title {
+  margin: 0 24px 10px 0;
+  color: rgb(var(--preview-accent));
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.portal-anime-preview-badges,
+.portal-anime-preview-badges > span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.portal-anime-preview-badges > span {
+  padding: 2px 5px;
+  background: rgb(var(--color-wash) / 0.08);
+  font-size: 11px;
+}
+
+.portal-anime-preview-badges .portal-anime-preview-score {
+  color: rgb(var(--color-amber-ink));
+}
+
+.portal-anime-preview-synopsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.portal-anime-preview-alternate {
+  margin: 0 0 10px;
+}
+
+.portal-anime-preview-alternate > span,
+.portal-anime-preview-metadata dt {
+  color: rgb(var(--preview-muted));
+}
+
+.portal-anime-preview-metadata > div {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 2px 0;
+}
+
+.portal-anime-preview-metadata dt {
+  flex: 0 0 auto;
+}
+
+.portal-anime-preview-metadata dd {
+  min-width: 0;
+}
+
+.portal-anime-preview-metadata a {
+  color: rgb(var(--preview-accent));
+}
+
+.portal-anime-preview-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.portal-anime-preview-actions a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  background: rgb(var(--color-wash) / 0.12);
+  color: rgb(var(--color-heading));
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.portal-anime-preview-actions a:hover {
+  background: rgb(var(--preview-accent) / 0.3);
+}
+
+.portal-anime-preview-positioner :is(a, button):focus-visible,
+.portal-anime-preview-info:focus-visible {
+  outline: 2px solid rgb(var(--color-violet-ink));
+  outline-offset: 2px;
+}
+
+#watch-status {
+  scroll-margin-top: 90px;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .portal-anime-preview-info {
+    opacity: 0;
+  }
+
+  .portal-anime-preview-trigger:hover .portal-anime-preview-info,
+  .portal-anime-preview-trigger:focus-within .portal-anime-preview-info {
+    opacity: 1;
+  }
+}
+
+@media (hover: none), (max-width: 767.98px) {
+  .portal-anime-preview-info {
+    width: 44px;
+    height: 44px;
+  }
+
+  .portal-anime-preview-close {
+    width: 36px;
+    height: 36px;
+  }
+
+  .portal-anime-preview-actions {
+    grid-template-columns: minmax(0, 1fr) 44px;
+  }
+
+  .portal-anime-preview-actions a {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-anime-preview-panel {
+    transition: none !important;
+  }
+}
+
 .shadow-soft {
   box-shadow: 0 20px 70px rgb(var(--color-shadow) / var(--panel-shadow-opacity));
 }
