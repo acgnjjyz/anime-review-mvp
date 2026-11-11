@@ -1,3 +1,4 @@
+import { UiInput, UiText, UiTextarea } from "@/components/UiText";
 import Link from "next/link";
 import { Send, Trash2 } from "lucide-react";
 
@@ -19,15 +20,15 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
   if (!isLoggedIn) {
     return (
       <div className="portal-panel rounded-2xl p-5" id="review-form">
-        <h2 className="text-xl font-black text-heading">Write a Review</h2>
+        <h2 className="text-xl font-black text-heading"><UiText text={"Write a Review"} /></h2>
         <p className="mt-2 text-sm leading-6 text-muted">
-          Please log in to post a score and review for this anime.
+          <UiText text={"Please log in to post a score and review for this anime."} />
         </p>
         <Link
           className="portal-button-primary mt-4 inline-flex h-10 items-center rounded-full px-4 text-sm font-black"
           href="/login"
         >
-          Login to review
+          <UiText text={"Login to review"} />
         </Link>
       </div>
     );
@@ -42,14 +43,14 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-xl font-black text-heading">
-              {isEditing ? "Edit Your Review" : "Write a Review"}
+              {isEditing ? <UiText text={"Edit Your Review"} /> : <UiText text={"Write a Review"} />}
             </h2>
             <p className="mt-1 text-sm text-muted">
-              Scores update the ranking automatically.
+              <UiText text={"Scores update the ranking automatically."} />
             </p>
           </div>
           <label className="text-sm font-bold text-secondary">
-            Score
+            <UiText text={"Score"} />
             <input
               className="portal-input mt-1 h-11 w-28 rounded-xl px-3 text-base font-black"
               defaultValue={existingReview?.score ?? 80}
@@ -64,8 +65,8 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
         </div>
 
         <label className="mt-4 block text-sm font-bold text-secondary">
-          Title
-          <input
+          <UiText text={"Title"} />
+          <UiInput
             className="portal-input mt-1 h-11 w-full rounded-xl px-3"
             defaultValue={existingReview?.title}
             maxLength={80}
@@ -73,12 +74,12 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
             placeholder="What stayed with you?"
             required
           />
-          <span className="mt-1 block text-xs font-medium text-muted">Up to 80 characters</span>
+          <span className="mt-1 block text-xs font-medium text-muted"><UiText text={"Up to 80 characters"} /></span>
         </label>
 
         <label className="mt-4 block text-sm font-bold text-secondary">
-          Body
-          <textarea
+          <UiText text={"Body"} />
+          <UiTextarea
             className="portal-input mt-1 min-h-36 w-full rounded-xl px-3 py-3 leading-7"
             defaultValue={existingReview?.body}
             maxLength={2000}
@@ -87,7 +88,7 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
             placeholder="Share what you liked, what stood out, and who you would recommend it to."
             required
           />
-          <span className="mt-1 block text-xs font-medium text-muted">10-2000 characters</span>
+          <span className="mt-1 block text-xs font-medium text-muted"><UiText text={"10-2000 characters"} /></span>
         </label>
 
         <SubmitButton
@@ -95,7 +96,7 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
           pendingLabel={isEditing ? "Updating..." : "Saving..."}
         >
           <Send className="h-4 w-4" aria-hidden="true" />
-          {isEditing ? "Update Review" : "Save Review"}
+          {isEditing ? <UiText text={"Update Review"} /> : <UiText text={"Save Review"} />}
         </SubmitButton>
       </form>
 
@@ -104,7 +105,7 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
           <input name="animeId" type="hidden" value={animeId} />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-medium text-red-ink">
-              Delete your review and its rating from this anime.
+              <UiText text={"Delete your review and its rating from this anime."} />
             </p>
             <ConfirmSubmitButton
               className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-red-600 px-4 text-sm font-black text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:bg-red-950"
@@ -112,7 +113,7 @@ export function ReviewForm({ animeId, isLoggedIn, existingReview }: ReviewFormPr
               pendingLabel="Deleting..."
             >
               <Trash2 className="h-4 w-4" aria-hidden="true" />
-              Delete
+              <UiText text={"Delete"} />
             </ConfirmSubmitButton>
           </div>
         </form>

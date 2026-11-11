@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import Link from "next/link";
 import { UserRole } from "@prisma/client";
 import {
@@ -236,12 +237,12 @@ export default async function AnimeDetailPage({
             <div className="flex flex-wrap gap-2">
               {!anime.isPublished ? (
                 <span className="rounded-full border border-red-300/30 bg-red-500/20 px-3 py-1 text-xs font-black text-red-ink">
-                  Private preview
+                  <UiText text={"Private preview"} />
                 </span>
               ) : null}
               {anime.genres.map((genre) => (
                 <span className="portal-chip rounded-full px-3 py-1 text-xs font-black" key={genre}>
-                  {genre}
+                  <UiText text={genre} />
                 </span>
               ))}
             </div>
@@ -253,16 +254,16 @@ export default async function AnimeDetailPage({
                 {anime.titleEn}
               </p>
             ) : null}
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-secondary sm:text-base">{anime.synopsis}</p>
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-secondary sm:text-base"><UiText text={anime.synopsis} /></p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <ScoreBadge count={anime.ratings.length} score={score} />
               <span className="inline-flex items-center gap-2 rounded-full border border-stroke/25 bg-field/70 px-3 py-1.5 text-sm font-bold text-secondary">
                 <Heart className="h-4 w-4 text-rose-ink" aria-hidden="true" />
-                {anime._count.favorites} favorites
+                {anime._count.favorites} <UiText text={"favorites"} />
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-stroke/25 bg-field/70 px-3 py-1.5 text-sm font-bold text-secondary">
                 <MessageSquare className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                {anime.reviews.length} reviews
+                {anime.reviews.length} <UiText text={"reviews"} />
               </span>
             </div>
             <div className="mt-8 flex flex-wrap items-start gap-3">
@@ -277,7 +278,7 @@ export default async function AnimeDetailPage({
                 href="#review-form"
               >
                 <MessageSquareText className="h-4 w-4" aria-hidden="true" />
-                Review
+                <UiText text={"Review"} />
               </Link>
             </div>
           </div>
@@ -291,7 +292,7 @@ export default async function AnimeDetailPage({
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-heading">Reviews</h2>
+              <h2 className="text-2xl font-black text-heading"><UiText text={"Reviews"} /></h2>
               <span className="text-sm font-bold text-muted">{anime.reviews.length}</span>
             </div>
             {anime.reviews.length === 0 ? (
@@ -315,7 +316,7 @@ export default async function AnimeDetailPage({
                         <div>
                           <h3 className="text-lg font-black text-heading">{review.title}</h3>
                           <p className="mt-1 text-sm text-muted">
-                            {review.user.name ?? "Anonymous"} /{" "}
+                            {review.user.name ?? <UiText text={"Anonymous"} />} /{" "}
                             {review.updatedAt.toLocaleDateString("ja-JP")}
                           </p>
                         </div>
@@ -347,7 +348,7 @@ export default async function AnimeDetailPage({
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-heading">Comments</h2>
+              <h2 className="text-2xl font-black text-heading"><UiText text={"Comments"} /></h2>
               <span className="text-sm font-bold text-muted">{anime.comments.length}</span>
             </div>
             <CommentForm animeId={anime.id} isLoggedIn={Boolean(user)} />
@@ -376,31 +377,31 @@ export default async function AnimeDetailPage({
           <TagVotePanel animeId={anime.id} isLoggedIn={Boolean(user)} tags={tagVotes} />
 
           <div className="portal-panel rounded-2xl p-5">
-            <h2 className="text-xl font-black text-heading">Anime Info</h2>
+            <h2 className="text-xl font-black text-heading"><UiText text={"Anime Info"} /></h2>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex items-center gap-3">
                 <Clapperboard className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                <dt className="w-24 font-bold text-muted">Studio</dt>
-                <dd className="font-medium text-secondary">{anime.studio}</dd>
+                <dt className="w-24 font-bold text-muted"><UiText text={"Studio"} /></dt>
+                <dd className="font-medium text-secondary"><UiText text={anime.studio} /></dd>
               </div>
               <div className="flex items-center gap-3">
                 <CalendarDays className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                <dt className="w-24 font-bold text-muted">Season</dt>
-                <dd className="font-medium text-secondary">{anime.season}</dd>
+                <dt className="w-24 font-bold text-muted"><UiText text={"Season"} /></dt>
+                <dd className="font-medium text-secondary"><UiText text={anime.season} /></dd>
               </div>
               <div className="flex items-center gap-3">
                 <CalendarDays className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                <dt className="w-24 font-bold text-muted">Year</dt>
+                <dt className="w-24 font-bold text-muted"><UiText text={"Year"} /></dt>
                 <dd className="font-medium text-secondary">{anime.releaseYear}</dd>
               </div>
               <div className="flex items-center gap-3">
                 <Tv className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                <dt className="w-24 font-bold text-muted">Episodes</dt>
+                <dt className="w-24 font-bold text-muted"><UiText text={"Episodes"} /></dt>
                 <dd className="font-medium text-secondary">{anime.episodes}</dd>
               </div>
               <div className="flex items-center gap-3">
                 <MessageSquare className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                <dt className="w-24 font-bold text-muted">Reviews</dt>
+                <dt className="w-24 font-bold text-muted"><UiText text={"Reviews"} /></dt>
                 <dd className="font-medium text-secondary">{anime.reviews.length}</dd>
               </div>
             </dl>
@@ -411,10 +412,10 @@ export default async function AnimeDetailPage({
           </div>
 
           <section className="portal-panel rounded-2xl p-4">
-            <h2 className="text-base font-black text-heading">Related Anime</h2>
+            <h2 className="text-base font-black text-heading"><UiText text={"Related Anime"} /></h2>
             <div className="mt-3 space-y-2">
               {relatedAnime.length === 0 ? (
-                <p className="text-xs leading-5 text-muted">No related titles yet.</p>
+                <p className="text-xs leading-5 text-muted"><UiText text={"No related titles yet."} /></p>
               ) : (
                 relatedAnime.map((item, index) => (
                   <Link
@@ -444,7 +445,7 @@ export default async function AnimeDetailPage({
             className="portal-button-secondary block rounded-2xl p-5 text-sm font-black"
             href="/anime"
           >
-            Back to Anime
+            <UiText text={"Back to Anime"} />
           </Link>
         </aside>
       </section>

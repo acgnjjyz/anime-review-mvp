@@ -1,3 +1,4 @@
+import { UiInput, UiNav, UiText } from "@/components/UiText";
 import { ReportStatus, ReportTargetType, type Prisma } from "@prisma/client";
 import { Flag, Search, Shield } from "lucide-react";
 import Link from "next/link";
@@ -250,7 +251,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-heading">
             <Flag className="h-7 w-7 text-mint" aria-hidden="true" />
             通報管理
@@ -261,7 +262,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
           <form className="mt-6 grid gap-3 lg:grid-cols-[1fr_180px_180px_auto]" action="/admin/reports">
             <label className="text-xs font-black text-muted">
               検索
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
@@ -276,8 +277,8 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
                 name="targetType"
               >
                 <option value="">すべて</option>
-                <option value={ReportTargetType.REVIEW}>REVIEW</option>
-                <option value={ReportTargetType.COMMENT}>COMMENT</option>
+                <option value={ReportTargetType.REVIEW}><UiText text={"REVIEW"} /></option>
+                <option value={ReportTargetType.COMMENT}><UiText text={"COMMENT"} /></option>
               </select>
             </label>
             <label className="text-xs font-black text-muted">
@@ -415,7 +416,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
+          <UiNav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link
                 className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
@@ -435,7 +436,7 @@ export default async function AdminReportsPage({ searchParams }: AdminReportsPag
                 次へ
               </Link>
             ) : null}
-          </nav>
+          </UiNav>
         ) : null}
       </section>
     </div>

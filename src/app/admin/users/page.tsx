@@ -1,3 +1,4 @@
+import { UiInput, UiNav, UiText } from "@/components/UiText";
 import { UserRole, type Prisma } from "@prisma/client";
 import { Search, Shield, Users } from "lucide-react";
 import Link from "next/link";
@@ -167,18 +168,18 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-heading">
             <Users className="h-7 w-7 text-mint" aria-hidden="true" />
             ユーザー管理
           </h1>
           <p className="mt-3 text-sm leading-6 text-secondary">
-            DBに同期されたユーザーのroleを管理します。最後のADMINはUSERへ変更できません。
+            <UiText text={"DBに同期されたユーザーのroleを管理します。最後のADMINはUSERへ変更できません。"} />
           </p>
           <form className="mt-6 grid gap-3 md:grid-cols-[1fr_180px_auto]" action="/admin/users">
             <label className="text-xs font-black text-muted">
               メール検索
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
@@ -186,15 +187,15 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
               />
             </label>
             <label className="text-xs font-black text-muted">
-              role
+              <UiText text={"role"} />
               <select
                 className="mt-1 h-11 w-full rounded border border-stroke/20 bg-panel px-3 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={roleFilter}
                 name="role"
               >
                 <option value="">すべて</option>
-                <option value={UserRole.USER}>USER</option>
-                <option value={UserRole.ADMIN}>ADMIN</option>
+                <option value={UserRole.USER}><UiText text={"USER"} /></option>
+                <option value={UserRole.ADMIN}><UiText text={"ADMIN"} /></option>
               </select>
             </label>
             <button
@@ -239,7 +240,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                   <tr>
                     <th className="px-4 py-3 font-black">メール</th>
                     <th className="px-4 py-3 font-black">表示名</th>
-                    <th className="px-4 py-3 font-black">role</th>
+                    <th className="px-4 py-3 font-black"><UiText text={"role"} /></th>
                     <th className="px-4 py-3 font-black">登録日</th>
                     <th className="px-4 py-3 font-black">レビュー数</th>
                     <th className="px-4 py-3 font-black">コメント数</th>
@@ -259,7 +260,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                               : "rounded bg-raised px-2 py-1 text-xs font-black text-secondary"
                           }
                         >
-                          {targetUser.role}
+                          <UiText text={targetUser.role} />
                         </span>
                       </td>
                       <td className="px-4 py-4 text-secondary">
@@ -283,7 +284,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
+          <UiNav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link
                 className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
@@ -303,7 +304,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                 次へ
               </Link>
             ) : null}
-          </nav>
+          </UiNav>
         ) : null}
       </section>
     </div>

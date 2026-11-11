@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Clock3, MessageSquareText, Star, Tags, Trophy } from "lucide-react";
@@ -65,12 +66,12 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-heading">
             <Trophy className="h-5 w-5 text-amber-ink" aria-hidden="true" />
-            Top rated anime
+            <UiText text={"Top rated anime"} />
           </h2>
-          <p className="mt-1 text-xs font-medium text-muted">Based on your filters</p>
+          <p className="mt-1 text-xs font-medium text-muted"><UiText text={"Based on your filters"} /></p>
         </div>
         <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-ink" href="/ranking">
-          Full
+          <UiText text={"Full"} />
         </Link>
       </div>
       <div className="mt-3 grid grid-cols-4 rounded-xl border border-line/10 bg-depth/[0.35] p-1 text-[0.65rem] font-black uppercase text-muted">
@@ -83,7 +84,7 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
             }
             key={tab}
           >
-            {tab}
+            <UiText text={tab} />
           </span>
         ))}
       </div>
@@ -91,7 +92,7 @@ function TopAnimePanel({ animeList }: { animeList: SidebarAnime[] }) {
       <div className="mt-3 space-y-2">
         {animeList.length === 0 ? (
           <p className="rounded-xl border border-line/10 bg-depth/[0.35] p-3 text-xs font-bold text-muted">
-            No entries yet.
+            <UiText text={"No entries yet."} />
           </p>
         ) : (
           animeList.slice(0, 10).map((anime, index) => {
@@ -137,15 +138,15 @@ function TagRankingPanel({ tags }: { tags: SidebarTag[] }) {
       <div className="flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-sm font-black text-heading">
           <Tags className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-          Tag Ranking
+          <UiText text={"Tag Ranking"} />
         </h2>
         <Link className="text-[0.68rem] font-black uppercase tracking-wide text-cyan-ink" href="/anime">
-          All
+          <UiText text={"All"} />
         </Link>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {tags.length === 0 ? (
-          <p className="text-xs leading-5 text-muted">No tag votes yet.</p>
+          <p className="text-xs leading-5 text-muted"><UiText text={"No tag votes yet."} /></p>
         ) : (
           tags.slice(0, 12).map((tag, index) => (
             <Link
@@ -156,7 +157,7 @@ function TagRankingPanel({ tags }: { tags: SidebarTag[] }) {
               <span className={`grid h-5 w-5 place-items-center rounded-full text-[0.62rem] ${rankClass(index)}`}>
                 {index + 1}
               </span>
-              <span>{tag.name}</span>
+              <span><UiText text={tag.name} /></span>
               <span className="rounded-full bg-wash/[0.08] px-1.5 py-0.5 text-[0.65rem] text-cyan-ink">
                 {tag.count}
               </span>
@@ -181,7 +182,7 @@ function CompactAnimePanel({
     <section className="rounded-2xl border border-line/10 bg-panel/[0.88] p-3">
       <h2 className="flex items-center gap-2 text-sm font-black text-heading">
         {icon}
-        {title}
+        <UiText text={title} />
       </h2>
       <div className="mt-3 space-y-2">
         {animeList.slice(0, 5).map((anime) => {
@@ -218,11 +219,11 @@ function LatestReviewList({ reviews }: { reviews: SidebarReview[] }) {
     <section className="rounded-2xl border border-line/10 bg-panel/[0.88] p-3">
       <h2 className="flex items-center gap-2 text-sm font-black text-heading">
         <MessageSquareText className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-        Latest Reviews
+        <UiText text={"Latest Reviews"} />
       </h2>
       <div className="mt-3 space-y-2">
         {reviews.length === 0 ? (
-          <p className="text-xs leading-5 text-muted">No reviews yet.</p>
+          <p className="text-xs leading-5 text-muted"><UiText text={"No reviews yet."} /></p>
         ) : (
           reviews.slice(0, 4).map((review) => (
             <Link
@@ -232,7 +233,7 @@ function LatestReviewList({ reviews }: { reviews: SidebarReview[] }) {
             >
               <p className="line-clamp-1 text-xs font-black text-heading">{review.title}</p>
               <p className="mt-1 line-clamp-1 text-[0.68rem] font-bold text-muted">
-                {review.user.name ?? "Anonymous"} / {review.anime.title}
+                {review.user.name ?? <UiText text={"Anonymous"} />} / {review.anime.title}
               </p>
               <div className="mt-1">
                 <ScoreBadge score={review.score} compact />

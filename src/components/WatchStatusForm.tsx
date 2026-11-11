@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { WatchStatus } from "@prisma/client";
 import { BookmarkCheck } from "lucide-react";
 
@@ -25,10 +26,10 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
       <div className="portal-panel rounded-2xl p-5" id="watch-status">
         <h2 className="flex items-center gap-2 text-lg font-black text-heading">
           <BookmarkCheck className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
-          My Anime Shelf
+          <UiText text={"My Anime Shelf"} />
         </h2>
         <p className="mt-3 text-sm leading-6 text-muted">
-          Log in to save watch status for this anime.
+          <UiText text={"Log in to save watch status for this anime."} />
         </p>
       </div>
     );
@@ -39,10 +40,10 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
       <input name="animeId" type="hidden" value={animeId} />
       <h2 className="flex items-center gap-2 text-lg font-black text-heading">
         <BookmarkCheck className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
-        My Anime Shelf
+        <UiText text={"My Anime Shelf"} />
       </h2>
       <label className="mt-4 block text-sm font-bold text-secondary">
-        Watch status
+        <UiText text={"Watch status"} />
         <select
           className="portal-input mt-1 h-11 w-full rounded-xl px-3"
           defaultValue={currentStatus ?? ""}
@@ -50,7 +51,7 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
         >
           {statusOptions.map((option) => (
             <option key={option.value || "none"} value={option.value}>
-              {option.label}
+              <UiText text={option.label} />
             </option>
           ))}
         </select>
@@ -59,7 +60,7 @@ export function WatchStatusForm({ animeId, currentStatus, isLoggedIn }: WatchSta
         className="portal-button-primary mt-4 inline-flex h-10 w-full items-center justify-center rounded-xl px-4 text-sm font-black"
         pendingLabel="Saving..."
       >
-        Save status
+        <UiText text={"Save status"} />
       </SubmitButton>
     </form>
   );

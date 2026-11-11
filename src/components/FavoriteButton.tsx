@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { Heart } from "lucide-react";
 
 import { toggleFavorite } from "@/app/actions/review";
@@ -25,11 +26,11 @@ export function FavoriteButton({ animeId, isFavorite, isLoggedIn }: FavoriteButt
           title={isLoggedIn ? "Toggle favorite" : "Login to favorite"}
         >
           <Heart className={isFavorite ? "h-5 w-5 fill-current" : "h-5 w-5"} aria-hidden="true" />
-          {isFavorite ? "Favorited" : "Favorite"}
+          {isFavorite ? <UiText text={"Favorited"} /> : <UiText text={"Favorite"} />}
         </SubmitButton>
       </form>
       {!isLoggedIn ? (
-        <p className="mt-2 text-xs font-medium text-muted">Login to save this anime.</p>
+        <p className="mt-2 text-xs font-medium text-muted"><UiText text={"Login to save this anime."} /></p>
       ) : null}
     </div>
   );

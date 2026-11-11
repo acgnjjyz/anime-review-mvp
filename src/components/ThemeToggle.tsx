@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton } from "@/components/UiText";
+
+
 import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 
@@ -11,7 +14,7 @@ export function ThemeToggle() {
   const Icon = theme === "dark" ? Sun : Moon;
 
   return (
-    <button
+    <UiButton
       aria-label={label}
       aria-pressed={theme === "light"}
       className="grid h-9 w-9 shrink-0 place-items-center text-secondary transition hover:text-violet-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400"
@@ -20,6 +23,6 @@ export function ThemeToggle() {
       type="button"
     >
       <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
-    </button>
+    </UiButton>
   );
 }

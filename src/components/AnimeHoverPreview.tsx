@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiLink, UiText } from "@/components/UiText";
+
+
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import {
@@ -102,7 +105,7 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
     <>
       <div className="portal-anime-preview-trigger" ref={refs.setReference} {...getReferenceProps()}>
         {children}
-        <button
+        <UiButton
           aria-controls={isMounted ? previewId : undefined}
           aria-expanded={isOpen}
           aria-haspopup="dialog"
@@ -114,7 +117,7 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
           type="button"
         >
           <Info aria-hidden="true" size={18} />
-        </button>
+        </UiButton>
       </div>
 
       {isMounted ? (
@@ -132,7 +135,7 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
               style={{ ...floatingStyles, visibility: isPositioned ? "visible" : "hidden" }}
             >
               <div className="portal-anime-preview-panel" style={transitionStyles}>
-                <button
+                <UiButton
                   aria-label="作品情報を閉じる"
                   className="portal-anime-preview-close"
                   onClick={() => changeOpen(false)}
@@ -140,7 +143,7 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
                   type="button"
                 >
                   <X aria-hidden="true" size={16} />
-                </button>
+                </UiButton>
                 <h3 className="portal-anime-preview-title" id={titleId}>
                   <Link href={detailHref} onClick={() => changeOpen(false)}>{anime.title}</Link>
                 </h3>
@@ -163,16 +166,16 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
                 {!isTitleOnly || genres.length ? (
                   <dl className="portal-anime-preview-metadata">
                     {!isTitleOnly && anime.releaseYear > 0 ? <div><dt>公開年</dt><dd>{anime.releaseYear}</dd></div> : null}
-                    {!isTitleOnly && anime.season ? <div><dt>放送時期</dt><dd>{anime.season}</dd></div> : null}
+                    {!isTitleOnly && anime.season ? <div><dt>放送時期</dt><dd><UiText text={anime.season} /></dd></div> : null}
                     {!isTitleOnly && anime.episodes > 0 ? <div><dt>話数</dt><dd>{anime.episodes}話</dd></div> : null}
-                    {!isTitleOnly && anime.studio ? <div><dt>制作</dt><dd>{anime.studio}</dd></div> : null}
+                    {!isTitleOnly && anime.studio ? <div><dt>制作</dt><dd><UiText text={anime.studio} /></dd></div> : null}
                     {genres.length ? (
                       <div>
                         <dt>ジャンル</dt>
                         <dd>{genres.map((genre, index) => (
                           <span key={genre}>
                             {index ? ", " : ""}
-                            <Link href={`/anime?genre=${encodeURIComponent(genre)}`} onClick={() => changeOpen(false)}>{genre}</Link>
+                            <Link href={`/anime?genre=${encodeURIComponent(genre)}`} onClick={() => changeOpen(false)}><UiText text={genre} /></Link>
                           </span>
                         ))}</dd>
                       </div>
@@ -184,7 +187,7 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
                   <Link className="portal-anime-preview-details" href={detailHref} onClick={() => changeOpen(false)}>
                     <ArrowRight aria-hidden="true" size={16} />詳細を見る
                   </Link>
-                  <Link
+                  <UiLink
                     aria-label={`${anime.title}の視聴リストを開く`}
                     className="portal-anime-preview-shelf"
                     href={`${detailHref}#watch-status`}
@@ -192,7 +195,7 @@ export function AnimeHoverPreview({ anime, children }: { anime: AnimePreviewData
                     title="視聴リストを開く"
                   >
                     <Plus aria-hidden="true" size={21} />
-                  </Link>
+                  </UiLink>
                 </div>
               </div>
             </div>

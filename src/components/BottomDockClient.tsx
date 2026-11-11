@@ -1,5 +1,8 @@
 "use client";
 
+import { UiNav, UiText } from "@/components/UiText";
+
+
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Film, Home, Search, Shield, Sparkles, Trophy, UserRound } from "lucide-react";
@@ -48,7 +51,7 @@ export function BottomDockClient({ items }: { items: BottomDockItem[] }) {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5 lg:hidden">
-      <nav
+      <UiNav
         aria-label="Bottom navigation"
         className="pointer-events-auto mx-auto flex w-[calc(100vw-24px)] max-w-[680px] items-center justify-between gap-1 rounded-none border border-sky-300/25 bg-canvas/95 px-2 py-2 portal-floating backdrop-blur-2xl sm:w-auto sm:justify-center sm:gap-2 sm:px-3"
       >
@@ -77,7 +80,7 @@ export function BottomDockClient({ items }: { items: BottomDockItem[] }) {
               />
               <span className="max-w-full truncate text-[0.68rem] font-black leading-none sm:text-xs">
                 <span data-locale-en={item.labelEn} data-locale-ja={item.labelJa}>
-                  {item.labelEn}
+                  <UiText text={item.labelEn} />
                 </span>
               </span>
             </>
@@ -105,9 +108,9 @@ export function BottomDockClient({ items }: { items: BottomDockItem[] }) {
         <span className="pointer-events-none hidden h-10 w-px bg-gradient-to-b from-transparent via-sky-300/30 to-transparent sm:block" />
         <span className="pointer-events-none hidden items-center gap-1 rounded-full border border-violet-300/[0.15] bg-violet-500/10 px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.16em] text-violet-ink sm:inline-flex">
           <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-          Dock
+          <UiText text={"Dock"} />
         </span>
-      </nav>
+      </UiNav>
     </div>
   );
 }

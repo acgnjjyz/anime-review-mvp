@@ -1,5 +1,8 @@
 "use client";
 
+import { LocaleText, UiButton, UiLink, UiText } from "@/components/UiText";
+
+
 import Link from "next/link";
 import { ArrowRight, LogOut, Search, Shield, Shuffle } from "lucide-react";
 
@@ -26,14 +29,6 @@ type HeaderClientProps = {
   searchIndex: SearchModalItem[];
 };
 
-function LocaleText({ en, ja: jaText }: { en: string; ja: string }) {
-  return (
-    <span data-locale-en={en} data-locale-ja={jaText}>
-      {en}
-    </span>
-  );
-}
-
 function AuthButton({ isLoggedIn }: { isLoggedIn: boolean }) {
   if (isLoggedIn) {
     return (
@@ -53,14 +48,14 @@ function AuthButton({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   return (
-    <Link
+    <UiLink
       aria-label={ja.login}
       className="portal-header-auth"
       href="/login"
     >
       <LocaleText en="Login" ja={ja.login} />
       <ArrowRight className="h-5 w-5" aria-hidden="true" strokeWidth={2.5} />
-    </Link>
+    </UiLink>
   );
 }
 
@@ -71,7 +66,7 @@ export function HeaderClient({ isAdmin, isLoggedIn, randomHref, searchIndex }: H
         <div className="portal-header-container">
           <div className="portal-header-start">
             <LeftSidebar isAdmin={isAdmin} randomHref={randomHref} />
-            <Link
+            <UiLink
               aria-label="アニサーチ"
               className="portal-header-brand"
               href="/"
@@ -80,12 +75,12 @@ export function HeaderClient({ isAdmin, isLoggedIn, randomHref, searchIndex }: H
               <span className="bg-gradient-to-r from-violet-300 via-violet-500 to-cyan-300 bg-clip-text text-transparent">
                 サーチ
               </span>
-            </Link>
+            </UiLink>
 
             <SearchOpenButton className="portal-header-search">
               <Search className="portal-header-search-icon" aria-hidden="true" strokeWidth={2.7} />
               <span className="portal-header-search-label" data-locale-en="Search anime..." data-locale-ja={ja.searchAnime}>
-                Search anime...
+                <UiText text={"Search anime..."} />
               </span>
               <span className="portal-header-shortcut">
                 <kbd>S</kbd>
@@ -112,27 +107,27 @@ export function HeaderClient({ isAdmin, isLoggedIn, randomHref, searchIndex }: H
               <div className="portal-header-spacer" aria-hidden="true" />
             </div>
             <div className="portal-header-account">
-              <button
+              <UiButton
                 className="portal-header-search-toggle"
                 onClick={() => window.dispatchEvent(new Event("animemo:open-search"))}
                 type="button"
                 aria-label="Search"
               >
                 <Search className="h-5 w-5" aria-hidden="true" strokeWidth={2.7} />
-              </button>
+              </UiButton>
 
               <div className="portal-header-theme">
                 <ThemeToggle />
               </div>
 
               {isAdmin ? (
-                <Link
+                <UiLink
                   className="hidden h-9 w-9 shrink-0 items-center justify-center text-violet-ink transition hover:text-heading sm:inline-flex"
                   href="/admin"
                   aria-label={ja.admin}
                 >
                   <Shield className="h-4 w-4" aria-hidden="true" />
-                </Link>
+                </UiLink>
               ) : null}
 
               <AuthButton isLoggedIn={isLoggedIn} />

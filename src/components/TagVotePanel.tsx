@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { Tags } from "lucide-react";
 
 import { toggleAnimeTagVote } from "@/app/actions/anime-extras";
@@ -21,14 +22,14 @@ export function TagVotePanel({ animeId, isLoggedIn, tags }: TagVotePanelProps) {
     <section className="portal-panel rounded-2xl p-5">
       <h2 className="flex items-center gap-2 text-lg font-black text-heading">
         <Tags className="h-5 w-5 text-violet-ink" aria-hidden="true" />
-        Component Tags
+        <UiText text={"Component Tags"} />
       </h2>
       <p className="mt-2 text-sm leading-6 text-muted">
-        Vote for the tags that describe this anime. One vote per tag.
+        <UiText text={"Vote for the tags that describe this anime. One vote per tag."} />
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         {tags.length === 0 ? (
-          <p className="text-sm font-bold text-muted">No tags are available yet.</p>
+          <p className="text-sm font-bold text-muted"><UiText text={"No tags are available yet."} /></p>
         ) : (
           tags.map((tag) => (
             <form action={toggleAnimeTagVote} key={tag.id}>
@@ -43,7 +44,7 @@ export function TagVotePanel({ animeId, isLoggedIn, tags }: TagVotePanelProps) {
                 disabled={!isLoggedIn}
                 pendingLabel="..."
               >
-                {tag.name}
+                <UiText text={tag.name} />
                 <span className="rounded-full bg-depth/30 px-1.5 py-0.5">{tag.count}</span>
               </SubmitButton>
             </form>
@@ -51,7 +52,7 @@ export function TagVotePanel({ animeId, isLoggedIn, tags }: TagVotePanelProps) {
         )}
       </div>
       {!isLoggedIn ? (
-        <p className="mt-4 text-xs font-bold text-muted">Log in to vote on tags.</p>
+        <p className="mt-4 text-xs font-bold text-muted"><UiText text={"Log in to vote on tags."} /></p>
       ) : null}
     </section>
   );

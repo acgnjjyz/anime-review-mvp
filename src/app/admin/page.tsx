@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { ReportStatus } from "@prisma/client";
 import {
   AlertTriangle,
@@ -155,7 +156,7 @@ export default async function AdminPage() {
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <h1 className="mt-2 text-3xl font-black text-heading">管理画面</h1>
           <p className="mt-3 text-sm leading-6 text-secondary">
             作品データ、投稿、通報、ユーザー権限を確認するための管理画面です。
@@ -217,7 +218,7 @@ export default async function AdminPage() {
             return (
               <div className="rounded border border-stroke/20 bg-panel p-5" key={card.label}>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-bold text-muted">{card.label}</p>
+                  <p className="text-sm font-bold text-muted"><UiText text={card.label} /></p>
                   <Icon className="h-5 w-5 text-mint" aria-hidden="true" />
                 </div>
                 <p className="mt-3 text-3xl font-black text-heading">{card.value}</p>
@@ -233,7 +234,7 @@ export default async function AdminPage() {
             return (
               <div className="rounded border border-stroke/20 bg-panel p-5" key={card.label}>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-bold text-muted">{card.label}</p>
+                  <p className="text-sm font-bold text-muted"><UiText text={card.label} /></p>
                   <Icon className="h-5 w-5 text-mint" aria-hidden="true" />
                 </div>
                 <p className="mt-3 text-3xl font-black text-heading">{card.value}</p>
@@ -277,14 +278,14 @@ export default async function AdminPage() {
 
           <section className="rounded border border-stroke/20 bg-panel p-5">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-lg font-black text-heading">最近のrole変更</h2>
+              <h2 className="text-lg font-black text-heading"><UiText text={"最近のrole変更"} /></h2>
               <Link className="text-sm font-bold text-mint hover:text-teal-700" href="/admin/role-logs">
                 すべて見る
               </Link>
             </div>
             {recentRoleLogs.length === 0 ? (
               <p className="mt-4 rounded bg-raised p-4 text-sm font-bold text-muted">
-                role変更履歴はまだありません。
+                <UiText text={"role変更履歴はまだありません。"} />
               </p>
             ) : (
               <div className="mt-4 divide-y divide-line/10">
@@ -292,7 +293,7 @@ export default async function AdminPage() {
                   <article className="py-3" key={log.id}>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="rounded bg-raised px-2 py-1 text-xs font-black text-secondary">
-                        {log.oldRole}
+                        <UiText text={log.oldRole} />
                       </span>
                       <span className="text-xs font-black text-muted">→</span>
                       <span
@@ -302,7 +303,7 @@ export default async function AdminPage() {
                             : "rounded bg-raised px-2 py-1 text-xs font-black text-secondary"
                         }
                       >
-                        {log.newRole}
+                        <UiText text={log.newRole} />
                       </span>
                       <span className="text-xs font-bold text-muted">{formatDate(log.createdAt)}</span>
                     </div>
@@ -358,7 +359,7 @@ export default async function AdminPage() {
               className="rounded border border-stroke/20 p-4 font-bold text-mint transition hover:border-mint"
               href="/admin/role-logs"
             >
-              role変更履歴を見る
+              <UiText text={"role変更履歴を見る"} />
             </Link>
           </div>
         </div>

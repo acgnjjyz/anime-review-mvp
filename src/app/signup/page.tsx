@@ -1,3 +1,4 @@
+import { UiInput, UiText } from "@/components/UiText";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
 
@@ -21,7 +22,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
     <div className="bg-transparent">
       <section className="mx-auto max-w-md px-4 py-12">
         <div className="rounded border border-stroke/20 bg-panel p-6 shadow-soft">
-          <p className="text-sm font-black text-coral">Sign Up</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Sign Up"} /></p>
           <h1 className="mt-2 text-3xl font-black text-heading">ユーザー登録</h1>
           <div className="mt-5">
             <MessageBanner error={params.error} message={params.message} />
@@ -30,7 +31,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           <form action={signUp} className="mt-5 space-y-4">
             <label className="block text-sm font-bold text-foreground">
               表示名
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 maxLength={40}
                 name="name"
@@ -39,7 +40,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             </label>
             <label className="block text-sm font-bold text-foreground">
               メールアドレス
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 name="email"
                 placeholder="you@example.com"
@@ -49,7 +50,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             </label>
             <label className="block text-sm font-bold text-foreground">
               パスワード
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-3 outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 minLength={6}
                 name="password"

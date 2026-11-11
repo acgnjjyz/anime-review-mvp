@@ -1,3 +1,4 @@
+import { UiDiv, UiImage, UiText } from "@/components/UiText";
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
 import { CalendarDays } from "lucide-react";
@@ -60,18 +61,17 @@ export default async function SchedulePage() {
       <section className="border-b border-stroke/25 bg-field/60">
         <div className="mx-auto max-w-7xl px-4 py-10">
           <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink">
-            Schedule
+            <UiText text={"Schedule"} />
           </p>
-          <h1 className="mt-2 text-4xl font-black text-heading">Weekly Anime Schedule</h1>
+          <h1 className="mt-2 text-4xl font-black text-heading"><UiText text={"Weekly Anime Schedule"} /></h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-            A portal-style weekly lineup for reviews and discovery. No episode streaming is
-            provided.
+            <UiText text={"A portal-style weekly lineup for reviews and discovery. No episode streaming is provided."} />
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Weekdays">
+        <UiDiv className="mb-6 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Weekdays">
           {days.map((day) => (
             <a
               className="shrink-0 rounded-full border border-stroke/25 bg-raised/70 px-4 py-2 text-sm font-black text-secondary transition hover:border-cyan-300/40 hover:text-heading"
@@ -79,10 +79,10 @@ export default async function SchedulePage() {
               key={day.key}
               role="tab"
             >
-              {day.label} / {day.ja}
+              <UiText text={day.label} /> / {day.ja}
             </a>
           ))}
-        </div>
+        </UiDiv>
 
         <div className="space-y-10">
           {days.map((day) => {
@@ -93,7 +93,7 @@ export default async function SchedulePage() {
                 <div className="flex items-center gap-3">
                   <CalendarDays className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
                   <h2 className="text-2xl font-black text-heading">
-                    {day.label} / {day.ja}
+                    <UiText text={day.label} /> / {day.ja}
                   </h2>
                 </div>
 
@@ -109,7 +109,7 @@ export default async function SchedulePage() {
                         href={`/anime/${anime.slug}`}
                         key={anime.id}
                       >
-                        <img
+                        <UiImage
                           alt={`${anime.title} poster`}
                           className="h-28 w-20 shrink-0 rounded-xl object-cover"
                           src={anime.coverImage}
@@ -119,7 +119,7 @@ export default async function SchedulePage() {
                             {anime.title}
                           </p>
                           <p className="mt-2 line-clamp-1 text-xs font-bold text-violet-ink">
-                            {anime.genres[0] ?? "Anime"} / {anime.releaseYear}
+                            <UiText text={anime.genres[0] ?? "Anime"} /> / {anime.releaseYear}
                           </p>
                           <div className="mt-3">
                             <ScoreBadge count={anime.ratings.length} score={averageScore(anime.ratings)} />

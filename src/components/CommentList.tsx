@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { Pencil, Trash2 } from "lucide-react";
 
 import { deleteComment, updateComment } from "@/app/actions/comment";
@@ -47,11 +48,11 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="text-sm font-bold text-secondary">
-                  {comment.user.name ?? "Anonymous"} · {formatDate(comment.createdAt)}
+                  {comment.user.name ?? <UiText text={"Anonymous"} />} · {formatDate(comment.createdAt)}
                 </p>
                 {isEdited ? (
                   <p className="mt-1 text-xs font-medium text-muted">
-                    Edited: {formatDate(comment.updatedAt)}
+                    <UiText text={"Edited:"} /> {formatDate(comment.updatedAt)}
                   </p>
                 ) : null}
               </div>
@@ -71,7 +72,7 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
                       pendingLabel="Deleting..."
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
-                      Delete
+                      <UiText text={"Delete"} />
                     </ConfirmSubmitButton>
                   </form>
                 ) : null}
@@ -83,12 +84,12 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
             {isMine ? (
               <details className="mt-4 rounded-2xl border border-stroke/25 bg-field/50 p-3">
                 <summary className="cursor-pointer text-sm font-black text-cyan-ink">
-                  Edit comment
+                  <UiText text={"Edit comment"} />
                 </summary>
                 <form action={updateComment} className="mt-3">
                   <input name="commentId" type="hidden" value={comment.id} />
                   <label className="block text-sm font-bold text-secondary">
-                    Updated text
+                    <UiText text={"Updated text"} />
                     <textarea
                       className="portal-input mt-1 min-h-24 w-full rounded-xl px-3 py-3 leading-7"
                       defaultValue={comment.body}
@@ -98,13 +99,13 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
                     />
                   </label>
                   <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="text-xs font-medium text-muted">Up to 1000 characters</span>
+                    <span className="text-xs font-medium text-muted"><UiText text={"Up to 1000 characters"} /></span>
                     <SubmitButton
                       className="portal-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50"
                       pendingLabel="Updating..."
                     >
                       <Pencil className="h-4 w-4" aria-hidden="true" />
-                      Update
+                      <UiText text={"Update"} />
                     </SubmitButton>
                   </div>
                 </form>

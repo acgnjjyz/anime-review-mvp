@@ -1,3 +1,4 @@
+import { UiIframe, UiText } from "@/components/UiText";
 import Link from "next/link";
 import { ExternalLink, PlayCircle } from "lucide-react";
 
@@ -29,16 +30,16 @@ export function TrailerPanel({ trailerUrl }: { trailerUrl: string | null }) {
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-ink">
-            Official PV
+            <UiText text={"Official PV"} />
           </p>
-          <h2 className="mt-1 text-lg font-black text-heading">Trailer</h2>
+          <h2 className="mt-1 text-lg font-black text-heading"><UiText text={"Trailer"} /></h2>
         </div>
         <PlayCircle className="h-9 w-9 text-cyan-ink" aria-hidden="true" />
       </div>
 
       {embedUrl ? (
         <div className="mt-4 aspect-video overflow-hidden rounded-2xl border border-stroke/25 bg-black">
-          <iframe
+          <UiIframe
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             className="h-full w-full"
@@ -53,12 +54,12 @@ export function TrailerPanel({ trailerUrl }: { trailerUrl: string | null }) {
           rel="noreferrer"
           target="_blank"
         >
-          Official PV
+          <UiText text={"Official PV"} />
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
         </Link>
       ) : (
         <p className="mt-3 text-sm leading-6 text-muted">
-          No official PV is registered yet. This site does not host anime episodes.
+          <UiText text={"No official PV is registered yet. This site does not host anime episodes."} />
         </p>
       )}
     </section>

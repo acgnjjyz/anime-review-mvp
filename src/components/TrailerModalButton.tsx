@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiIframe, UiText } from "@/components/UiText";
+
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PlayCircle, X } from "lucide-react";
 
@@ -70,7 +73,7 @@ export function TrailerModalButton({
         type="button"
       >
         <PlayCircle className="h-4 w-4" aria-hidden="true" />
-        {label}
+        <UiText text={label} />
       </button>
       {isOpen ? (
         <div className="fixed inset-0 z-[90] bg-black/[0.78] px-3 py-6 backdrop-blur-xl">
@@ -83,22 +86,22 @@ export function TrailerModalButton({
             <div className="flex items-center justify-between border-b border-line/10 px-4 py-3">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-ink">
-                  Official PV
+                  <UiText text={"Official PV"} />
                 </p>
-                <h2 className="text-lg font-black text-heading">Trailer preview</h2>
+                <h2 className="text-lg font-black text-heading"><UiText text={"Trailer preview"} /></h2>
               </div>
-              <button
+              <UiButton
                 aria-label="Close official PV"
                 className="grid h-10 w-10 place-items-center rounded-xl text-muted hover:bg-wash/10 hover:text-heading"
                 onClick={() => setIsOpen(false)}
                 type="button"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
-              </button>
+              </UiButton>
             </div>
             {embedUrl ? (
               <div className="aspect-video bg-black">
-                <iframe
+                <UiIframe
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                   className="h-full w-full"

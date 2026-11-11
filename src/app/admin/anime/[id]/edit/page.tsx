@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { notFound } from "next/navigation";
 import { Shield } from "lucide-react";
 
@@ -100,7 +101,7 @@ export default async function AdminAnimeEditPage({
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-4xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <h1 className="mt-2 text-3xl font-black text-heading">作品編集</h1>
           <p className="mt-3 text-sm leading-6 text-secondary">
             タイトル、概要、ジャンル、放送年、画像URLを編集できます。

@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiLink, UiNav, UiText } from "@/components/UiText";
+
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -71,19 +74,19 @@ function GenreFlyout({ isOpen, onSelect }: { isOpen: boolean; onSelect: () => vo
         <div className="portal-sidebar-flyout-inner">
           <div className="portal-sidebar-genre-grid">
             {genreItems.map((genre) => (
-              <Link
+              <UiLink
                 className="portal-sidebar-genre-link"
                 href={`/anime?genre=${encodeURIComponent(genre.value)}`}
                 key={genre.value}
                 onClick={onSelect}
                 title={genre.label}
               >
-                {genre.label}
-              </Link>
+                <UiText text={genre.label} />
+              </UiLink>
             ))}
           </div>
           <Link className="portal-sidebar-genre-all mt-3 inline-block text-xs text-violet-ink hover:text-heading" href="/anime#genres" onClick={onSelect}>
-            All genres
+            <UiText text={"All genres"} />
           </Link>
         </div>
       </div>
@@ -159,7 +162,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
 
   return (
     <>
-      <button
+      <UiButton
         aria-controls="portal-sidebar-drawer"
         aria-expanded={isOpen}
         aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -177,7 +180,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
           strokeLinecap="butt"
           aria-hidden="true"
         />
-      </button>
+      </UiButton>
 
       <div
         className={`portal-menu-backdrop ${
@@ -203,7 +206,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
           height: isOpen ? `calc(${drawerHeight}px + var(--portal-sidebar-extra-height))` : "0px",
         }}
       >
-        <nav aria-label="Expanded side navigation" inert={!isOpen} ref={navRef}>
+        <UiNav aria-label="Expanded side navigation" inert={!isOpen} ref={navRef}>
           {visibleDrawerItems.map((item) => {
             const active = !["newest", "updated", "added"].includes(item.key) && isActivePath(pathname, item.href);
 
@@ -224,7 +227,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
                     }}
                     type="button"
                   >
-                    {item.label}
+                    <UiText text={item.label} />
                     <ChevronRight className="portal-sidebar-arrow" aria-hidden="true" />
                   </button>
                   <GenreFlyout
@@ -246,7 +249,7 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
                 }}
                 onMouseEnter={() => setActivePanel(null)}
               >
-                {item.label}
+                <UiText text={item.label} />
               </Link>
             );
           })}
@@ -257,9 +260,9 @@ export function LeftSidebar({ isAdmin, randomHref }: { isAdmin: boolean; randomH
               changeDrawerOpen(false);
             }}
           >
-            Random
+            <UiText text={"Random"} />
           </Link>
-        </nav>
+        </UiNav>
       </aside>
     </>
   );

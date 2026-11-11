@@ -1,3 +1,4 @@
+import { UiImage, UiText } from "@/components/UiText";
 import Link from "next/link";
 import { Crown, Medal, MessageSquare, Tags } from "lucide-react";
 
@@ -56,10 +57,10 @@ export default async function RankingPage() {
     <div className="portal-shell">
       <section className="border-b border-line/10 bg-canvas-muted/[0.72]">
         <div className="mx-auto max-w-[1640px] px-3 py-6 sm:px-4 lg:px-6">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-ink">Ranking</p>
-          <h1 className="mt-1 text-3xl font-black text-heading lg:text-4xl">Top Rated Anime</h1>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-ink"><UiText text={"Ranking"} /></p>
+          <h1 className="mt-1 text-3xl font-black text-heading lg:text-4xl"><UiText text={"Top Rated Anime"} /></h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-            Rankings are recalculated from the latest ratings after review edits or deletes.
+            <UiText text={"Rankings are recalculated from the latest ratings after review edits or deletes."} />
           </p>
         </div>
       </section>
@@ -87,7 +88,7 @@ export default async function RankingPage() {
                     key={anime.id}
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
-                      <img
+                      <UiImage
                         alt={`${anime.title} poster`}
                         className="h-full w-full object-cover transition duration-300 hover:scale-105"
                         src={anime.coverImage}
@@ -105,17 +106,17 @@ export default async function RankingPage() {
                     <div className="space-y-2.5 p-4">
                       <ScoreBadge count={anime.ratings.length} score={anime.average} />
                       <h2 className="line-clamp-2 text-lg font-black text-heading">{anime.title}</h2>
-                      <p className="line-clamp-2 text-xs leading-5 text-muted">{anime.synopsis}</p>
+                      <p className="line-clamp-2 text-xs leading-5 text-muted"><UiText text={anime.synopsis} /></p>
                       <div className="flex flex-wrap gap-2">
                         {anime.genres.slice(0, 2).map((genre) => (
                           <span className="portal-chip rounded-full px-2.5 py-1 text-xs font-black" key={genre}>
-                            {genre}
+                            <UiText text={genre} />
                           </span>
                         ))}
                       </div>
                       <p className="inline-flex items-center gap-1.5 text-sm font-bold text-muted">
                         <MessageSquare className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                        {anime.reviews.length} reviews · {anime.releaseYear}
+                        {anime.reviews.length} <UiText text={"reviews ·"} /> {anime.releaseYear}
                       </p>
                     </div>
                   </Link>
@@ -135,7 +136,7 @@ export default async function RankingPage() {
                           {index + 4}
                         </span>
                       </div>
-                      <img
+                      <UiImage
                         alt={`${anime.title} poster`}
                         className="aspect-[3/4] w-full rounded-xl object-cover md:h-24"
                         src={anime.coverImage}
@@ -143,11 +144,11 @@ export default async function RankingPage() {
                       <div className="min-w-0">
                         <h2 className="text-base font-black text-heading">{anime.title}</h2>
                         <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">
-                          {anime.synopsis}
+                          <UiText text={anime.synopsis} />
                         </p>
                         <p className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-muted">
                           <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                          {anime.reviews.length} reviews · {anime.genres[0] ?? "Anime"} ·{" "}
+                          {anime.reviews.length} <UiText text={"reviews ·"} /> <UiText text={anime.genres[0] ?? "Anime"} /> ·{" "}
                           {anime.releaseYear}
                         </p>
                       </div>
@@ -166,7 +167,7 @@ export default async function RankingPage() {
           <div className="portal-panel rounded-2xl p-5">
             <h2 className="inline-flex items-center gap-2 text-lg font-black text-heading">
               <Tags className="h-5 w-5 text-cyan-ink" aria-hidden="true" />
-              Genres
+              <UiText text={"Genres"} />
             </h2>
             <div className="mt-4 flex flex-wrap gap-2">
               {genres.map((genre) => (
@@ -175,7 +176,7 @@ export default async function RankingPage() {
                   href={`/anime?genre=${encodeURIComponent(genre)}&sort=score`}
                   key={genre}
                 >
-                  {genre}
+                  <UiText text={genre} />
                 </Link>
               ))}
             </div>

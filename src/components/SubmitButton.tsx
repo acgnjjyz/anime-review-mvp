@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiText } from "@/components/UiText";
+
+
 import type { ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -22,14 +25,14 @@ export function SubmitButton({
   const isDisabled = disabled || pending;
 
   return (
-    <button
+    <UiButton
       aria-disabled={isDisabled}
       className={className}
       disabled={isDisabled}
       title={title}
       type="submit"
     >
-      {pending ? pendingLabel : children}
-    </button>
+      {pending ? <UiText text={pendingLabel} /> : children}
+    </UiButton>
   );
 }

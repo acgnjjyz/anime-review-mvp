@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "test:ui": "tsx --tsconfig tsconfig.test.json --test scripts/i18n.test.tsx scripts/image-upload.test.ts",
     "env": "npm run env:check",
     "env:check": "node scripts/check-env.mjs",
     "titles:match": "node scripts/match-japanese-titles.mjs",

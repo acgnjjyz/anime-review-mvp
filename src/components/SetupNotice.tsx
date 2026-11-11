@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import Link from "next/link";
 import { Database, FileText } from "lucide-react";
 
@@ -25,12 +26,12 @@ export function SetupNotice({
               <Database className="h-6 w-6" aria-hidden="true" />
             </span>
             <div>
-              <p className="text-sm font-black text-coral">Setup Required</p>
-              <h1 className="mt-2 text-2xl font-black text-heading">{title}</h1>
-              <p className="mt-3 leading-7 text-secondary">{description}</p>
+              <p className="text-sm font-black text-coral"><UiText text={"Setup Required"} /></p>
+              <h1 className="mt-2 text-2xl font-black text-heading"><UiText text={title} /></h1>
+              <p className="mt-3 leading-7 text-secondary"><UiText text={description} /></p>
               {detail ? (
                 <p className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
-                  {detail}
+                  <UiText text={detail} />
                 </p>
               ) : null}
               {missing.length > 0 ? (

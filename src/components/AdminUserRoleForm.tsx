@@ -1,5 +1,8 @@
 "use client";
 
+import { UiText } from "@/components/UiText";
+
+
 import { useState } from "react";
 
 import { updateAdminUserRole } from "@/app/actions/admin-users";
@@ -22,7 +25,7 @@ export function AdminUserRoleForm({ currentAdminId, userId, role }: AdminUserRol
         <input name="userId" type="hidden" value={userId} />
         <input name="role" type="hidden" value="USER" />
         <p className="text-xs font-bold leading-5 text-amber-800">
-          自分自身をUSERに変更します。管理画面へ入れなくなる可能性があります。
+          <UiText text={"自分自身をUSERに変更します。管理画面へ入れなくなる可能性があります。"} />
         </p>
         <div className="flex flex-wrap gap-2">
           <button
@@ -39,7 +42,7 @@ export function AdminUserRoleForm({ currentAdminId, userId, role }: AdminUserRol
             className="rounded bg-amber-600 px-3 py-2 text-xs font-black text-white disabled:bg-amber-300"
             pendingLabel="変更中..."
           >
-            USERに変更する
+            <UiText text={"USERに変更する"} />
           </SubmitButton>
         </div>
       </form>
@@ -55,8 +58,8 @@ export function AdminUserRoleForm({ currentAdminId, userId, role }: AdminUserRol
         onChange={(event) => setNextRole(event.target.value as "USER" | "ADMIN")}
         value={nextRole}
       >
-        <option value="USER">USER</option>
-        <option value="ADMIN">ADMIN</option>
+        <option value="USER"><UiText text={"USER"} /></option>
+        <option value="ADMIN"><UiText text={"ADMIN"} /></option>
       </select>
       {isSelfDemotion ? (
         <button

@@ -1,3 +1,4 @@
+import { UiInput, UiNav, UiText } from "@/components/UiText";
 import { ModerationTargetType, type Prisma } from "@prisma/client";
 import { ClipboardList, Download, Search, Shield } from "lucide-react";
 import Link from "next/link";
@@ -181,7 +182,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <h1 className="mt-2 flex items-center gap-2 text-3xl font-black text-heading">
             <ClipboardList className="h-7 w-7 text-mint" aria-hidden="true" />
             削除理由ログ
@@ -192,7 +193,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
           <form className="mt-6 grid gap-3 md:grid-cols-[1fr_180px_auto]" action="/admin/moderation-logs">
             <label className="text-xs font-black text-muted">
               検索
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
@@ -207,8 +208,8 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
                 name="targetType"
               >
                 <option value="">すべて</option>
-                <option value={ModerationTargetType.REVIEW}>REVIEW</option>
-                <option value={ModerationTargetType.COMMENT}>COMMENT</option>
+                <option value={ModerationTargetType.REVIEW}><UiText text={"REVIEW"} /></option>
+                <option value={ModerationTargetType.COMMENT}><UiText text={"COMMENT"} /></option>
               </select>
             </label>
             <button
@@ -302,7 +303,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
+          <UiNav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link
                 className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint"
@@ -322,7 +323,7 @@ export default async function AdminModerationLogsPage({ searchParams }: AdminMod
                 次へ
               </Link>
             ) : null}
-          </nav>
+          </UiNav>
         ) : null}
       </section>
     </div>

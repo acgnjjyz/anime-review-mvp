@@ -1,3 +1,4 @@
+import { UiImage, UiText } from "@/components/UiText";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 
@@ -52,12 +53,12 @@ function SectionHeader({
   return (
     <div className="mb-4 flex items-end justify-between gap-4">
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-ink">{eyebrow}</p>
-        <h2 className="mt-1 text-xl font-black text-heading sm:text-2xl">{title}</h2>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-ink"><UiText text={eyebrow} /></p>
+        <h2 className="mt-1 text-xl font-black text-heading sm:text-2xl"><UiText text={title} /></h2>
       </div>
       {href ? (
         <Link className="text-sm font-black text-sky-ink hover:text-heading" href={href}>
-          View all
+          <UiText text={"View all"} />
         </Link>
       ) : null}
     </div>
@@ -95,7 +96,7 @@ function LatestReviews({ reviews }: { reviews: LatestReview[] }) {
   if (reviews.length === 0) {
     return (
       <div className="portal-panel-soft rounded-2xl p-5 text-sm leading-6 text-muted">
-        Reviews will appear here after users post them.
+        <UiText text={"Reviews will appear here after users post them."} />
       </div>
     );
   }
@@ -108,7 +109,7 @@ function LatestReviews({ reviews }: { reviews: LatestReview[] }) {
           href={`/anime/${review.anime.slug}`}
           key={review.id}
         >
-          <img
+          <UiImage
             alt={`${review.anime.title} poster`}
             className="aspect-[3/4] w-full rounded-xl object-cover sm:h-28"
             src={review.anime.coverImage}
@@ -122,7 +123,7 @@ function LatestReviews({ reviews }: { reviews: LatestReview[] }) {
             </div>
             <h3 className="mt-2 line-clamp-1 text-base font-black text-heading">{review.title}</h3>
             <p className="mt-1 text-sm font-bold text-muted">
-              {review.user.name ?? "Anonymous"} on {review.anime.title}
+              {review.user.name ?? <UiText text={"Anonymous"} />} <UiText text={"on"} /> {review.anime.title}
             </p>
             <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted">{review.body}</p>
           </div>
@@ -288,18 +289,18 @@ export default async function HomePage() {
         <div className="portal-panel grid gap-4 rounded-3xl p-6 md:grid-cols-[1fr_auto] md:items-center">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-violet-ink">
-              Ranking
+              <UiText text={"Ranking"} />
             </p>
-            <h2 className="mt-2 text-2xl font-black text-heading">See the full score board</h2>
+            <h2 className="mt-2 text-2xl font-black text-heading"><UiText text={"See the full score board"} /></h2>
             <p className="mt-2 text-sm leading-6 text-muted">
-              Average scores are calculated from review ratings and update after edits or deletes.
+              <UiText text={"Average scores are calculated from review ratings and update after edits or deletes."} />
             </p>
           </div>
           <Link
             className="portal-button-secondary inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-black"
             href="/ranking"
           >
-            Ranking
+            <UiText text={"Ranking"} />
             <Trophy className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>

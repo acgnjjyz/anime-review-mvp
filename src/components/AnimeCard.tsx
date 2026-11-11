@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import Link from "next/link";
 import { Calendar, Heart, MessageSquare, Sparkles } from "lucide-react";
 
@@ -66,11 +67,12 @@ export function AnimeCard({
             <div className="absolute inset-0 bg-gradient-to-t from-[#050509] via-black/[0.28] to-transparent opacity-95" />
             <div className="absolute left-2.5 right-2.5 top-2.5 flex items-start justify-between gap-2">
               <span className="rounded-full border border-cyan-200/[0.15] bg-cyan-300/10 px-2 py-1 text-[0.68rem] font-black text-cyan-ink">
-                {primaryGenre}
+                <UiText text={primaryGenre} />
               </span>
               {isFavorite ? (
                 <span className="grid h-8 w-8 place-items-center rounded-full border border-rose-300/30 bg-rose-500/20 text-rose-ink">
-                  <Heart className="h-3.5 w-3.5 fill-current" aria-label="Favorited" />
+                  <Heart className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                  <span className="sr-only"><UiText text="Favorited" /></span>
                 </span>
               ) : null}
             </div>
@@ -82,7 +84,7 @@ export function AnimeCard({
                     : "absolute bottom-2.5 left-2.5 rounded-full border border-red-300/25 bg-red-500/20 px-2 py-1 text-[0.68rem] font-black text-red-ink"
                 }
               >
-                {anime.isPublished ? "Published" : "Private"}
+                {anime.isPublished ? <UiText text={"Published"} /> : <UiText text={"Private"} />}
               </span>
             ) : null}
           </div>
@@ -106,7 +108,7 @@ export function AnimeCard({
         </div>
 
         <p className="line-clamp-2 min-h-10 text-xs leading-5 text-muted">
-          {anime.synopsis}
+          <UiText text={anime.synopsis} />
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -115,7 +117,7 @@ export function AnimeCard({
               className="rounded-full border border-line/10 bg-depth/[0.35] px-2 py-1 text-[0.68rem] font-bold text-secondary"
               key={genre}
             >
-              {genre}
+              <UiText text={genre} />
             </span>
           ))}
         </div>
@@ -135,7 +137,7 @@ export function AnimeCard({
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Sparkles className="h-3.5 w-3.5 text-cyan-ink" aria-hidden="true" />
-              {anime.studio}
+              <UiText text={anime.studio} />
             </span>
           </div>
         </div>

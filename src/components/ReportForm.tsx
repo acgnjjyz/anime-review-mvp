@@ -1,3 +1,4 @@
+import { UiText, UiTextarea } from "@/components/UiText";
 import Link from "next/link";
 import { Flag } from "lucide-react";
 
@@ -15,13 +16,13 @@ export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: Rep
   if (!isLoggedIn) {
     return (
       <Link className="text-xs font-bold text-muted hover:text-cyan-ink" href="/login">
-        Login to report
+        <UiText text={"Login to report"} />
       </Link>
     );
   }
 
   if (isReported) {
-    return <span className="text-xs font-bold text-muted">Reported</span>;
+    return <span className="text-xs font-bold text-muted"><UiText text={"Reported"} /></span>;
   }
 
   return (
@@ -29,28 +30,28 @@ export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: Rep
       <summary className="cursor-pointer text-xs font-black text-secondary">
         <span className="inline-flex items-center gap-1">
           <Flag className="h-3.5 w-3.5" aria-hidden="true" />
-          Report
+          <UiText text={"Report"} />
         </span>
       </summary>
       <form action={createReport} className="mt-3 space-y-3">
         <input name="targetId" type="hidden" value={targetId} />
         <input name="targetType" type="hidden" value={targetType} />
         <label className="block text-xs font-black text-secondary">
-          Reason
+          <UiText text={"Reason"} />
           <select
             className="portal-input mt-1 h-9 w-full rounded-xl px-2 text-xs"
             name="selectedReason"
             required
           >
-            <option value="Spam or promotion">Spam or promotion</option>
-            <option value="Harassment or hate">Harassment or hate</option>
-            <option value="Major spoiler without warning">Major spoiler without warning</option>
-            <option value="Other">Other</option>
+            <option value="Spam or promotion"><UiText text={"Spam or promotion"} /></option>
+            <option value="Harassment or hate"><UiText text={"Harassment or hate"} /></option>
+            <option value="Major spoiler without warning"><UiText text={"Major spoiler without warning"} /></option>
+            <option value="Other"><UiText text={"Other"} /></option>
           </select>
         </label>
         <label className="block text-xs font-black text-secondary">
-          Details
-          <textarea
+          <UiText text={"Details"} />
+          <UiTextarea
             className="portal-input mt-1 min-h-20 w-full rounded-xl px-3 py-2 text-sm"
             maxLength={500}
             name="customReason"
@@ -62,7 +63,7 @@ export function ReportForm({ targetId, targetType, isLoggedIn, isReported }: Rep
           pendingLabel="Sending..."
         >
           <Flag className="h-4 w-4" aria-hidden="true" />
-          Send Report
+          <UiText text={"Send Report"} />
         </SubmitButton>
       </form>
     </details>

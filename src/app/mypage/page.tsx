@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BookmarkCheck, Heart, MessageSquare, Star } from "lucide-react";
@@ -102,9 +103,9 @@ export default async function MyPage() {
     <div className="portal-shell">
       <section className="border-b border-stroke/25 bg-field/60">
         <div className="mx-auto max-w-7xl px-4 py-9">
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink">MyPage</p>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink"><UiText text={"MyPage"} /></p>
           <h1 className="mt-2 text-3xl font-black text-heading">
-            {profile.name ?? "User"}'s anime shelf
+            {profile.name ?? <UiText text={"User"} />}<UiText text={"'s anime shelf"} />
           </h1>
           <p className="mt-2 text-sm text-muted">{profile.email}</p>
         </div>
@@ -113,33 +114,33 @@ export default async function MyPage() {
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[320px_1fr]">
         <aside className="space-y-4">
           <div className="portal-panel rounded-2xl p-5">
-            <h2 className="text-xl font-black text-heading">Activity Summary</h2>
+            <h2 className="text-xl font-black text-heading"><UiText text={"Activity Summary"} /></h2>
             <div className="mt-4 grid gap-3">
               <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
                 <span className="inline-flex items-center gap-2 font-bold text-secondary">
                   <MessageSquare className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
-                  Reviews
+                  <UiText text={"Reviews"} />
                 </span>
                 <span className="text-lg font-black text-heading">{profile.reviews.length}</span>
               </div>
               <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
                 <span className="inline-flex items-center gap-2 font-bold text-secondary">
                   <Heart className="h-4 w-4 text-rose-ink" aria-hidden="true" />
-                  Favorites
+                  <UiText text={"Favorites"} />
                 </span>
                 <span className="text-lg font-black text-heading">{profile.favorites.length}</span>
               </div>
               <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
                 <span className="inline-flex items-center gap-2 font-bold text-secondary">
                   <BookmarkCheck className="h-4 w-4 text-violet-ink" aria-hidden="true" />
-                  Shelf
+                  <UiText text={"Shelf"} />
                 </span>
                 <span className="text-lg font-black text-heading">{profile.animeShelves.length}</span>
               </div>
               <div className="flex items-center justify-between rounded-xl border border-stroke/25 bg-field/60 p-3">
                 <span className="inline-flex items-center gap-2 font-bold text-secondary">
                   <Star className="h-4 w-4 text-amber-ink" aria-hidden="true" />
-                  Average
+                  <UiText text={"Average"} />
                 </span>
                 <ScoreBadge score={average} />
               </div>
@@ -150,9 +151,9 @@ export default async function MyPage() {
         <div className="space-y-10">
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-heading">Anime Shelf</h2>
+              <h2 className="text-2xl font-black text-heading"><UiText text={"Anime Shelf"} /></h2>
               <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/anime">
-                Browse anime
+                <UiText text={"Browse anime"} />
               </Link>
             </div>
             {profile.animeShelves.length === 0 ? (
@@ -173,7 +174,7 @@ export default async function MyPage() {
 
                   return (
                     <div className="portal-panel rounded-2xl p-4" key={group.status}>
-                      <h3 className="text-lg font-black text-heading">{group.label}</h3>
+                      <h3 className="text-lg font-black text-heading"><UiText text={group.label} /></h3>
                       <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {items.map((shelf) => (
                           <AnimeCard anime={shelf.anime} key={shelf.id} />
@@ -188,9 +189,9 @@ export default async function MyPage() {
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-heading">My Reviews</h2>
+              <h2 className="text-2xl font-black text-heading"><UiText text={"My Reviews"} /></h2>
               <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/anime">
-                Find anime
+                <UiText text={"Find anime"} />
               </Link>
             </div>
             {profile.reviews.length === 0 ? (
@@ -226,9 +227,9 @@ export default async function MyPage() {
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-black text-heading">Recent Favorites</h2>
+              <h2 className="text-2xl font-black text-heading"><UiText text={"Recent Favorites"} /></h2>
               <Link className="text-sm font-bold text-sky-ink hover:text-heading" href="/favorites">
-                View all
+                <UiText text={"View all"} />
               </Link>
             </div>
             {profile.favorites.length === 0 ? (

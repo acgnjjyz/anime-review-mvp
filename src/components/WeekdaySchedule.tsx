@@ -1,3 +1,4 @@
+import { UiDiv, UiText } from "@/components/UiText";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { AnimePoster } from "@/components/AnimePoster";
@@ -36,18 +37,18 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-black uppercase tracking-[0.18em] text-cyan-ink">
-            Weekly Lineup
+            <UiText text={"Weekly Lineup"} />
           </p>
           <h2 className="mt-2 text-2xl font-black text-heading sm:text-3xl">
-            Schedule Style Picks
+            <UiText text={"Schedule Style Picks"} />
           </h2>
         </div>
         <p className="max-w-xl text-sm leading-6 text-muted">
-          UI preview only. These are review-site recommendations, not episode streaming links.
+          <UiText text={"UI preview only. These are review-site recommendations, not episode streaming links."} />
         </p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Weekday picks">
+      <UiDiv className="flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Weekday picks">
         {grouped.map((group, index) => (
           <span
             className={
@@ -59,10 +60,10 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
             role="tab"
             aria-selected={index === todayIndex}
           >
-            {group.label}
+            <UiText text={group.label} />
           </span>
         ))}
-      </div>
+      </UiDiv>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {grouped[todayIndex]?.items.length ? (
@@ -84,14 +85,14 @@ export function WeekdaySchedule({ animeList }: { animeList: ScheduleAnime[] }) {
                   {anime.releaseYear}
                 </p>
                 <p className="mt-2 line-clamp-1 text-xs font-bold text-violet-ink">
-                  {anime.genres[0] ?? "Anime"}
+                  <UiText text={anime.genres[0] ?? "Anime"} />
                 </p>
               </div>
             </Link>
           ))
         ) : (
           <div className="portal-panel-soft rounded-2xl p-5 text-sm font-bold text-muted">
-            No picks for this day yet.
+            <UiText text={"No picks for this day yet."} />
           </div>
         )}
       </div>

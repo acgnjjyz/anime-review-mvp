@@ -1,3 +1,4 @@
+import { UiImage, UiInput, UiNav, UiText } from "@/components/UiText";
 import Link from "next/link";
 import { Edit3, Plus, Search, Shield } from "lucide-react";
 import type { Prisma } from "@prisma/client";
@@ -183,7 +184,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h1 className="text-3xl font-black text-heading">作品管理</h1>
@@ -203,7 +204,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
           <form className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(140px,1fr)_minmax(120px,1fr)_auto]" action="/admin/anime">
             <label className="text-xs font-black text-muted">
               タイトル検索
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
@@ -220,7 +221,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                 <option value="">すべて</option>
                 {genres.map((genre) => (
                   <option key={genre} value={genre}>
-                    {genre}
+                    <UiText text={genre} />
                   </option>
                 ))}
               </select>
@@ -308,7 +309,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                       return (
                         <tr className="align-top" key={anime.id}>
                           <td className="px-4 py-4">
-                            <img
+                            <UiImage
                               alt={`${anime.title}のサムネイル`}
                               className="h-16 w-24 rounded object-cover"
                               src={anime.coverImage}
@@ -334,7 +335,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                                   className="rounded bg-raised px-2 py-1 text-xs font-bold text-secondary"
                                   key={genre}
                                 >
-                                  {genre}
+                                  <UiText text={genre} />
                                 </span>
                               ))}
                             </div>
@@ -390,7 +391,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
             </div>
 
             {totalPages > 1 ? (
-              <nav className="flex flex-col gap-3 rounded border border-stroke/20 bg-panel p-4 sm:flex-row sm:items-center sm:justify-between" aria-label="ページネーション">
+              <UiNav className="flex flex-col gap-3 rounded border border-stroke/20 bg-panel p-4 sm:flex-row sm:items-center sm:justify-between" aria-label="ページネーション">
                 <p className="text-sm font-bold text-muted">
                   {currentPage} / {totalPages}ページ
                 </p>
@@ -446,7 +447,7 @@ export default async function AdminAnimePage({ searchParams }: AdminAnimePagePro
                     </span>
                   )}
                 </div>
-              </nav>
+              </UiNav>
             ) : null}
           </>
         )}

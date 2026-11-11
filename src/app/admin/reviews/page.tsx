@@ -1,3 +1,4 @@
+import { UiInput, UiNav, UiText } from "@/components/UiText";
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
 import { Search, Shield } from "lucide-react";
@@ -145,7 +146,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
     <div className="bg-transparent">
       <section className="border-b border-stroke/20 bg-panel">
         <div className="mx-auto max-w-6xl px-4 py-9">
-          <p className="text-sm font-black text-coral">Admin</p>
+          <p className="text-sm font-black text-coral"><UiText text={"Admin"} /></p>
           <h1 className="mt-2 text-3xl font-black text-heading">レビュー管理</h1>
           <p className="mt-3 text-sm leading-6 text-secondary">
             投稿されたレビューを検索し、不適切なレビューを削除できます。
@@ -153,7 +154,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
           <form className="mt-6 flex flex-col gap-3 sm:flex-row" action="/admin/reviews">
             <label className="flex-1 text-xs font-black text-muted">
               検索
-              <input
+              <UiInput
                 className="mt-1 h-11 w-full rounded border border-stroke/20 px-4 text-sm outline-none focus:border-mint focus:ring-2 focus:ring-mint/20"
                 defaultValue={query}
                 name="q"
@@ -229,7 +230,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
         )}
 
         {totalPages > 1 ? (
-          <nav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
+          <UiNav className="flex flex-wrap gap-2 rounded border border-stroke/20 bg-panel p-4" aria-label="ページネーション">
             {currentPage > 1 ? (
               <Link className="rounded border border-stroke/20 px-3 py-2 text-sm font-bold text-heading hover:border-mint hover:text-mint" href={buildPageHref(currentPage - 1)}>
                 前へ
@@ -243,7 +244,7 @@ export default async function AdminReviewsPage({ searchParams }: AdminReviewsPag
                 次へ
               </Link>
             ) : null}
-          </nav>
+          </UiNav>
         ) : null}
       </section>
     </div>

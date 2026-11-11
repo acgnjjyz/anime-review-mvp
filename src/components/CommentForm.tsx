@@ -1,3 +1,4 @@
+import { UiText, UiTextarea } from "@/components/UiText";
 import Link from "next/link";
 import { MessageSquarePlus } from "lucide-react";
 
@@ -13,15 +14,15 @@ export function CommentForm({ animeId, isLoggedIn }: CommentFormProps) {
   if (!isLoggedIn) {
     return (
       <div className="portal-panel rounded-2xl p-5">
-        <h3 className="text-lg font-black text-heading">Join the Comments</h3>
+        <h3 className="text-lg font-black text-heading"><UiText text={"Join the Comments"} /></h3>
         <p className="mt-2 text-sm leading-6 text-muted">
-          Log in to leave a comment on this anime.
+          <UiText text={"Log in to leave a comment on this anime."} />
         </p>
         <Link
           className="portal-button-secondary mt-4 inline-flex h-10 items-center rounded-full px-4 text-sm font-black"
           href="/login"
         >
-          Login to comment
+          <UiText text={"Login to comment"} />
         </Link>
       </div>
     );
@@ -31,8 +32,8 @@ export function CommentForm({ animeId, isLoggedIn }: CommentFormProps) {
     <form action={createComment} className="portal-panel rounded-2xl p-5">
       <input name="animeId" type="hidden" value={animeId} />
       <label className="block text-sm font-bold text-secondary">
-        Comment
-        <textarea
+        <UiText text={"Comment"} />
+        <UiTextarea
           className="portal-input mt-1 min-h-28 w-full rounded-xl px-3 py-3 leading-7"
           maxLength={1000}
           name="body"
@@ -41,13 +42,13 @@ export function CommentForm({ animeId, isLoggedIn }: CommentFormProps) {
         />
       </label>
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-xs font-medium text-muted">Up to 1000 characters</span>
+        <span className="text-xs font-medium text-muted"><UiText text={"Up to 1000 characters"} /></span>
         <SubmitButton
           className="portal-button-primary inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black disabled:cursor-not-allowed disabled:opacity-50"
           pendingLabel="Posting..."
         >
           <MessageSquarePlus className="h-4 w-4" aria-hidden="true" />
-          Post Comment
+          <UiText text={"Post Comment"} />
         </SubmitButton>
       </div>
     </form>

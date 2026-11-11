@@ -1,3 +1,4 @@
+import { UiText } from "@/components/UiText";
 import { ClearMessageQuery } from "@/components/ClearMessageQuery";
 
 type MessageBannerProps = {
@@ -21,7 +22,7 @@ export function MessageBanner({ error, message }: MessageBannerProps) {
             : "rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-ink"
         }
       >
-        {error ?? message}
+        <UiText text={error ?? message} />
       </div>
     </>
   );

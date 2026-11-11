@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiDiv, UiInput, UiText } from "@/components/UiText";
+
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
@@ -193,7 +196,7 @@ export function SearchModal({ items }: SearchModalProps) {
           : undefined
       }
     >
-      <div
+      <UiDiv
         aria-modal="true"
         aria-label="Search anime"
         className="portal-search-dialog"
@@ -210,7 +213,7 @@ export function SearchModal({ items }: SearchModalProps) {
           }}
         >
           <Search className="portal-header-search-icon" aria-hidden="true" strokeWidth={2.7} />
-          <input
+          <UiInput
             aria-label="Search anime"
             className="portal-search-input"
             onChange={(event) => {
@@ -242,7 +245,7 @@ export function SearchModal({ items }: SearchModalProps) {
             ref={inputRef}
             value={query}
           />
-          <button
+          <UiButton
             aria-label="Clear search"
             className="portal-search-clear"
             onClick={() => {
@@ -256,8 +259,8 @@ export function SearchModal({ items }: SearchModalProps) {
             }}
             type="button"
           >
-            Clear
-          </button>
+            <UiText text={"Clear"} />
+          </UiButton>
         </form>
 
         <div className="portal-search-head">
@@ -266,7 +269,7 @@ export function SearchModal({ items }: SearchModalProps) {
             href="/anime"
             onClick={() => setIsOpen(false)}
           >
-            Anime
+            <UiText text={"Anime"} />
           </Link>
           <Link
             className="inline-flex items-center gap-1.5 pb-1 text-sm font-medium text-muted transition hover:text-heading"
@@ -274,7 +277,7 @@ export function SearchModal({ items }: SearchModalProps) {
             onClick={() => setIsOpen(false)}
           >
             <Filter className="h-3.5 w-3.5" aria-hidden="true" />
-            Filter
+            <UiText text={"Filter"} />
           </Link>
         </div>
 
@@ -282,7 +285,7 @@ export function SearchModal({ items }: SearchModalProps) {
           <div className="max-h-[46vh] overflow-y-auto border-b border-line/10 p-2">
             {results.length === 0 ? (
               <div className="rounded-xl px-3 py-3 text-sm font-bold text-muted">
-                No anime matched this search.
+                <UiText text={"No anime matched this search."} />
               </div>
             ) : (
               <div className="space-y-1">
@@ -304,7 +307,7 @@ export function SearchModal({ items }: SearchModalProps) {
                         {item.title}
                       </p>
                       <p className="mt-0.5 line-clamp-1 text-xs font-medium text-muted">
-                        {item.genres.join(" / ")}
+                        <UiText text={item.genres.join(" / ")} />
                       </p>
                       {item.tags.length ? (
                         <p className="mt-1 flex items-center gap-1 text-[0.68rem] font-bold text-violet-ink">
@@ -328,22 +331,22 @@ export function SearchModal({ items }: SearchModalProps) {
             <kbd className="rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               ↑
             </kbd>
-            to navigate
+            <UiText text={"to navigate"} />
           </span>
           <span className="inline-flex items-center gap-1">
             <kbd className="inline-flex items-center rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               <CornerDownLeft className="h-3 w-3" aria-hidden="true" />
             </kbd>
-            to select
+            <UiText text={"to select"} />
           </span>
           <span className="inline-flex items-center gap-1">
             <kbd className="rounded-md border border-line/[0.15] bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted">
               esc
             </kbd>
-            to exit
+            <UiText text={"to exit"} />
           </span>
         </div>
-      </div>
+      </UiDiv>
     </div>
   );
 }

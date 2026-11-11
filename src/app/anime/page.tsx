@@ -1,3 +1,4 @@
+import { UiInput, UiNav, UiText } from "@/components/UiText";
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
 import { Filter, RotateCcw, SlidersHorizontal } from "lucide-react";
@@ -326,9 +327,9 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight text-heading lg:text-3xl">
-                  Advanced Anime Filter - Find Your Perfect Series
+                  <UiText text={"Advanced Anime Filter - Find Your Perfect Series"} />
                 </h1>
-                <p className="mt-1 text-sm text-muted">Search and narrow the anime catalog.</p>
+                <p className="mt-1 text-sm text-muted"><UiText text={"Search and narrow the anime catalog."} /></p>
               </div>
               {hasSearchConditions ? (
                 <Link
@@ -336,15 +337,15 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                   href="/anime"
                 >
                   <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                  Clear filters
+                  <UiText text={"Clear filters"} />
                 </Link>
               ) : null}
             </div>
 
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
               <label className="block">
-                <span className="sr-only">Search</span>
-              <input
+                <span className="sr-only"><UiText text={"Search"} /></span>
+              <UiInput
                   className="portal-input h-10 w-full rounded-lg px-3 text-sm"
                 defaultValue={query}
                 name="q"
@@ -391,7 +392,7 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                 type="submit"
               >
                 <Filter className="h-4 w-4" aria-hidden="true" />
-                Filter
+                <UiText text={"Filter"} />
               </button>
             </div>
           </form>
@@ -405,8 +406,8 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
             <p className="inline-flex items-center gap-2 text-sm font-bold text-muted">
               <SlidersHorizontal className="h-4 w-4 text-cyan-ink" aria-hidden="true" />
               {totalCount === 0
-                ? "0 results"
-                : `${totalCount} results / ${startIndex + 1}-${startIndex + paginatedAnimeList.length}`}
+                ? <UiText text={"0 results"} />
+                : <UiText text={`${totalCount} results / ${startIndex + 1}-${startIndex + paginatedAnimeList.length}`} />}
             </p>
           </div>
 
@@ -434,12 +435,12 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
               </div>
 
               {totalPages > 1 ? (
-                <nav
+                <UiNav
                   className="portal-panel flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:justify-between"
                   aria-label="Pagination"
                 >
                   <p className="text-sm font-bold text-muted">
-                    Page {currentPage} / {totalPages}
+                    <UiText text={"Page"} /> {currentPage} / {totalPages}
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
                     {currentPage > 1 ? (
@@ -447,11 +448,11 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                         className="portal-button-secondary inline-flex h-10 items-center rounded-full px-3 text-sm font-black"
                         href={buildPageHref(currentPage - 1)}
                       >
-                        Prev
+                        <UiText text={"Prev"} />
                       </Link>
                     ) : (
                       <span className="inline-flex h-10 items-center rounded-full border border-stroke/25 px-3 text-sm font-black text-secondary">
-                        Prev
+                        <UiText text={"Prev"} />
                       </span>
                     )}
 
@@ -485,15 +486,15 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
                         className="portal-button-secondary inline-flex h-10 items-center rounded-full px-3 text-sm font-black"
                         href={buildPageHref(currentPage + 1)}
                       >
-                        Next
+                        <UiText text={"Next"} />
                       </Link>
                     ) : (
                       <span className="inline-flex h-10 items-center rounded-full border border-stroke/25 px-3 text-sm font-black text-secondary">
-                        Next
+                        <UiText text={"Next"} />
                       </span>
                     )}
                   </div>
-                </nav>
+                </UiNav>
               ) : null}
             </>
           )}

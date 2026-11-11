@@ -1,5 +1,8 @@
 "use client";
 
+import { UiTextarea } from "@/components/UiText";
+
+
 import { useState } from "react";
 import { Trash2, X } from "lucide-react";
 
@@ -52,7 +55,7 @@ export function AdminModerationDeleteForm(props: AdminModerationDeleteFormProps)
           </p>
           <label className="block text-xs font-black text-red-700">
             削除理由
-            <textarea
+            <UiTextarea
               className="mt-1 min-h-20 w-full rounded border border-red-200 bg-panel px-3 py-2 text-sm font-medium text-foreground outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200"
               maxLength={500}
               name="reason"

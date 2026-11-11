@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiImage, UiText } from "@/components/UiText";
+
+
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MouseEvent, TouchEvent } from "react";
@@ -187,7 +190,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
               <div className="min-w-0 max-w-[680px] lg:max-w-3xl">
                 <p className="hidden items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-1.5 text-xs font-black text-cyan-ink sm:inline-flex">
                   <Sparkles className="h-4 w-4" aria-hidden="true" />
-                  Featured Picks
+                  <UiText text={"Featured Picks"} />
                 </p>
                 <h1 className="mt-3 max-w-[720px] break-words text-3xl font-black leading-tight text-heading sm:text-4xl md:text-5xl xl:text-[4.35rem] xl:leading-[1.04]">
                   {item.title}
@@ -198,7 +201,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
                   </p>
                 ) : null}
                 <p className="mt-3 line-clamp-2 max-w-2xl text-sm leading-6 text-secondary sm:line-clamp-3 sm:text-base lg:mt-4 lg:leading-7">
-                  {item.synopsis}
+                  <UiText text={item.synopsis} />
                 </p>
                 <div className="mt-4 flex flex-wrap items-center gap-2.5 lg:mt-5">
                   <ScoreBadge count={item.ratingCount} score={item.average} />
@@ -206,7 +209,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
                     {item.releaseYear}
                   </span>
                   <span className="portal-chip rounded-full px-3 py-1.5 text-sm font-bold">
-                    {item.genres[0] ?? "Anime"}
+                    <UiText text={item.genres[0] ?? "Anime"} />
                   </span>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-3 lg:mt-7">
@@ -218,14 +221,14 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
                     className="pointer-events-auto portal-button-secondary inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-black sm:h-12 sm:px-5"
                     href={`/anime/${item.slug}`}
                   >
-                    Details
+                    <UiText text={"Details"} />
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
                   <Link
                     className="pointer-events-auto hidden h-12 items-center gap-2 rounded-full border border-line/10 bg-depth/[0.45] px-5 text-sm font-black text-secondary transition hover:border-cyan-300/40 hover:text-heading sm:inline-flex"
                     href={`/anime/${item.slug}#review-form`}
                   >
-                    Write Review
+                    <UiText text={"Write Review"} />
                     <MessageSquareText className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </div>
@@ -258,7 +261,7 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
                     {item.title}
                   </span>
                 </div>
-                <img
+                <UiImage
                   alt={`${item.title} poster`}
                   className="relative h-full w-full rounded-2xl object-cover transition-opacity"
                   draggable={false}
@@ -275,25 +278,25 @@ export function HeroCarousel({ items }: { items: HeroCarouselItem[] }) {
 
       {safeItems.length > 1 ? (
         <div className="pointer-events-none absolute bottom-5 left-4 z-10 flex items-center gap-2 lg:left-6">
-          <button
+          <UiButton
             aria-label="Previous featured anime"
             className="pointer-events-auto grid h-8 w-8 place-items-center rounded-full border border-line/10 bg-depth/70 text-muted shadow-[0_12px_28px_rgba(0,0,0,0.45)] transition hover:border-cyan-300/40 hover:text-heading"
             onClick={() => move(-1)}
             type="button"
           >
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             aria-label="Next featured anime"
             className="pointer-events-auto grid h-8 w-8 place-items-center rounded-full border border-line/10 bg-depth/70 text-muted shadow-[0_12px_28px_rgba(0,0,0,0.45)] transition hover:border-cyan-300/40 hover:text-heading"
             onClick={() => move(1)}
             type="button"
           >
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
-          </button>
+          </UiButton>
           <div className="pointer-events-auto ml-1 flex gap-2 rounded-full border border-line/[0.06] bg-depth/[0.55] px-2.5 py-2 shadow-[0_12px_28px_rgba(0,0,0,0.42)] backdrop-blur-md">
             {safeItems.map((item, itemIndex) => (
-              <button
+              <UiButton
                 aria-label={`Show ${item.title}`}
                 className={
                   itemIndex === index

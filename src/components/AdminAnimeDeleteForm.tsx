@@ -1,5 +1,8 @@
 "use client";
 
+import { UiDiv } from "@/components/UiText";
+
+
 import { useState } from "react";
 import { Trash2, X } from "lucide-react";
 
@@ -28,7 +31,7 @@ export function AdminAnimeDeleteForm({ animeId, animeTitle }: AdminAnimeDeleteFo
           削除
         </button>
       ) : (
-        <div
+        <UiDiv
           aria-label={`${animeTitle}の削除確認`}
           className="space-y-3 rounded border border-red-200 bg-red-50 p-3"
           role="dialog"
@@ -55,7 +58,7 @@ export function AdminAnimeDeleteForm({ animeId, animeTitle }: AdminAnimeDeleteFo
               削除する
             </SubmitButton>
           </div>
-        </div>
+        </UiDiv>
       )}
     </form>
   );

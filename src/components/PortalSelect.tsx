@@ -1,5 +1,8 @@
 "use client";
 
+import { UiButton, UiText } from "@/components/UiText";
+
+
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
@@ -53,9 +56,9 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
 
   return (
     <div className="relative text-xs font-black uppercase tracking-wide text-muted" ref={rootRef}>
-      {hideLabel ? <span className="sr-only">{label}</span> : <span>{label}</span>}
+      {hideLabel ? <span className="sr-only"><UiText text={label} /></span> : <span><UiText text={label} /></span>}
       <input name={name} type="hidden" value={selectedValue} />
-      <button
+      <UiButton
         aria-expanded={isOpen}
         aria-label={label}
         className={`portal-input flex h-10 w-full items-center justify-between gap-2 rounded-xl px-3 text-left text-sm font-bold normal-case tracking-normal text-heading ${
@@ -64,12 +67,12 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
         onClick={() => setIsOpen((current) => !current)}
         type="button"
       >
-        <span className="truncate">{selectedOption.label}</span>
+        <span className="truncate"><UiText text={selectedOption.label} /></span>
         <ChevronDown
           className={`h-4 w-4 shrink-0 text-muted transition ${isOpen ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
-      </button>
+      </UiButton>
 
       {isOpen ? (
         <div className="absolute left-0 right-0 top-[calc(100%+0.45rem)] z-[110] max-h-72 overflow-hidden rounded-2xl border border-line/[0.15] bg-canvas-muted p-1.5 portal-floating">
@@ -91,7 +94,7 @@ export function PortalSelect({ hideLabel = false, label, name, options, value }:
                   }}
                   type="button"
                 >
-                  <span className="truncate">{option.label}</span>
+                  <span className="truncate"><UiText text={option.label} /></span>
                   {active ? <Check className="h-4 w-4 shrink-0 text-cyan-ink" aria-hidden="true" /> : null}
                 </button>
               );

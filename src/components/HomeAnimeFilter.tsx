@@ -1,3 +1,4 @@
+import { UiInput, UiText } from "@/components/UiText";
 import { Filter } from "lucide-react";
 
 import { PortalSelect } from "@/components/PortalSelect";
@@ -16,12 +17,12 @@ export function HomeAnimeFilter({ genres, years }: HomeAnimeFilterProps) {
       method="get"
     >
       <h2 className="text-xl font-semibold text-heading sm:text-2xl">
-        Advanced Anime Filter
+        <UiText text={"Advanced Anime Filter"} />
       </h2>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         <label className="col-span-2 block min-w-0 md:col-span-1">
-          <span className="sr-only">Search</span>
-          <input
+          <span className="sr-only"><UiText text={"Search"} /></span>
+          <UiInput
             className="portal-input h-10 w-full px-3 text-sm text-heading"
             id="home-anime-query"
             name="q"
@@ -139,7 +140,7 @@ export function HomeAnimeFilter({ genres, years }: HomeAnimeFilterProps) {
           type="submit"
         >
           <Filter aria-hidden="true" className="h-4 w-4 shrink-0" />
-          Filter
+          <UiText text={"Filter"} />
         </button>
       </div>
     </form>
