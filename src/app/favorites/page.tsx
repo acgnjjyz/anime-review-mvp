@@ -69,7 +69,7 @@ export default async function FavoritesPage() {
             title="お気に入りはまだありません"
           />
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="portal-anime-grid">
             {favorites.map((favorite) => (
               <AnimeCard anime={favorite.anime} isFavorite key={favorite.id} />
             ))}

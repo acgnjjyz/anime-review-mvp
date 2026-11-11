@@ -1050,6 +1050,67 @@ img {
   transform: translateY(-2px) scale(1.015);
 }
 
+.portal-anime-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .portal-anime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  }
+}
+
+.portal-anime-card {
+  min-width: 0;
+}
+
+.portal-anime-card-poster {
+  aspect-ratio: 2 / 3;
+}
+
+.portal-anime-card-body {
+  display: grid;
+  grid-template-rows: 40px 24px;
+  align-content: center;
+  gap: 8px;
+  height: 104px;
+  padding: 12px;
+}
+
+.portal-anime-card-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.portal-anime-card-source {
+  position: absolute;
+  inset: auto 0 0;
+  background: rgb(var(--color-panel) / 0.9);
+}
+
+.portal-anime-card-source:empty {
+  display: none;
+}
+
+.portal-anime-card-source a {
+  display: flex;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.portal-anime-card-source a span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.portal-anime-card .portal-anime-preview-info {
+  bottom: 40px;
+}
+
 .portal-anime-preview-trigger {
   position: relative;
 }

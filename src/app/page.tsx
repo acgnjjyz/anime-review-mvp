@@ -84,7 +84,7 @@ function AnimeRail({
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
+    <div className="portal-anime-grid">
       {animeList.map((anime) => (
         <AnimeCard anime={anime} isFavorite={favoriteAnimeIds.has(anime.id)} key={anime.id} />
       ))}

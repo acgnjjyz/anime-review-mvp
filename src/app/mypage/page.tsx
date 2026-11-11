@@ -175,7 +175,7 @@ export default async function MyPage() {
                   return (
                     <div className="portal-panel rounded-2xl p-4" key={group.status}>
                       <h3 className="text-lg font-black text-heading"><UiText text={group.label} /></h3>
-                      <div className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                      <div className="portal-anime-grid mt-4">
                         {items.map((shelf) => (
                           <AnimeCard anime={shelf.anime} key={shelf.id} />
                         ))}
@@ -240,7 +240,7 @@ export default async function MyPage() {
                 title="No favorites yet"
               />
             ) : (
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="portal-anime-grid">
                 {profile.favorites.map((favorite) => (
                   <AnimeCard anime={favorite.anime} isFavorite key={favorite.id} />
                 ))}
