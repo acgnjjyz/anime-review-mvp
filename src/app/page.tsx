@@ -5,7 +5,7 @@ import { Trophy } from "lucide-react";
 import { AnimeCard } from "@/components/AnimeCard";
 import { EmptyState } from "@/components/EmptyState";
 import { HeroCarousel } from "@/components/HeroCarousel";
-import { HomeAnimeFilter } from "@/components/HomeAnimeFilter";
+import { AnimeFilter } from "@/components/AnimeFilter";
 import { RightPortalSidebar } from "@/components/RightPortalSidebar";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { SetupNotice } from "@/components/SetupNotice";
@@ -248,10 +248,11 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="mx-auto max-w-[1780px] px-3 pb-4 sm:px-4 lg:px-6">
-        <HomeAnimeFilter genres={genres} years={years} />
-        <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
-          <div className="min-w-0 space-y-6">
+      <section className="portal-catalog-layout mx-auto mt-4 max-w-[1780px] px-3 pb-4 sm:px-4 lg:px-6">
+        <div className="portal-catalog-filter">
+          <AnimeFilter genres={genres} years={years} />
+        </div>
+        <div className="portal-catalog-results space-y-6">
           <div className="pt-1">
             <SectionHeader eyebrow="Latest Episode Style" href="/anime?sort=newest" title="Recently Added" />
             <AnimeRail animeList={recentlyAdded.slice(0, 12)} favoriteAnimeIds={favoriteAnimeIds} />
@@ -271,16 +272,15 @@ export default async function HomePage() {
             <SectionHeader eyebrow="Top Rated" href="/ranking" title="Highest Scores" />
             <AnimeRail animeList={topRated.slice(0, 6)} favoriteAnimeIds={favoriteAnimeIds} />
           </div>
-          </div>
-
-          <RightPortalSidebar
-            latestReviews={latestReviews}
-            mostReviewed={trending.slice(0, 10)}
-            recentlyAdded={recentlyAdded.slice(0, 6)}
-            tagRanking={tagRanking}
-            topRated={topRated.slice(0, 10)}
-          />
         </div>
+
+        <RightPortalSidebar
+          latestReviews={latestReviews}
+          mostReviewed={trending.slice(0, 10)}
+          recentlyAdded={recentlyAdded.slice(0, 6)}
+          tagRanking={tagRanking}
+          topRated={topRated.slice(0, 10)}
+        />
       </section>
 
       <WeekdaySchedule animeList={animeList.slice(0, 14)} />

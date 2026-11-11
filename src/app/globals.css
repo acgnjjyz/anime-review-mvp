@@ -1019,6 +1019,40 @@ img {
   transform: translateY(-2px) scale(1.015);
 }
 
+.portal-catalog-layout {
+  display: grid;
+  grid-template-areas: "filter" "results" "sidebar";
+  align-items: start;
+  gap: 16px;
+}
+
+.portal-catalog-filter {
+  grid-area: filter;
+  min-width: 0;
+}
+
+.portal-catalog-results {
+  grid-area: results;
+  min-width: 0;
+}
+
+.portal-catalog-sidebar {
+  grid-area: sidebar;
+}
+
+.portal-anime-filter,
+.portal-anime-filter #genres {
+  scroll-margin-top: calc(var(--portal-header-height) + 16px);
+}
+
+@media (min-width: 1024px) {
+  .portal-catalog-layout {
+    grid-template-columns: 300px minmax(0, 1fr);
+    grid-template-rows: min-content 1fr;
+    grid-template-areas: "filter results" "sidebar results";
+  }
+}
+
 .portal-anime-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

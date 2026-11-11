@@ -1,45 +1,62 @@
 import { UiInput, UiText } from "@/components/UiText";
-import { Filter } from "lucide-react";
+import { Filter, RotateCcw } from "lucide-react";
 
 import { PortalSelect } from "@/components/PortalSelect";
 
-type HomeAnimeFilterProps = {
+type AnimeFilterProps = {
   genres: string[];
   years: number[];
+  headingLevel?: "h1" | "h2";
+  values?: {
+    q?: string;
+    genre?: string;
+    year?: string;
+    sort?: string;
+    tag?: string;
+  };
 };
 
-export function HomeAnimeFilter({ genres, years }: HomeAnimeFilterProps) {
+export function AnimeFilter({ genres, years, headingLevel = "h2", values = {} }: AnimeFilterProps) {
+  const { q = "", genre = "", year = "", sort = "newest", tag = "" } = values;
+  const hasFilters = Boolean(q || genre || year || tag || sort !== "newest");
+  const Heading = headingLevel;
+
   return (
     <form
       action="/anime"
       aria-label="作品フィルター"
-      className="mt-4 space-y-4 border-y border-line/10 py-5"
+      className="portal-anime-filter space-y-3 border border-line/10 bg-panel/95 p-3"
+      id="anime-search"
       method="get"
     >
-      <h2 className="text-xl font-semibold text-heading sm:text-2xl">
+      <Heading className="text-lg font-semibold leading-6 text-heading">
         <UiText text={"Advanced Anime Filter"} />
-      </h2>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-        <label className="col-span-2 block min-w-0 md:col-span-1">
+      </Heading>
+      {tag ? <input name="tag" type="hidden" value={tag} /> : null}
+      <div className="grid grid-cols-2 gap-2">
+        <label className="col-span-2 block min-w-0">
           <span className="sr-only"><UiText text={"Search"} /></span>
           <UiInput
             className="portal-input h-10 w-full px-3 text-sm text-heading"
-            id="home-anime-query"
+            defaultValue={q}
+            id="anime-query"
             name="q"
             placeholder="Search..."
             type="search"
           />
         </label>
-        <PortalSelect
-          hideLabel
-          label="Genre"
-          name="genre"
-          options={[
-            { label: "Genre", value: "" },
-            ...genres.map((genre) => ({ label: genre, value: genre })),
-          ]}
-          value=""
-        />
+        <div className="min-w-0" id="genres">
+          <PortalSelect
+            hideLabel
+            label="Genre"
+            name="genre"
+            options={[
+              { label: "Genre", value: "" },
+              ...genres.map((genre) => ({ label: genre, value: genre })),
+            ]}
+            value={genre}
+          />
+        </div>
         <PortalSelect
           hideLabel
           label="Country"
@@ -72,7 +89,7 @@ export function HomeAnimeFilter({ genres, years }: HomeAnimeFilterProps) {
             { label: "Year", value: "" },
             ...years.map((year) => ({ label: String(year), value: String(year) })),
           ]}
-          value=""
+          value={year}
         />
         <PortalSelect
           hideLabel
@@ -123,26 +140,34 @@ export function HomeAnimeFilter({ genres, years }: HomeAnimeFilterProps) {
           ]}
           value=""
         />
-        <PortalSelect
-          hideLabel
-          label="Recently updated"
-          name="sort"
-          options={[
-            { label: "Recently updated", value: "newest" },
-            { label: "Oldest anime", value: "oldest" },
-            { label: "Highest score", value: "score" },
-            { label: "Most reviewed", value: "reviews" },
-          ]}
-          value="newest"
-        />
+        <div className="col-span-2 min-w-0">
+          <PortalSelect
+            hideLabel
+            label="Recently updated"
+            name="sort"
+            options={[
+              { label: "Recently updated", value: "newest" },
+              { label: "Oldest anime", value: "oldest" },
+              { label: "Highest score", value: "score" },
+              { label: "Most reviewed", value: "reviews" },
+            ]}
+            value={sort}
+          />
+        </div>
         <button
-          className="inline-flex h-10 items-center justify-center gap-2 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-500 xl:w-max"
+          className="col-span-2 inline-flex h-11 items-center justify-center gap-2 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-500"
           type="submit"
         >
           <Filter aria-hidden="true" className="h-4 w-4 shrink-0" />
           <UiText text={"Filter"} />
         </button>
       </div>
+      {hasFilters ? (
+        <a className="inline-flex items-center gap-2 text-xs font-semibold text-muted hover:text-heading" href="/anime">
+          <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
+          <UiText text="Clear filters" />
+        </a>
+      ) : null}
     </form>
   );
 }

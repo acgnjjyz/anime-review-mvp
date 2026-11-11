@@ -254,7 +254,7 @@ export function RightPortalSidebar({
   topRated,
 }: RightPortalSidebarProps) {
   return (
-    <aside className="min-w-0 space-y-3 lg:sticky lg:top-[72px] lg:self-start">
+    <aside className="portal-catalog-sidebar min-w-0 space-y-3 lg:sticky lg:top-[72px] lg:self-start">
       <TopAnimePanel animeList={topRated.length ? topRated : mostReviewed} />
       <TagRankingPanel tags={tagRanking} />
       <CompactAnimePanel

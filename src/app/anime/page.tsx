@@ -1,12 +1,12 @@
-import { UiInput, UiNav, UiText } from "@/components/UiText";
+import { UiNav, UiText } from "@/components/UiText";
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
-import { Filter, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 
 import { AnimeCard } from "@/components/AnimeCard";
+import { AnimeFilter } from "@/components/AnimeFilter";
 import { EmptyState } from "@/components/EmptyState";
 import { MessageBanner } from "@/components/MessageBanner";
-import { PortalSelect } from "@/components/PortalSelect";
 import { RightPortalSidebar } from "@/components/RightPortalSidebar";
 import { SetupNotice } from "@/components/SetupNotice";
 import { getCurrentUserProfile } from "@/lib/auth";
@@ -186,57 +186,6 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
   const years = Array.from(new Set(filterOptions.map((anime) => anime.releaseYear))).sort(
     (a, b) => b - a,
   );
-  const genreOptions = [
-    { label: "Genre", value: "" },
-    ...genres.map((genre) => ({ label: genre, value: genre })),
-  ];
-  const yearOptions = [
-    { label: "Year", value: "" },
-    ...years.map((year) => ({ label: String(year), value: String(year) })),
-  ];
-  const sortOptions = [
-    { label: "Recently updated", value: "newest" },
-    { label: "Oldest anime", value: "oldest" },
-    { label: "Highest score", value: "score" },
-    { label: "Most reviewed", value: "reviews" },
-  ];
-  const countryOptions = [
-    { label: "Country", value: "" },
-    { label: "Japan", value: "jp" },
-    { label: "Original", value: "original" },
-  ];
-  const seasonOptions = [
-    { label: "Season", value: "" },
-    { label: "Spring", value: "spring" },
-    { label: "Summer", value: "summer" },
-    { label: "Autumn", value: "autumn" },
-    { label: "Winter", value: "winter" },
-  ];
-  const typeOptions = [
-    { label: "Type", value: "" },
-    { label: "TV", value: "tv" },
-    { label: "Movie", value: "movie" },
-    { label: "OVA", value: "ova" },
-    { label: "ONA", value: "ona" },
-  ];
-  const statusOptions = [
-    { label: "Status", value: "" },
-    { label: "Watching", value: "watching" },
-    { label: "Completed", value: "completed" },
-    { label: "Planned", value: "planned" },
-  ];
-  const languageOptions = [
-    { label: "Language", value: "" },
-    { label: "Japanese", value: "ja" },
-    { label: "Subtitled", value: "sub" },
-    { label: "Dubbed", value: "dub" },
-  ];
-  const ratingOptions = [
-    { label: "Rating", value: "" },
-    { label: "9+ score", value: "9" },
-    { label: "8+ score", value: "8" },
-    { label: "7+ score", value: "7" },
-  ];
   const favoriteAnimeIds = new Set(favorites.map((favorite) => favorite.animeId));
   const sortedAnimeList = [...animeList].sort((a, b) => {
     if (sort === "score") {
@@ -317,90 +266,17 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
 
   return (
     <div className="portal-shell">
-      <section className="border-b border-line/10 bg-canvas-muted/[0.88]">
-        <div className="mx-auto max-w-[1640px] px-3 py-5 sm:px-4 lg:px-6">
-          <form
-            action="/anime"
-            className="space-y-4"
-            id="anime-search"
-          >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-heading lg:text-3xl">
-                  <UiText text={"Advanced Anime Filter - Find Your Perfect Series"} />
-                </h1>
-                <p className="mt-1 text-sm text-muted"><UiText text={"Search and narrow the anime catalog."} /></p>
-              </div>
-              {hasSearchConditions ? (
-                <Link
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-muted underline decoration-slate-700 underline-offset-4 transition hover:text-heading"
-                  href="/anime"
-                >
-                  <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                  <UiText text={"Clear filters"} />
-                </Link>
-              ) : null}
-            </div>
-
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
-              <label className="block">
-                <span className="sr-only"><UiText text={"Search"} /></span>
-              <UiInput
-                  className="portal-input h-10 w-full rounded-lg px-3 text-sm"
-                defaultValue={query}
-                name="q"
-                  placeholder="Search..."
-              />
-            </label>
-              <div id="genres">
-                <PortalSelect
-                  hideLabel
-                  label="Genre"
-                  name="genre"
-                  options={genreOptions}
-                  value={selectedGenre}
-                />
-              </div>
-              <PortalSelect
-                hideLabel
-                label="Country"
-                name="country"
-                options={countryOptions}
-                value=""
-              />
-              <PortalSelect
-                hideLabel
-                label="Season"
-                name="season"
-                options={seasonOptions}
-                value=""
-              />
-              <PortalSelect hideLabel label="Year" name="year" options={yearOptions} value={selectedYearText} />
-              <PortalSelect hideLabel label="Type" name="type" options={typeOptions} value="" />
-              <PortalSelect hideLabel label="Status" name="status" options={statusOptions} value="" />
-              <PortalSelect
-                hideLabel
-                label="Language"
-                name="language"
-                options={languageOptions}
-                value=""
-              />
-              <PortalSelect hideLabel label="Rating" name="rating" options={ratingOptions} value="" />
-              <PortalSelect hideLabel label="Recently updated" name="sort" options={sortOptions} value={sort} />
-              <button
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(124,58,237,0.22)] transition hover:bg-violet-500 xl:w-max"
-                type="submit"
-              >
-                <Filter className="h-4 w-4" aria-hidden="true" />
-                <UiText text={"Filter"} />
-              </button>
-            </div>
-          </form>
+      <section className="portal-catalog-layout mx-auto max-w-[1640px] px-3 py-6 sm:px-4 lg:px-6">
+        <div className="portal-catalog-filter">
+          <AnimeFilter
+            genres={genres}
+            headingLevel="h1"
+            key={JSON.stringify([query, selectedGenre, selectedYearText, sort, selectedTag])}
+            values={{ q: query, genre: selectedGenre, year: selectedYearText, sort, tag: selectedTag }}
+            years={years}
+          />
         </div>
-      </section>
-
-      <section className="mx-auto grid max-w-[1640px] gap-5 overflow-hidden px-3 py-6 sm:px-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-6">
-        <div className="min-w-0 space-y-5">
+        <div className="portal-catalog-results space-y-5">
           <MessageBanner error={params.error} message={params.message} />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="inline-flex items-center gap-2 text-sm font-bold text-muted">
