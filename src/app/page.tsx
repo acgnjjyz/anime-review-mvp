@@ -235,7 +235,11 @@ export default async function HomePage() {
 
   return (
     <div className="portal-shell">
-      <section className="mx-auto w-full max-w-[1780px] px-3 pt-4 sm:px-4 lg:max-w-none lg:px-0">
+      <section className="portal-home-filter mx-auto max-w-[1780px] px-3 pt-4 sm:px-4 lg:px-6">
+        <AnimeFilter genres={genres} layout="wide" years={years} />
+      </section>
+
+      <section className="portal-home-hero mx-auto w-full max-w-[1780px] px-3 pt-4 sm:px-4 lg:max-w-none lg:px-0">
         {featured ? (
           <HeroCarousel items={heroItems} />
         ) : (
@@ -248,10 +252,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="portal-catalog-layout mx-auto mt-4 max-w-[1780px] px-3 pb-4 sm:px-4 lg:px-6">
-        <div className="portal-catalog-filter">
-          <AnimeFilter genres={genres} years={years} />
-        </div>
+      <section className="portal-catalog-layout portal-catalog-layout--no-filter mx-auto mt-4 max-w-[1780px] px-3 pb-4 sm:px-4 lg:px-6">
         <div className="portal-catalog-results space-y-6">
           <div className="pt-1">
             <SectionHeader eyebrow="Latest Episode Style" href="/anime?sort=newest" title="Recently Added" />

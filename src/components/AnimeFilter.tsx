@@ -7,6 +7,7 @@ type AnimeFilterProps = {
   genres: string[];
   years: number[];
   headingLevel?: "h1" | "h2";
+  layout?: "sidebar" | "wide";
   values?: {
     q?: string;
     genre?: string;
@@ -16,10 +17,11 @@ type AnimeFilterProps = {
   };
 };
 
-export function AnimeFilter({ genres, years, headingLevel = "h2", values = {} }: AnimeFilterProps) {
+export function AnimeFilter({ genres, years, headingLevel = "h2", layout = "sidebar", values = {} }: AnimeFilterProps) {
   const { q = "", genre = "", year = "", sort = "newest", tag = "" } = values;
   const hasFilters = Boolean(q || genre || year || tag || sort !== "newest");
   const Heading = headingLevel;
+  const isWide = layout === "wide";
 
   return (
     <form
@@ -33,8 +35,8 @@ export function AnimeFilter({ genres, years, headingLevel = "h2", values = {} }:
         <UiText text={"Advanced Anime Filter"} />
       </Heading>
       {tag ? <input name="tag" type="hidden" value={tag} /> : null}
-      <div className="grid grid-cols-2 gap-2">
-        <label className="col-span-2 block min-w-0">
+      <div className={isWide ? "grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6" : "grid grid-cols-2 gap-2"}>
+        <label className={`col-span-2 block min-w-0 ${isWide ? "md:col-span-1" : ""}`}>
           <span className="sr-only"><UiText text={"Search"} /></span>
           <UiInput
             className="portal-input h-10 w-full px-3 text-sm text-heading"
@@ -140,7 +142,7 @@ export function AnimeFilter({ genres, years, headingLevel = "h2", values = {} }:
           ]}
           value=""
         />
-        <div className="col-span-2 min-w-0">
+        <div className={`col-span-2 min-w-0 ${isWide ? "md:col-span-1" : ""}`}>
           <PortalSelect
             hideLabel
             label="Recently updated"
@@ -155,7 +157,7 @@ export function AnimeFilter({ genres, years, headingLevel = "h2", values = {} }:
           />
         </div>
         <button
-          className="col-span-2 inline-flex h-11 items-center justify-center gap-2 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-500"
+          className={`col-span-2 inline-flex h-11 items-center justify-center gap-2 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-500 ${isWide ? "md:col-span-1 xl:w-max" : ""}`}
           type="submit"
         >
           <Filter aria-hidden="true" className="h-4 w-4 shrink-0" />

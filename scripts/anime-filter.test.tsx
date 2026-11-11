@@ -34,3 +34,11 @@ test("catalog filters preserve active query, genre, year, sort and tag", () => {
   assert.match(page("a").text(), /絞り込みを解除/);
   assert.match(page("#genres button").text(), /ドラマ/);
 });
+
+test("wide home filter keeps the same fields in a responsive horizontal layout", () => {
+  const page = load(renderToStaticMarkup(<AnimeFilter genres={["Action"]} layout="wide" years={[2026]} />));
+  assert.equal(page(".xl\\:grid-cols-6").length, 1);
+  assert.equal(page("input[name]").length, 10);
+  assert.equal(page("input[name=sort]").attr("value"), "newest");
+  assert.equal(page("form").attr("action"), "/anime");
+});

@@ -1026,6 +1026,10 @@ img {
   gap: 16px;
 }
 
+.portal-catalog-layout--no-filter {
+  grid-template-areas: "results" "sidebar";
+}
+
 .portal-catalog-filter {
   grid-area: filter;
   min-width: 0;
@@ -1050,6 +1054,11 @@ img {
     grid-template-columns: 300px minmax(0, 1fr);
     grid-template-rows: min-content 1fr;
     grid-template-areas: "filter results" "sidebar results";
+  }
+
+  .portal-catalog-layout--no-filter {
+    grid-template-rows: auto;
+    grid-template-areas: "sidebar results";
   }
 }
 
