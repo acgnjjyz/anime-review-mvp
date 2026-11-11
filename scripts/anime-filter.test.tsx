@@ -19,10 +19,11 @@ test("sidebar filter retains the full GET form and search anchors", () => {
   assert.equal(page("a").length, 0);
 });
 
-test("catalog filters preserve active query, genre, year, sort and tag", () => {
+test("wide catalog filters preserve active query, genre, year, sort and tag", () => {
   const page = load(renderToStaticMarkup(<AnimeFilter
     genres={["Action", "Drama"]}
     headingLevel="h1"
+    layout="wide"
     values={{ q: "作品名", genre: "Drama", year: "2024", sort: "score", tag: "Healing" }}
     years={[2026, 2024]}
   />));
@@ -30,6 +31,7 @@ test("catalog filters preserve active query, genre, year, sort and tag", () => {
     assert.equal(page(`input[name=${name}]`).attr("value"), value);
   }
   assert.equal(page("h1").text(), "アニメを詳しく絞り込む");
+  assert.equal(page(".xl\\:grid-cols-6").length, 1);
   assert.equal(page("a").attr("href"), "/anime");
   assert.match(page("a").text(), /絞り込みを解除/);
   assert.match(page("#genres button").text(), /ドラマ/);

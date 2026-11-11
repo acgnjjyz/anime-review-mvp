@@ -266,16 +266,18 @@ export default async function AnimeListPage({ searchParams }: AnimeListPageProps
 
   return (
     <div className="portal-shell">
-      <section className="portal-catalog-layout mx-auto max-w-[1640px] px-3 py-6 sm:px-4 lg:px-6">
-        <div className="portal-catalog-filter">
-          <AnimeFilter
-            genres={genres}
-            headingLevel="h1"
-            key={JSON.stringify([query, selectedGenre, selectedYearText, sort, selectedTag])}
-            values={{ q: query, genre: selectedGenre, year: selectedYearText, sort, tag: selectedTag }}
-            years={years}
-          />
-        </div>
+      <section className="portal-anime-list-filter mx-auto max-w-[1640px] px-3 pt-4 sm:px-4 lg:px-6">
+        <AnimeFilter
+          genres={genres}
+          headingLevel="h1"
+          key={JSON.stringify([query, selectedGenre, selectedYearText, sort, selectedTag])}
+          layout="wide"
+          values={{ q: query, genre: selectedGenre, year: selectedYearText, sort, tag: selectedTag }}
+          years={years}
+        />
+      </section>
+
+      <section className="portal-catalog-layout portal-catalog-layout--no-filter mx-auto max-w-[1640px] px-3 pb-6 pt-4 sm:px-4 lg:px-6">
         <div className="portal-catalog-results space-y-5">
           <MessageBanner error={params.error} message={params.message} />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
