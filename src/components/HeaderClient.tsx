@@ -76,20 +76,21 @@ export function HeaderClient({ isAdmin, isLoggedIn, randomHref, searchIndex }: H
                 サーチ
               </span>
             </UiLink>
-
-            <SearchOpenButton className="portal-header-search">
-              <Search className="portal-header-search-icon" aria-hidden="true" strokeWidth={2.7} />
-              <span className="portal-header-search-label" data-locale-en="Search anime..." data-locale-ja={ja.searchAnime}>
-                <UiText text={"Search anime..."} />
-              </span>
-              <span className="portal-header-shortcut">
-                <kbd>S</kbd>
-                <span className="portal-header-shortcut-label">
-                  <LocaleText en="Quick Access" ja={ja.quickAccess} />
-                </span>
-              </span>
-            </SearchOpenButton>
           </div>
+
+          <SearchOpenButton className="portal-header-search">
+            <Search className="portal-header-search-icon" aria-hidden="true" strokeWidth={2.7} />
+            <span className="portal-header-search-label" data-locale-en="Search anime..." data-locale-ja={ja.searchAnime}>
+              <UiText text={"Search anime..."} />
+            </span>
+            <span className="portal-header-shortcut">
+              <kbd>S</kbd>
+              <span className="portal-header-shortcut-label">
+                <LocaleText en="Quick Access" ja={ja.quickAccess} />
+              </span>
+            </span>
+          </SearchOpenButton>
+
           <div className="portal-header-end">
             <div className="portal-header-quick">
               <Link
@@ -103,8 +104,6 @@ export function HeaderClient({ isAdmin, isLoggedIn, randomHref, searchIndex }: H
               <div className="portal-header-language">
                 <LanguageToggle />
               </div>
-
-              <div className="portal-header-spacer" aria-hidden="true" />
             </div>
             <div className="portal-header-account">
               <UiButton

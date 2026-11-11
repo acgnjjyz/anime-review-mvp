@@ -154,7 +154,8 @@ body {
 
 .portal-header-end {
   flex: 1;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 .portal-menu-toggle {
@@ -219,6 +220,8 @@ body {
   flex: 1;
   align-items: center;
   min-width: 0;
+  width: 100%;
+  max-width: 630px;
   height: 36px;
   padding: 0 10px;
   border-radius: 6px;
@@ -270,8 +273,8 @@ body {
 
 .portal-header-quick {
   flex-shrink: 0;
-  justify-content: space-around;
-  margin-left: 10px;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 .portal-header-random {
@@ -281,7 +284,6 @@ body {
   justify-content: center;
   gap: 4px;
   min-width: 77.5625px;
-  margin: 0 10px;
   font-size: 13.8px;
   font-weight: 600;
   line-height: 1.5;
@@ -291,7 +293,6 @@ body {
 .portal-header-language {
   display: flex;
   flex-shrink: 0;
-  margin: 0 10px;
 }
 
 .portal-language-toggle {
@@ -318,16 +319,9 @@ body {
   color: #171717;
 }
 
-.portal-header-spacer {
-  flex: 0 0 100px;
-  width: 100px;
-  margin: 0 10px;
-}
-
 .portal-header-account {
   flex-shrink: 0;
   gap: 4px;
-  margin-left: auto;
 }
 
 .portal-header-theme {
@@ -604,20 +598,6 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 991.98px) {
-  .portal-header-end {
-    justify-content: flex-end;
-  }
-
-  .portal-header-account {
-    margin-left: 0;
-  }
-
-  .portal-header-spacer {
-    display: none;
-  }
-}
-
 @media (max-width: 767.98px) {
   .portal-header-brand {
     margin-right: 0;
@@ -686,12 +666,14 @@ body {
     --portal-header-height: 60px;
   }
 
-  .portal-header-start {
-    flex: 1;
+  .portal-header-container {
+    display: grid;
+    grid-template-columns: minmax(400px, 1fr) minmax(0, 630px) minmax(400px, 1fr);
+    column-gap: 16px;
   }
 
   .portal-header-end {
-    flex: 0 0 auto;
+    justify-self: end;
   }
 
   .portal-header-account {
@@ -805,14 +787,6 @@ body {
     --portal-header-height: 67.5px;
   }
 
-  .portal-header-start {
-    flex: 0 1 min(48%, 856.890625px);
-  }
-
-  .portal-header-end {
-    flex: 1;
-  }
-
   .portal-header-brand {
     flex-basis: 143.296875px;
     width: 143.296875px;
@@ -836,11 +810,6 @@ body {
 
   .portal-header-shortcut-label {
     display: inline;
-  }
-
-  .portal-header-quick {
-    width: min(70%, 647.90625px);
-    margin-left: 0;
   }
 
   .portal-header-random {
